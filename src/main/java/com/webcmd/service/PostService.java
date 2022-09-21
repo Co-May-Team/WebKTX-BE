@@ -1,26 +1,23 @@
 package com.webcmd.service;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
-import com.webcmd.entity.ResponseObject;
-import com.webcmd.entity.Post;
-import com.webcmd.repositoryimpl.PostRepositoryImpl;
+
 import com.webcmd.constant.CMDConstant;
 import com.webcmd.entity.Pagination;
+import com.webcmd.entity.ResponseObject;
 import com.webcmd.model.PostModel;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.webcmd.repository.impl.PostRepositoryImpl;
 
 @Service
 public class PostService {

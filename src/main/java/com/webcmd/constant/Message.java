@@ -3,7 +3,7 @@ package com.webcmd.constant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.webcmd.repositoryimpl.MessageRepositoryImpl;
+import com.webcmd.repository.impl.MessageRepositoryImpl;
 
 @Service
 public class Message {

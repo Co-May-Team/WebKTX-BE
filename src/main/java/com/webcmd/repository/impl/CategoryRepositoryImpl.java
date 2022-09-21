@@ -1,4 +1,4 @@
-package com.webcmd.repositoryimpl;
+package com.webcmd.repository.impl;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Query;
-import javax.sql.DataSource;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -24,8 +23,7 @@ import com.webcmd.repository.ICategoryRepository;
 @Transactional(rollbackFor = Exception.class)
 public class CategoryRepositoryImpl implements ICategoryRepository{
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
-	@Autowired
-	private DataSource dataSource;
+
 	@Autowired
 	private SessionFactory sessionFactory;
 
@@ -43,10 +41,10 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 			for (Iterator it = query.getResultList().iterator(); it.hasNext();) {		
 				Object obj = (Object) it.next();
 				Category category = (Category) obj;
-				customCategory.setCategory_id(category.getCategory_id());
-				customCategory.setCategory_name(category.getCategory_name());
-				customCategory.setCreated_at(category.getCreated_at());
-				customCategory.setUpdated_at(category.getUpdated_at());
+				customCategory.setCategoryId(category.getCategory_id());
+				customCategory.setCategoryName(category.getCategory_name());
+				customCategory.setCreatedAt(category.getCreatedAt());
+				customCategory.setUpdatedAt(category.getUpdatedAt());
 			}
 		}
 		catch (Exception e) {
@@ -78,10 +76,10 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 			}
 			for (Category category : categorySet) {
 				CategoryModel customCategory = new CategoryModel();
-				customCategory.setCategory_id(category.getCategory_id());
-				customCategory.setCategory_name(category.getCategory_name());
-				customCategory.setCreated_at(category.getCreated_at());
-				customCategory.setUpdated_at(category.getUpdated_at());
+				customCategory.setCategoryId(category.getCategory_id());
+				customCategory.setCategoryName(category.getCategory_name());
+				customCategory.setCreatedAt(category.getCreatedAt());
+				customCategory.setUpdatedAt(category.getUpdatedAt());
 				customCategoryList.add(customCategory);
 			}
 		} catch (Exception e) {

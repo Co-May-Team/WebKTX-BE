@@ -1,4 +1,4 @@
-package com.webcmd.repositoryimpl;
+package com.webcmd.repository.impl;
 
 import javax.persistence.Query;
 

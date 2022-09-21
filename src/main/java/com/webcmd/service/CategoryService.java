@@ -1,8 +1,6 @@
 package com.webcmd.service;
 
-import java.security.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,7 +21,7 @@ import com.webcmd.entity.Category;
 import com.webcmd.entity.Pagination;
 import com.webcmd.entity.ResponseObject;
 import com.webcmd.model.CategoryModel;
-import com.webcmd.repositoryimpl.CategoryRepositoryImpl;
+import com.webcmd.repository.impl.CategoryRepositoryImpl;
 
 @Service
 public class CategoryService {
@@ -36,7 +34,7 @@ public class CategoryService {
 		CategoryModel category = new CategoryModel();
 		category = categoryRepositoryImpl.findById(id);
 		try {
-			if (category.getCategory_id() != null) {
+			if (category.getCategoryId() != null) {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseObject("OK", "Successfully", category));
 			} else {

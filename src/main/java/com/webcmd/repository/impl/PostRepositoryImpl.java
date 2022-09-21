@@ -1,4 +1,4 @@
-package com.webcmd.repositoryimpl;
+package com.webcmd.repository.impl;
 
 //import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,25 +7,18 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.PriorityQueue;
 import java.util.Set;
-import java.util.List;
 
 import javax.persistence.Query;
-import javax.sql.DataSource;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.webcmd.entity.Post;
 import com.webcmd.model.PostModel;
 import com.webcmd.repository.IPostRepository;
@@ -35,8 +28,7 @@ import com.webcmd.repository.IPostRepository;
 public class PostRepositoryImpl implements IPostRepository {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PostRepositoryImpl.class);
-	@Autowired
-	private DataSource dataSource;
+
 	@Autowired
 	private SessionFactory sessionFactory;
 
