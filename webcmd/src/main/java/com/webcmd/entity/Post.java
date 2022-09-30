@@ -1,20 +1,12 @@
 package com.webcmd.entity;
 
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -28,35 +20,33 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "posts")
-public class Post{
+public class Post extends BaseEntity{
+	private static final long serialVersionUID =-5140639629424252892L;
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer post_id;
-//	@OneToOne()
-//	@JoinColumn(name="user_id")
-//	private User user_id;
-//	@OneToOne()
-//	@JoinColumn(name="category_id")
-//	private Category category_id;
-	
-	// Many to One Có nhiều người ở 1 địa điểm.
+	@Column(name="post_id")
+	private Integer postId;
     @ManyToOne 
     @JoinColumn(name = "user_id") // thông qua khóa ngoại 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private User user_id;
- // Many to One Có nhiều người ở 1 địa điểm.
+	//@Column(name="user_id")
+    private User userId;
     @ManyToOne 
     @JoinColumn(name = "category_id") // thông qua khóa ngoại 
     @EqualsAndHashCode.Exclude
     @ToString.Exclude
-    private Category category_id;
-    
+    //@Column(name="category_id")
+    private Category categoryId;
 	private String title;
-	private String small_picture_id;
+	@Column(name="small_picture_id")
+	private String smallPictureId;
 	private String content;
-	private String is_published;
-	private String publish_date;
-	private String created_at;
-	private String updated_at;
+	@Column(name="is_published")
+	private Boolean isPublished;
+//	@Column(name="publish_date")
+//	private Date publishDate;
+	
+
+	
 }

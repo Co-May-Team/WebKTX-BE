@@ -1,8 +1,6 @@
 package com.webcmd.service;
 
-import java.security.Timestamp;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +34,7 @@ public class CategoryService {
 		CategoryModel category = new CategoryModel();
 		category = categoryRepositoryImpl.findById(id);
 		try {
-			if (category.getCategory_id() != null) {
+			if (category.getCategoryId() != null) {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseObject("OK", "Successfully", category));
 			} else {
@@ -44,6 +42,7 @@ public class CategoryService {
 						.body(new ResponseObject("ERROR", "Have error", ""));
 			}
 		} catch (Exception e) {
+			LOGGER.error("An error occurred in categoryService ", e );
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new ResponseObject("ERROR", "Have error:" , e.getMessage()));
@@ -81,8 +80,8 @@ public class CategoryService {
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Not found", "Not found", results));
 			}
 		} catch (Exception e) {
-			LOGGER.error("ERROR:" + e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("ERROR", e.getMessage(), ""));
+			LOGGER.error("An error occurred in categoryService ", e );
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("ERROR","An error occurred in categoryService | findAll", e.getMessage()));
 		}
 
 	}
@@ -94,14 +93,10 @@ public class CategoryService {
 		try {
 			jsonObjectCategory = jsonMapper.readTree(json);
 			String category_name = jsonObjectCategory.get("category_name") != null ? jsonObjectCategory.get("category_name").asText() : "";
-//			String created_at = jsonObjectCategory.get("created_at") != null ? jsonObjectCategory.get("created_at").asText() : "";
-//			String updated_at = jsonObjectCategory.get("updated_at") != null ? jsonObjectCategory.get("updated_at").asText() : "";
-			
-			category.setCategory_name(category_name);
-//			category.setCreated_at(created_at);
-//			category.setUpdated_at(updated_at);
+		
+			category.setCategoryName(category_name);
 			Integer message = categoryRepositoryImpl.insert(category); 
-			if ( message != -1) {
+			if ( message == 1) {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseObject("OK", "Successfully",category));
 			} else {
@@ -110,9 +105,9 @@ public class CategoryService {
 			}
 			
 		} catch (Exception e) {
-			LOGGER.debug("ERROR",e);
+			LOGGER.error("An error occurred in categoryService ", e );
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-					.body(new ResponseObject("ERROR", "Have error in category service" , e.getMessage()));
+					.body(new ResponseObject("ERROR","An error occurred in categoryService | insert", e.getMessage()));
 		}
 	}
 	public ResponseEntity<Object> edit(String json) {
@@ -123,8 +118,8 @@ public class CategoryService {
 		jsonObjectCategory = jsonMapper.readTree(json);
 		Integer id = jsonObjectCategory.get("category_id") != null ? jsonObjectCategory.get("category_id").asInt() : 0;
 		String name = jsonObjectCategory.get("category_name") != null ? jsonObjectCategory.get("category_name").asText() : "";
-		category.setCategory_id(id);
-		category.setCategory_name(name);
+		category.setCategoryId(id);
+		category.setCategoryName(name);
 		Integer message = categoryRepositoryImpl.edit(category);
 		if (message != 0) {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully" + "", category));
@@ -134,8 +129,25 @@ public class CategoryService {
 
 		}
 	} catch (Exception e) {
-		LOGGER.error("Error has occured in Category service: "+e, e );
-		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Error", e.getMessage(), ""));
+		LOGGER.error("An error occurred in categoryService ", e );
+		return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("ERROR","An error occurred in categoryService | edit", e.getMessage()));
+		}	
 	}
-}
+	//delete
+		public ResponseEntity<Object> deleteCategoryById(Integer id){
+			Integer updateStatus =  categoryRepositoryImpl.deleteCategoryById(id);
+			try {
+				if (updateStatus.equals(1)) {
+					return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", updateStatus + " ", " "));
+			} else {
+					return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+						.body(new ResponseObject("Error", updateStatus + "", ""));
+				}
+			} catch (Exception e) {
+				LOGGER.error("An error occurred in categoryService ", e );
+				return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+						.body(new ResponseObject("ERROR", "An error occurred in categoryService | delete " , e.getMessage()));
+				}
+
+			}
 }

@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -31,7 +32,6 @@ import com.webcmd.service.CategoryService;
 			LOGGER.info("Get category by Id");
 			return categoryService.findById(id);
 		}
-		
 		@GetMapping(value= "",produces = "application/json")
 		public ResponseEntity<Object> findAll(				
 				@RequestParam(value="page",required = false) String page, 
@@ -53,6 +53,11 @@ import com.webcmd.service.CategoryService;
 		public ResponseEntity<Object> editPost(@RequestBody String json) {
 			LOGGER.info("Edit a category");
 			return categoryService.edit(json);
+		}
+		@DeleteMapping(value = "/delete/{id}")
+		public ResponseEntity<Object> deleteCategoryById(@PathVariable Integer id){
+			LOGGER.info("Delete a category");
+				return  categoryService.deleteCategoryById(id);
 		}
 }
 	

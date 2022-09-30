@@ -1,5 +1,7 @@
 package com.webcmd.model;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -17,10 +19,10 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonInclude(Include.NON_EMPTY)
 public class CategoryModel {
-	private Integer category_id;
-	private String category_name;
-	private String created_at;
-	private String updated_at;
+	private Integer categoryId;
+	private String categoryName;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
 }
 

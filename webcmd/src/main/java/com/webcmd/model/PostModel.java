@@ -1,12 +1,11 @@
 package com.webcmd.model;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Entity;
-import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.webcmd.entity.Category;
-import com.webcmd.entity.User;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,15 +19,15 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonInclude(Include.NON_EMPTY)
 public class PostModel {
-	private Integer post_id;
-	private String user_name;
-	private String category_name;
+	private Integer postId;
+	private String userName;
+	private String categoryName;
 	private String title;
-	private String small_picture_id;
+	private String smallPictureId;
 	private String content;
-	private String is_published;
-	private String publish_date;
-	private String created_at;
-	private String updated_at;
+	private Boolean isPublished;
+	private LocalDateTime publishDate;
+	private LocalDateTime createdAt;
+	private LocalDateTime updatedAt;
 
 }

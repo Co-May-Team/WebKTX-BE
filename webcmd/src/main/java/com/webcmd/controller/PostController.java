@@ -38,35 +38,34 @@ public class PostController {
 	}
 	
 	@GetMapping(value= "",produces = "application/json")
-	public ResponseEntity<Object> findAll(				
-			@RequestParam(value="page",required = false) String page, 
+	public ResponseEntity<Object> findAll(			
+			@RequestParam(value="user_id", required = false) String user_id,
+			@RequestParam(value="category_id", required = false) String category_id,
 			@RequestParam(value="title",required = false) String title, 
 			@RequestParam(value="content", required = false) String content,  
-			@RequestParam(value="category_id", required = false) String category_id, 
-			@RequestParam(value="user_id", required = false) String user_id,
-			@RequestParam(value="is_published", required = false) String is_published,
+			@RequestParam(value="is_published", required = false) Boolean is_published,
 			@RequestParam(value="sort", required = false) String sort,
-			@RequestParam(value="order", required = false) String order
+			@RequestParam(value="o", required = false) String o,
+			@RequestParam(value="page",required = false) String page
 			) {
 		LOGGER.info("Get all posts");
-		return postService.findAll(title, content, user_id, category_id, is_published, sort,order,page);
+		return postService.findAll(user_id, category_id, title, content, is_published, sort,o,page);
 	}
-//	@PutMapping(value = "/edit")
-//	@ResponseBody
-//	public ResponseEntity<Object> editPost(@RequestBody String json) {
-//		LOGGER.info("Edit a post");
-//		return postService.edit(json);
-//	}
-//	@PostMapping("/insert")
-//	@ResponseBody
-//	public ResponseEntity<Object> insert(@RequestBody String json) {
-//		LOGGER.info("Insert a post");
-//
-//		return postService.insert(json);
-//	}
-//	@DeleteMapping(value = "/delete/{id}")
-//	public ResponseEntity<Object> deletePostById(@PathVariable Integer id){
-//		LOGGER.info("Delete a post");
-//			return postService.deletePostById(id);
-//	}
+	@PutMapping(value = "/edit")
+	@ResponseBody
+	public ResponseEntity<Object> editPost(@RequestBody String json) {
+		LOGGER.info("Edit a post");
+		return postService.edit(json);
+	}
+	@PostMapping("/insert")
+	@ResponseBody
+	public ResponseEntity<Object> insert(@RequestBody String json) {
+		LOGGER.info("Insert a post");
+		return postService.insert(json);
+	}
+	@DeleteMapping(value = "/delete/{id}")
+	public ResponseEntity<Object> deletePostById(@PathVariable Integer id){
+		LOGGER.info("Delete a post");
+			return postService.deletePostById(id);
+	}
 }

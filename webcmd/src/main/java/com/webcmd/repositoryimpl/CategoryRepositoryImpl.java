@@ -34,7 +34,7 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 	public CategoryModel findById(Integer id) {
 		CategoryModel customCategory = new CategoryModel();
 		StringBuilder hql = new StringBuilder("FROM categories AS c");
-		hql.append(" WHERE c.category_id = :id");
+		hql.append(" WHERE c.categoryId = :id");
 		try {
 			Session session = sessionFactory.getCurrentSession();
 			Query query = session.createQuery(hql.toString());
@@ -43,14 +43,14 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 			for (Iterator it = query.getResultList().iterator(); it.hasNext();) {		
 				Object obj = (Object) it.next();
 				Category category = (Category) obj;
-				customCategory.setCategory_id(category.getCategory_id());
-				customCategory.setCategory_name(category.getCategory_name());
-				customCategory.setCreated_at(category.getCreated_at());
-				customCategory.setUpdated_at(category.getUpdated_at());
+				customCategory.setCategoryId(category.getCategoryId());
+				customCategory.setCategoryName(category.getCategoryName());
+				customCategory.setCreatedAt(category.getCreatedAt());
+				customCategory.setUpdatedAt(category.getUpdatedAt());
 			}
 		}
 		catch (Exception e) {
-			LOGGER.error("Error has occured in Impl findById API: "+e,e);
+			LOGGER.error("ERROR! An error occurred in  CategoryRepositoryImpl | findById "+ e, e);
 		}
 		return customCategory;
 	}
@@ -60,13 +60,13 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 		List<CategoryModel> customCategoryList = new ArrayList<CategoryModel>();
 		Set<Category> categorySet = new LinkedHashSet<Category>();
 		StringBuilder hql = new StringBuilder("FROM categories c ");
-		hql.append(" WHERE c.category_name LIKE CONCAT('%',:category_name,'%')");
+		hql.append(" WHERE c.categoryName LIKE CONCAT('%',:categoryName,'%')");
 		//hql.append(" order by p." + sort + " " + order );
 		try {
 			Session session = sessionFactory.getCurrentSession();
 			Query query = session.createQuery(hql.toString());
 			LOGGER.info(hql.toString());
-			query.setParameter("category_name", category_name);
+			query.setParameter("categoryName", category_name);
 //			query.setParameter("order", order);
 //			query.setParameter("sort", sort);
 			query.setFirstResult(offset);
@@ -78,38 +78,39 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 			}
 			for (Category category : categorySet) {
 				CategoryModel customCategory = new CategoryModel();
-				customCategory.setCategory_id(category.getCategory_id());
-				customCategory.setCategory_name(category.getCategory_name());
-				customCategory.setCreated_at(category.getCreated_at());
-				customCategory.setUpdated_at(category.getUpdated_at());
+				customCategory.setCategoryId(category.getCategoryId());
+				customCategory.setCategoryName(category.getCategoryName());
+				customCategory.setCreatedAt(category.getCreatedAt());
+				customCategory.setUpdatedAt(category.getUpdatedAt());
 				customCategoryList.add(customCategory);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Error has occured in findAll Category"+e, e);
+			LOGGER.error("ERROR! An error occurred in  CategoryRepositoryImpl | findAll "+ e, e);
 		}
 		return customCategoryList;
 	}
+	//count 
 	@Override
 	public Integer countAllPaging( String category_name) {
 		Set<Category> categorySet = new LinkedHashSet<Category>();
 		StringBuilder hql = new StringBuilder("FROM categories c ");
-		hql.append(" WHERE c.category_name LIKE CONCAT('%',:category_name,'%')");
+		hql.append(" WHERE c.categoryName LIKE CONCAT('%',:categoryName,'%')");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			Query query = session.createQuery(hql.toString());			
-			query.setParameter("category_name", category_name);
+			query.setParameter("categoryName", category_name);
 			LOGGER.info(hql.toString());
 			for (Iterator it = query.getResultList().iterator(); it.hasNext();) {
 				Object ob = (Object) it.next();
 				categorySet.add((Category) ob);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Error has occured in count total Categorys " +e, e);	
+			LOGGER.error("ERROR! An error occurred in  CategoryRepositoryImpl | count total "+ e, e);	
 		}
 		
 		return categorySet.size();		
 	}
-	//insert a category
+	//insert 
 	@Override
 	public Integer insert(Category category) {
 			try {
@@ -119,10 +120,11 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 				session.flush();
 				return 1;
 			} catch (Exception e) {
-				LOGGER.error("Error has occured in Category Impl: "+ e, e);
-				return -1;
+				LOGGER.error("ERROR! An error occurred in  CategoryRepositoryImpl | insert "+ e, e);
+				return 0;
 			}
 		}
+	//edit
 	@Override
 	@Transactional
 	public Integer edit(Category category) {
@@ -131,41 +133,24 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 			session.update(category);
 			return 1;
 		} catch (Exception e) {
-			LOGGER.error("Error in Category Impl: "+e, e);
-			return -1;
+			LOGGER.error("ERROR! An error occurred in  CategoryRepositoryImpl | edit category "+ e, e);
+			return 0;
 		}
 	}
-	@Override
-	public Integer deleteCategoryById(Integer id) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-//	//edit a post
-//	@Override
-//	@Transactional
-//	public Integer edit(Post post) {
-//		Session session = sessionFactory.getCurrentSession();
-//		try {
-//			session.update(post);
-//			return 1;
-//		} catch (Exception e) {
-//			LOGGER.error("Error has occured in edit a post API "+e, e);
-//			return 0;
-//		}
-//	}
-//	//delete
-//	@Transactional
-//	public Integer deletePostById(Integer id) {
-//		Session session = sessionFactory.getCurrentSession();
-//		try {
-//			Post post = new Post();
-//			post = session.find(Post.class, id);
-//			if(post!=null) {
-//				session.remove(post);
-//			}
-//			return 1;
-//		} catch (Exception e) {
-//			LOGGER.error("Error has occured in delete post API "+e, e);
-//			return 0;
-//		}
+	//delete
+		@Transactional
+		public Integer deleteCategoryById(Integer id) {
+			Session session = sessionFactory.getCurrentSession();
+			try {
+				 Category  Category = new  Category();
+				 Category = session.find(Category.class, id);
+				if( Category!=null) {
+					session.remove( Category);
+				}
+				return 1;
+			} catch (Exception e) {
+				LOGGER.error("ERROR! An error occurred in  CategoryRepositoryImpl | delete CategoryById "+ e, e);
+				return 0;
+			}
+		}
 	}

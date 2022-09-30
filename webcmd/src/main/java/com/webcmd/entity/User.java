@@ -1,6 +1,7 @@
 package com.webcmd.entity;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -8,10 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
@@ -29,20 +28,17 @@ public class User{
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name="user_id") 
-	private Integer user_id;
-	private String full_name;
+	private Integer userId;
+	@Column(name="full_name") 
+	private String fullName;
 	private String email;
-	private String phonenumber;
+	@Column(name="phonenumber") 
+	private String phoneNumber;
 	private String cccd;
-	private String username;
+	@Column(name="username") 
+	private String userName;
 	private String password;
-	private String created_at;
-	private String updated_at;
 	
-	@OneToMany(mappedBy = "user_id", cascade = CascadeType.ALL) // Quan hệ 1-n với đối tượng ở dưới (Person) (1 địa điểm có nhiều người ở)
-    // MapopedBy trỏ tới tên biến Address ở trong Person.
-    @EqualsAndHashCode.Exclude // không sử dụng trường này trong equals và hashcode
-    @ToString.Exclude // Khoonhg sử dụng trong toString()
-    private List<Post> posts;
-	
+	@OneToMany(mappedBy = "userId")
+	Set<Post> posts;
 }
