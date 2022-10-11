@@ -1,13 +1,11 @@
 package com.webcmd.model;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
-import com.webcmd.entity.Tag;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,18 +18,11 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(Include.NON_EMPTY)
-public class PostModel {
-	private Integer postId;
-	private String userName;
-	private String categoryName;
-	private String title;
-	private String smallPictureId;
-	private String content;
-	private Boolean isPublished;
-	private LocalDateTime publishDate;
+public class TagModel {
+	private Integer tagId;
+	private String tagName;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-	
-	private List<String> listTagNames;
 
 }
+

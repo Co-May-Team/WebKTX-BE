@@ -18,7 +18,10 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.webcmd.entity.Post;
+import com.webcmd.entity.PostTag;
+import com.webcmd.entity.Tag;
 import com.webcmd.model.PostModel;
+import com.webcmd.model.TagModel;
 import com.webcmd.repository.IPostRepository;
 
 @Repository
@@ -67,6 +70,7 @@ public class PostRepositoryImpl implements IPostRepository {
 	@Transactional
 	public List<PostModel> findAll( String user_id, String category_id, String title, String content,Boolean is_published, String sort, String o, Integer offset, Integer limit) {
 		List<PostModel> customPostList = new ArrayList<PostModel>();
+		List<String> listTagNames = new ArrayList<String>();
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts p ");
 		hql.append(" INNER JOIN p.userId a");
@@ -78,7 +82,6 @@ public class PostRepositoryImpl implements IPostRepository {
 		if (is_published !=null) {
 			hql.append(" AND p.isPublished LIKE CONCAT('%',:isPublished,'%')");
 		}
-		//hql.append(" ORDER BY p." + sort + " "+ o  );
 		try {
 			Session session = sessionFactory.getCurrentSession();
 			Query query = session.createQuery(hql.toString());
@@ -88,10 +91,7 @@ public class PostRepositoryImpl implements IPostRepository {
 			query.setParameter("userId", user_id);
 			query.setParameter("categoryId", category_id);
 			if (is_published !=null) {
-				query.setParameter("isPublished", is_published);
-			}
-//			query.setParameter("o", o);
-//			query.setParameter("sort", sort);
+				query.setParameter("isPublished", is_published);}
 			query.setFirstResult(offset);
 			query.setMaxResults(limit);
 			for (Iterator it = query.getResultList().iterator(); it.hasNext();) {		
@@ -100,6 +100,11 @@ public class PostRepositoryImpl implements IPostRepository {
 				postSet.add(post);
 			}
 			for (Post post : postSet) {
+				//
+				for (Tag t : post.getListTags()) {
+					String tagName = t.getTagName();
+					listTagNames.add(tagName);
+				}
 				PostModel customPost = new PostModel();
 				customPost.setPostId(post.getPostId());
 				customPost.setTitle(post.getTitle());
@@ -111,9 +116,10 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setSmallPictureId(post.getSmallPictureId());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
+				customPost.setListTagNames(listTagNames);
 				customPostList.add(customPost);
-			}
-		} catch (Exception e) {
+				}
+			} catch (Exception e) {
 			LOGGER.error("ERROR! An error occurred in postRepositoryImpl | findAll "+ e, e);
 		}
 		return customPostList;
@@ -164,6 +170,19 @@ public class PostRepositoryImpl implements IPostRepository {
 			return 1;
 		} catch (Exception e) {
 			LOGGER.error("ERROR! An error occurred in postRepositoryImpl | insert "+ e, e);
+			return 0;
+		}
+	}
+	@Override
+	public Integer insertTags(PostTag posttag) {
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			LOGGER.info("SUCCESSFUL! SAVE TAG OF POST....");
+			session.save(posttag);
+			session.flush();
+			return 1;
+		} catch (Exception e) {
+			LOGGER.error("ERROR! An error occurred in postRepositoryImpl | insert tag"+ e, e);
 			return 0;
 		}
 	}

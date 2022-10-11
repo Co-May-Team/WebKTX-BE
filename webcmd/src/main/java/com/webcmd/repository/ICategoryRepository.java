@@ -8,7 +8,7 @@ import com.webcmd.entity.Category;
 import com.webcmd.model.CategoryModel;
 
 public interface ICategoryRepository {
-	CategoryModel findById(Integer id);
+	Category findById(Integer id);
 	List<CategoryModel> findAll( 
 			@Param("category_name") String category_name,
 			@Param("sort") String sort,

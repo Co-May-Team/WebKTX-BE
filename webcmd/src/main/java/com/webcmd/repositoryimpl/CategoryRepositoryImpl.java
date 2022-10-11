@@ -31,10 +31,11 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 
 
 	@Override
-	public CategoryModel findById(Integer id) {
-		CategoryModel customCategory = new CategoryModel();
-		StringBuilder hql = new StringBuilder("FROM categories AS c");
-		hql.append(" WHERE c.categoryId = :id");
+	public  Category findById(Integer id) {
+		Category customCategory = new  Category();
+		StringBuilder hql = new StringBuilder("FROM  categories AS p");
+//		hql.append(" INNER JOIN p.categoryId ");
+		hql.append(" WHERE p.categoryId = :id");
 		try {
 			Session session = sessionFactory.getCurrentSession();
 			Query query = session.createQuery(hql.toString());

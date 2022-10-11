@@ -31,7 +31,7 @@ public class CategoryService {
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	
 	public ResponseEntity<Object> findById(Integer id){
-		CategoryModel category = new CategoryModel();
+		Category category = new Category();
 		category = categoryRepositoryImpl.findById(id);
 		try {
 			if (category.getCategoryId() != null) {
@@ -42,7 +42,7 @@ public class CategoryService {
 						.body(new ResponseObject("ERROR", "Have error", ""));
 			}
 		} catch (Exception e) {
-			LOGGER.error("An error occurred in categoryService ", e );
+			LOGGER.error("An error occurred in categoryService |findById ", e );
 			e.printStackTrace();
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new ResponseObject("ERROR", "Have error:" , e.getMessage()));

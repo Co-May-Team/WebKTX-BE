@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 import com.webcmd.entity.ResponseObject;
+import com.webcmd.entity.Tag;
 import com.webcmd.entity.User;
 import com.webcmd.repositoryimpl.PostRepositoryImpl;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -20,7 +21,9 @@ import com.webcmd.constant.CMDConstant;
 import com.webcmd.entity.Category;
 import com.webcmd.entity.Pagination;
 import com.webcmd.entity.Post;
+import com.webcmd.entity.PostTag;
 import com.webcmd.model.PostModel;
+import com.webcmd.model.TagModel;
 
 @Service
 public class PostService {
@@ -125,20 +128,62 @@ public class PostService {
 		}
 	}
 	//insert
+//	public ResponseEntity<Object> insert(String json) {
+//		JsonMapper jsonMapper = new JsonMapper();
+//		JsonNode jsonObjectPost;
+//		Post post = new Post();
+//		Category cat = new Category();
+//		User user = new User();
+//		try {
+//			jsonObjectPost = jsonMapper.readTree(json);
+//			String title = jsonObjectPost.get("title") != null ? jsonObjectPost.get("title").asText() : "";
+//			String content = jsonObjectPost.get("content") != null ? jsonObjectPost.get("content").asText() : "";
+//			String smallPictureId = jsonObjectPost.get("small_picture_id") != null ? jsonObjectPost.get("small_picture_id").asText() : "";
+//			Boolean isPublished = jsonObjectPost.get("is_published") != null ? jsonObjectPost.get("is_published").asBoolean() : false;
+//			Integer categoryId = jsonObjectPost.get("category_id") != null ? jsonObjectPost.get("category_id").asInt() : 0;
+//			Integer userId = jsonObjectPost.get("user_id") != null ? jsonObjectPost.get("user_id").asInt() : 0;
+//			post.setTitle(title);
+//			post.setContent(content);
+//			post.setSmallPictureId(smallPictureId);
+//			post.setIsPublished(isPublished);
+//			cat.setCategoryId(categoryId);
+//			user.setUserId(userId);
+//			post.setCategoryId(cat);
+//			post.setUserId(user);
+//			Integer message = postRepositoryImpl.insert(post); 
+//			if ( message != 0) {
+//				return ResponseEntity.status(HttpStatus.OK)
+//						.body(new ResponseObject("OK", "Successfully", post));
+//			} else {
+//				return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+//						.body(new ResponseObject("ERROR", "Can not save a post", ""));
+//			}
+//			
+//		} catch (Exception e) {
+//			LOGGER.error("An error occurred in postService | insert ", e );
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//					.body(new ResponseObject("ERROR", "An error occurred in postService | insert ", e.getMessage()));
+//		}
+//	}
 	public ResponseEntity<Object> insert(String json) {
 		JsonMapper jsonMapper = new JsonMapper();
 		JsonNode jsonObjectPost;
 		Post post = new Post();
 		Category cat = new Category();
 		User user = new User();
+//		List<Tag> listTags = new ArrayList<>();
+		Set<Tag> listTags = new LinkedHashSet<>();
+		JsonNode jsonObjectTag;
 		try {
 			jsonObjectPost = jsonMapper.readTree(json);
+			jsonObjectTag = jsonObjectPost.get("listTagIds");
 			String title = jsonObjectPost.get("title") != null ? jsonObjectPost.get("title").asText() : "";
 			String content = jsonObjectPost.get("content") != null ? jsonObjectPost.get("content").asText() : "";
 			String smallPictureId = jsonObjectPost.get("small_picture_id") != null ? jsonObjectPost.get("small_picture_id").asText() : "";
 			Boolean isPublished = jsonObjectPost.get("is_published") != null ? jsonObjectPost.get("is_published").asBoolean() : false;
 			Integer categoryId = jsonObjectPost.get("category_id") != null ? jsonObjectPost.get("category_id").asInt() : 0;
 			Integer userId = jsonObjectPost.get("user_id") != null ? jsonObjectPost.get("user_id").asInt() : 0;
+
 			post.setTitle(title);
 			post.setContent(content);
 			post.setSmallPictureId(smallPictureId);
@@ -147,8 +192,34 @@ public class PostService {
 			user.setUserId(userId);
 			post.setCategoryId(cat);
 			post.setUserId(user);
-			Integer message = postRepositoryImpl.insert(post); 
+			
+			if (jsonObjectTag!=null) {
+				for (JsonNode t : jsonObjectTag) {
+					Tag tagId = new Tag();
+					tagId.setTagId(t.asInt());
+					listTags.add(tagId);
+				}
+				LOGGER.info(listTags.toString());
+			}
+			
+			post.setListTags(listTags);
+			
+			Integer message = postRepositoryImpl.insert(post);
 			if ( message != 0) {
+				
+				if (jsonObjectTag!=null) {
+					for (JsonNode t : jsonObjectTag) {
+						Tag tagId = new Tag();
+						tagId.setTagId(t.asInt());
+						listTags.add(tagId);
+						PostTag pt = new PostTag();
+						pt.setTagId(t.asInt());
+						pt.setPostId(post.getPostId());
+						LOGGER.info(tagId.getTagId().toString()+" - "+pt.getPostId()+"-"+pt.getTagId());
+						postRepositoryImpl.insertTags(pt);
+					}
+				}
+				
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseObject("OK", "Successfully", post));
 			} else {

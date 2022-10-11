@@ -1,7 +1,9 @@
 package com.webcmd.entity;
 
+import java.util.List;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -29,8 +31,8 @@ import lombok.Setter;
 	@Column(name="category_name") 
 	private String categoryName;
 	
-	@OneToMany(mappedBy = "categoryId")
-	Set<Post> posts;
+	@OneToMany(mappedBy = "categoryId", cascade = CascadeType.ALL)
+	List<Post> listPost;
 
 	
 }

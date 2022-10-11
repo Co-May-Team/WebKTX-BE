@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.repository.query.Param;
 
 import com.webcmd.entity.Post;
+import com.webcmd.entity.PostTag;
 import com.webcmd.model.PostModel;
 public interface IPostRepository {
 	
@@ -27,6 +28,7 @@ public interface IPostRepository {
 			@Param("is_published") Boolean is_published);
 	Integer edit (Post post);
 	Integer insert (Post post);
+	Integer insertTags (PostTag posttag);
 	Integer deletePostById(Integer id);
 }
 
