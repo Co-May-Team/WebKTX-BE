@@ -11,15 +11,14 @@
 		<relativePath /> <!-- lookup parent from repository -->
 
 	</parent>
-	<groupId>com.webcmd</groupId>
-	<artifactId>webcmd</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
-	<name>webcmd</name>
+	<groupId>com.webktx</groupId>
+	<artifactId>webktx</artifactId>
+	<version>1.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	<name>webktx</name>
 	<description>CM dorm</description>
 	<properties>
 		<java.version>1.8</java.version>
-
 	</properties>
 	<dependencies>
 		<dependency>
