@@ -18,10 +18,10 @@ pipeline {
         } 
 		stage('Deploy') { 
             steps {
-				sh 'sudo systemctl enable webktx-BE.service'
-				sh 'sudo systemctl stop webktx-BE'
-				sh 'sudo systemctl start webktx-BE'
-				sh 'sudo systemctl status webktx-BE'
+				sh 'sudo systemctl enable webKTX-BE.service'
+				sh 'sudo systemctl stop webKTX-BE'
+				sh 'sudo systemctl start webKTX-BE'
+				sh 'sudo systemctl status webKTX-BE'
 				sh 'rm -rf changelog*'
 				sh "cp /var/lib/jenkins/jobs/WebKTX-BE/builds/${env.BUILD_NUMBER}/changelog* /var/lib/jenkins/workspace/WebKTX-BE/"
             }
