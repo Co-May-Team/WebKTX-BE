@@ -1,4 +1,4 @@
-package com.webcmd.constant;
+package com.webktx.constant;
 
 public class CrossOriginConstant {
 	public static final String REACT_ORIGIN = "http://27.74.244.150:3000/";

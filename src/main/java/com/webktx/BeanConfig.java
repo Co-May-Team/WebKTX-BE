@@ -1,4 +1,4 @@
-package com.webcmd;
+package com.webktx;
 
 import java.util.Properties;
 
@@ -37,7 +37,7 @@ public class BeanConfig {
         env.getProperty("spring.jpa.properties.hibernate.current_session_context_class"));
     LocalSessionFactoryBean factoryBean = new LocalSessionFactoryBean();
     // Package contain entity classes
-    factoryBean.setPackagesToScan("com.webcmd.entity");
+    factoryBean.setPackagesToScan("com.webktx.entity");
     factoryBean.setDataSource(dataSource);
     factoryBean.setHibernateProperties(properties);
     factoryBean.afterPropertiesSet();

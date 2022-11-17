@@ -1,9 +1,9 @@
-package com.webcmd.constant;
+package com.webktx.constant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.webcmd.repository.impl.MessageRepositoryImpl;
+import com.webktx.repository.impl.MessageRepositoryImpl;
 
 @Service
 public class Message {

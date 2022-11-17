@@ -1,10 +1,10 @@
-package com.webcmd;
+package com.webktx;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class WebcmdApplicationTests {
+class webktxApplicationTests {
 
 	@Test
 	void contextLoads() {

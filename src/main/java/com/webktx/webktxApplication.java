@@ -1,4 +1,4 @@
-package com.webcmd;
+package com.webktx;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
@@ -9,13 +9,13 @@ import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfigurat
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan({ "com.webcmd" })
+@ComponentScan({ "com.webktx" })
 @EnableAutoConfiguration(exclude = { 
         DataSourceAutoConfiguration.class, 
         DataSourceTransactionManagerAutoConfiguration.class, 
         HibernateJpaAutoConfiguration.class })
-public class WebcmdApplication {
+public class webktxApplication {
 	public static void main(String[] args) {
-		SpringApplication.run(WebcmdApplication.class, args);
+		SpringApplication.run(webktxApplication.class, args);
 	}
 }
