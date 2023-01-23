@@ -63,7 +63,7 @@ public class ApiController {
 				continue;
 			}
 //				B1: lay ra duong dan se luu file
-			pathSaveFile.append("/image/");
+			pathSaveFile.append("/image/webktx/");
 
 //				pathSaveFile = "/com/webktx/image/";
 			// Get extension
