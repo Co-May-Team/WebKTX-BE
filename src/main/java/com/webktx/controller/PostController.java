@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,18 +52,24 @@ public class PostController {
 		LOGGER.info("Get all posts");
 		return postService.findAll(title, content, user_id, category_id, is_published, sort,order,page);
 	}
+	
+	@PreAuthorize("@customRoleService.canUpdate('Post',principal)")
 	@PutMapping(value = "/edit")
 	@ResponseBody
 	public ResponseEntity<Object> editPost(@RequestBody String json) {
 		LOGGER.info("Edit a post");
 		return postService.edit(json);
 	}
+	
+	@PreAuthorize("@customRoleService.canCreate('Post',principal)")
 	@PostMapping("/add")
 	@ResponseBody
 	public ResponseEntity<Object> add(@RequestBody String json) {
 		LOGGER.info("Insert a post");
 		return postService.add(json);
 	}
+	
+	@PreAuthorize("@customRoleService.canDelete('Post',principal)")
 	@DeleteMapping(value = "/delete/{id}")
 	public ResponseEntity<Object> deletePostById(@PathVariable Integer id){
 		LOGGER.info("Delete a post");
