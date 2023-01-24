@@ -23,7 +23,7 @@ public class PostModel {
 	private String userName;
 	private String categoryName;
 	private String title;
-	private String smallPictureId;
+	private String thumbnail;
 	private String content;
 	private Boolean isPublished;
 	private String summary;

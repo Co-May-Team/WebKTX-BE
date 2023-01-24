@@ -52,7 +52,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setIsPublished(post.getIsPublished());
 				customPost.setPublishDate(post.getPublishDate());
-				customPost.setSmallPictureId(post.getSmallPictureId());
+				customPost.setThumbnail(post.getSmallPictureId());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
 			}
@@ -104,7 +104,8 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setIsPublished(post.getIsPublished());
 				customPost.setPublishDate(post.getPublishDate());
-				customPost.setSmallPictureId(post.getSmallPictureId());
+				customPost.setThumbnail(post.getSmallPictureId());
+				customPost.setSummary(post.getSummary());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
 				customPostList.add(customPost);
