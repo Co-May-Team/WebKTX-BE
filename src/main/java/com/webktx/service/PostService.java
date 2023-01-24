@@ -167,7 +167,7 @@ public class PostService {
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
 			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean()
 					: true;
-			String thumbnail = (jsonObjectPost.get("thumbnail") != null) ? jsonObjectPost.get("thumbnail").asText() : "";
+			String thumbnail = (jsonObjectPost.get("thumbnail") != null && !jsonObjectPost.get("thumbnail").asText().equals("")) ? jsonObjectPost.get("thumbnail").asText() : "";
 			CategoryModel categoryModel = categoryRepositoryImpl.findById(categoryId);
 			Category category = new Category();
 			category.setCategoryId(categoryModel.getCategoryId());
