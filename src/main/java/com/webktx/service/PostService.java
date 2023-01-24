@@ -167,6 +167,7 @@ public class PostService {
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
 			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean()
 					: true;
+			String thumbnail = (jsonObjectPost.get("thumbnail") != null) ? jsonObjectPost.get("thumbnail").asText() : "";
 			CategoryModel categoryModel = categoryRepositoryImpl.findById(categoryId);
 			Category category = new Category();
 			category.setCategoryId(categoryModel.getCategoryId());
@@ -180,6 +181,10 @@ public class PostService {
 			post.setCategory(category);
 			post.setIsPublished(isPulished);
 			post.setUser(user);
+			if(thumbnail.equals("")) {
+				thumbnail = Constant.AVATAR;
+			}
+			post.setSmallPictureId(thumbnail);
 
 			Integer message = postRepositoryImpl.insert(post);
 			if (message != 0) {

@@ -44,7 +44,7 @@ public class ApiController {
     public @ResponseBody byte[] getImageWithMediaType(
     		@PathVariable String name
     		) throws IOException {
-		StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir")).append("/image/");
+		StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir")).append("/image/webktx/");
 		final InputStream in = new BufferedInputStream(new FileInputStream(baseURL + name.trim())); 
         return IOUtils.toByteArray(in);
     }
