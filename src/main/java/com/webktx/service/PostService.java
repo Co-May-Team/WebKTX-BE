@@ -221,6 +221,7 @@ public class PostService {
 		 postModel.setSummary(post.getSummary());
 		 postModel.setCategoryName(post.getCategory().getCategoryName());
 		 postModel.setContent(post.getContent());
+		 postModel.setSmallPictureId(post.getSmallPictureId());
 		 return postModel;
 	 }
 
