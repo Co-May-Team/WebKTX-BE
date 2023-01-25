@@ -1,5 +1,6 @@
 package com.webktx.service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -29,6 +30,7 @@ import com.webktx.repository.impl.CategoryRepositoryImpl;
 import com.webktx.repository.impl.PostRepositoryImpl;
 import com.webktx.repository.impl.RoleRepositoryImpl;
 import com.webktx.repository.impl.UserRepositoryImpl;
+import com.webktx.ultil.Ultil;
 
 @Service
 public class PostService {
@@ -44,6 +46,12 @@ public class PostService {
 	@Autowired
 	UserRepositoryImpl userRepositoryImpl;
 
+	@Autowired
+	APIService apiService;
+	
+	@Autowired
+	Ultil ultil;
+
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	public ResponseEntity<Object> findById(Integer id) {
@@ -53,8 +61,7 @@ public class PostService {
 			if (post.getPostId() != null) {
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", post));
 			} else {
-				return ResponseEntity.status(HttpStatus.OK)
-						.body(new ResponseObject("ERROR", "Have error", ""));
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Have error", ""));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -135,11 +142,11 @@ public class PostService {
 			post.setIsPublished(isPulished);
 			post.setCategory(category);
 			post.setUser(user);
-			
 
 			Integer message = postRepositoryImpl.edit(post);
 			if (message != 0) {
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully" + "", toModel(post)));
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseObject("OK", "Successfully" + "", toModel(post)));
 			} else {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseObject("Error", message + "", toModel(post)));
@@ -159,7 +166,7 @@ public class PostService {
 			jsonObjectPost = jsonMapper.readTree(json);
 			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
 					.getPrincipal();
-			
+
 			String title = jsonObjectPost.get("title") != null ? jsonObjectPost.get("title").asText() : "";
 			String content = jsonObjectPost.get("content") != null ? jsonObjectPost.get("content").asText() : "";
 			String summary = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("summary").asText() : "";
@@ -167,7 +174,9 @@ public class PostService {
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
 			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean()
 					: true;
-			String thumbnail = (jsonObjectPost.get("thumbnail") != null && !jsonObjectPost.get("thumbnail").asText().equals("")) ? jsonObjectPost.get("thumbnail").asText() : "";
+			String thumbnail = (jsonObjectPost.get("thumbnail") != null
+					&& !jsonObjectPost.get("thumbnail").asText().equals("")) ? jsonObjectPost.get("thumbnail").asText()
+							: "";
 			CategoryModel categoryModel = categoryRepositoryImpl.findById(categoryId);
 			Category category = new Category();
 			category.setCategoryId(categoryModel.getCategoryId());
@@ -181,14 +190,15 @@ public class PostService {
 			post.setCategory(category);
 			post.setIsPublished(isPulished);
 			post.setUser(user);
-			if(thumbnail.equals("")) {
+			if (thumbnail.equals("")) {
 				thumbnail = Constant.AVATAR;
 			}
 			post.setSmallPictureId(thumbnail);
 
 			Integer message = postRepositoryImpl.insert(post);
 			if (message != 0) {
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", toModel(post)));
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseObject("OK", "Successfully", toModel(post)));
 			} else {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseObject("ERROR", "Can not save a post", ""));
@@ -207,22 +217,27 @@ public class PostService {
 			if (updateStatus.equals(1)) {
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", updateStatus + " ", " "));
 			} else {
-				return ResponseEntity.status(HttpStatus.OK)
-						.body(new ResponseObject("Error", updateStatus + "", ""));
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Error", updateStatus + "", ""));
 			}
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new ResponseObject("ERROR", "Have error delete service: ", e.getMessage()));
 		}
 	}
-	 public PostModel toModel(Post post) {
-		 PostModel postModel = new PostModel();
-		 postModel.setTitle(post.getTitle());
-		 postModel.setSummary(post.getSummary());
-		 postModel.setCategoryName(post.getCategory().getCategoryName());
-		 postModel.setContent(post.getContent());
-		 postModel.setThumbnail(post.getSmallPictureId());
-		 return postModel;
-	 }
+
+	public PostModel toModel(Post post) {
+		PostModel postModel = new PostModel();
+		postModel.setTitle(post.getTitle());
+		postModel.setSummary(post.getSummary());
+		postModel.setCategoryName(post.getCategory().getCategoryName());
+		postModel.setContent(post.getContent());
+		try {
+			ultil.getImageByName(post.getSmallPictureId(),"/image/webktx/");
+		} catch (IOException e) {
+			LOGGER.error("{}",e);
+		}
+
+		return postModel;
+	}
 
 }

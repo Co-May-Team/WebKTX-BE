@@ -1,5 +1,8 @@
 package com.webktx.repository.impl;
 
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.InputStream;
 //import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 //import java.util.Comparator;
@@ -11,6 +14,7 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
+import org.apache.poi.util.IOUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -22,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.webktx.entity.Post;
 import com.webktx.model.PostModel;
 import com.webktx.repository.IPostRepository;
+import com.webktx.ultil.Ultil;
 
 @Repository
 @Transactional(rollbackFor = Exception.class)
@@ -31,6 +36,9 @@ public class PostRepositoryImpl implements IPostRepository {
 
 	@Autowired
 	private SessionFactory sessionFactory;
+	
+	@Autowired
+	Ultil ultil = new Ultil();
 
 
 	@Override
@@ -52,7 +60,13 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setIsPublished(post.getIsPublished());
 				customPost.setPublishDate(post.getPublishDate());
-				customPost.setThumbnail(post.getSmallPictureId());
+				try {
+					StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir")).append("/image/webktx/");
+					final InputStream in = new BufferedInputStream(new FileInputStream(baseURL + post.getSmallPictureId().trim()));
+					customPost.setThumbnail(IOUtils.toByteArray(in));
+				} catch (Exception e) {
+					LOGGER.error("{}", e);
+				}
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
 			}
@@ -104,7 +118,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setIsPublished(post.getIsPublished());
 				customPost.setPublishDate(post.getPublishDate());
-				customPost.setThumbnail(post.getSmallPictureId());
+				customPost.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),"/image/webktx/"));
 				customPost.setSummary(post.getSummary());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());

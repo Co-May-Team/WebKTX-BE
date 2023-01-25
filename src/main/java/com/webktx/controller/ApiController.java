@@ -32,6 +32,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.webktx.entity.ResponseObject;
 import com.webktx.service.APIService;
+import com.webktx.ultil.Ultil;
 
 @Controller
 @RequestMapping("/api")
@@ -39,14 +40,15 @@ import com.webktx.service.APIService;
 public class ApiController {
 	@Autowired
 	ServletContext context;
+	
+	@Autowired
+	Ultil ultil;
 
 	@GetMapping(value = "/get-image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImageWithMediaType(
     		@PathVariable String name
     		) throws IOException {
-		StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir")).append("/image/webktx/");
-		final InputStream in = new BufferedInputStream(new FileInputStream(baseURL + name.trim())); 
-        return IOUtils.toByteArray(in);
+        return ultil.getImageByName(name.trim(), "/image/webktx/");
     }
 	
 	@PostMapping("/upload-images")
