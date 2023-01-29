@@ -58,7 +58,7 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 		List<CategoryModel> customCategoryList = new ArrayList<CategoryModel>();
 		Set<Category> categorySet = new LinkedHashSet<Category>();
 		StringBuilder hql = new StringBuilder("FROM categories c ");
-		hql.append(" WHERE c.category_name LIKE CONCAT('%',:category_name,'%')");
+		hql.append(" WHERE c.categoryName LIKE CONCAT('%',:category_name,'%')");
 		//hql.append(" order by p." + sort + " " + order );
 		try {
 			Session session = sessionFactory.getCurrentSession();
