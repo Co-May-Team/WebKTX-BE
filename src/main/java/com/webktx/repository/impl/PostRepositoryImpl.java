@@ -24,7 +24,9 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.webktx.entity.Post;
+import com.webktx.entity.Tag;
 import com.webktx.model.PostModel;
+import com.webktx.model.TagModel;
 import com.webktx.repository.IPostRepository;
 import com.webktx.ultil.Ultil;
 
@@ -112,6 +114,14 @@ public class PostRepositoryImpl implements IPostRepository {
 			for (Post post : postSet) {
 				PostModel customPost = new PostModel();
 				customPost.setPostId(post.getPostId());
+				List<TagModel> tagModels = new ArrayList<>();
+				for(Tag tag : post.getTags()) {
+					TagModel tagModel = new TagModel();
+					tagModel.setTagId(tag.getTagId());
+					tagModel.setTagName(tag.getTagName());
+					tagModels.add(tagModel);
+				}
+				customPost.setTagModels(tagModels);
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
 				customPost.setUserName(post.getUser().getFullName());

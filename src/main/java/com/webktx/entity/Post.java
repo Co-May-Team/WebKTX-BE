@@ -1,6 +1,7 @@
 package com.webktx.entity;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -8,7 +9,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,11 +37,11 @@ public class Post extends BaseEntity{
 	private Integer postId;
 	
     @OneToOne 
-    @JoinColumn(name = "user_id") // thông qua khóa ngoại 
+    @JoinColumn(name = "user_id") 
     private User user;
 
     @OneToOne 
-    @JoinColumn(name = "category_id") // thông qua khóa ngoại 
+    @JoinColumn(name = "category_id")
     private Category category;
      
     private String summary;
@@ -53,4 +58,12 @@ public class Post extends BaseEntity{
 	
 	@Column(name = "publish_date")
 	private LocalDateTime publishDate;
+	
+	@ManyToMany()
+	@JsonIgnore
+	@JoinTable(name = "posts_tags", joinColumns = {
+			@JoinColumn(name = "post_id") }, inverseJoinColumns = {
+					@JoinColumn(name = "tag_id") })
+	private List<Tag> tags;
+	
 }

@@ -23,12 +23,14 @@ import com.webktx.entity.Category;
 import com.webktx.entity.Pagination;
 import com.webktx.entity.Post;
 import com.webktx.entity.ResponseObject;
+import com.webktx.entity.Tag;
 import com.webktx.entity.User;
 import com.webktx.model.CategoryModel;
 import com.webktx.model.PostModel;
 import com.webktx.repository.impl.CategoryRepositoryImpl;
 import com.webktx.repository.impl.PostRepositoryImpl;
 import com.webktx.repository.impl.RoleRepositoryImpl;
+import com.webktx.repository.impl.TagRepositoryImpl;
 import com.webktx.repository.impl.UserRepositoryImpl;
 import com.webktx.ultil.Ultil;
 
@@ -48,6 +50,9 @@ public class PostService {
 
 	@Autowired
 	APIService apiService;
+	
+	@Autowired
+	TagRepositoryImpl tagRepositoryImpl;
 	
 	@Autowired
 	Ultil ultil;
@@ -160,6 +165,8 @@ public class PostService {
 
 	public ResponseEntity<Object> add(String json) {
 		JsonMapper jsonMapper = new JsonMapper();
+		List<Integer> tagIds = new ArrayList<>();
+		List<Tag> tags = new ArrayList<>();
 		JsonNode jsonObjectPost;
 		Post post = new Post();
 		try {
@@ -170,7 +177,9 @@ public class PostService {
 			String title = jsonObjectPost.get("title") != null ? jsonObjectPost.get("title").asText() : "";
 			String content = jsonObjectPost.get("content") != null ? jsonObjectPost.get("content").asText() : "";
 			String summary = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("summary").asText() : "";
-			;
+			for (JsonNode jsonNode : jsonObjectPost.get("tagIds")) {
+				tagIds.add(jsonNode.asInt());
+			}
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
 			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean()
 					: true;
@@ -189,6 +198,13 @@ public class PostService {
 			post.setSummary(summary);
 			post.setCategory(category);
 			post.setIsPublished(isPulished);
+			for(Integer tagId: tagIds) {
+				Tag tag = tagRepositoryImpl.findById(tagId);
+				if(tag != null) {
+					tags.add(tag);
+				}
+			}
+			post.setTags(tags);
 			post.setUser(user);
 			if (thumbnail.equals("")) {
 				thumbnail = Constant.AVATAR;

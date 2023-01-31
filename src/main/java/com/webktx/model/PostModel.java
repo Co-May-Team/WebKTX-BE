@@ -1,6 +1,7 @@
 package com.webktx.model;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Entity;
 
@@ -20,13 +21,14 @@ import lombok.Setter;
 @JsonInclude(Include.NON_EMPTY)
 public class PostModel {
 	private Integer postId;
+	private List<TagModel> tagModels;
 	private String userName;
 	private String categoryName;
 	private String title;
 	private byte[] thumbnail;
 	private String content;
 	private Boolean isPublished;
-	private String summary;
+	private String summary;	
 	private LocalDateTime publishDate;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
