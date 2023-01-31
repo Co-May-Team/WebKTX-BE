@@ -27,6 +27,7 @@ import com.webktx.entity.Tag;
 import com.webktx.entity.User;
 import com.webktx.model.CategoryModel;
 import com.webktx.model.PostModel;
+import com.webktx.model.TagModel;
 import com.webktx.repository.impl.CategoryRepositoryImpl;
 import com.webktx.repository.impl.PostRepositoryImpl;
 import com.webktx.repository.impl.RoleRepositoryImpl;
@@ -242,13 +243,24 @@ public class PostService {
 	}
 
 	public PostModel toModel(Post post) {
+		List<TagModel> tagModels = new ArrayList<>();
 		PostModel postModel = new PostModel();
+		postModel.setPostId(post.getPostId());
 		postModel.setTitle(post.getTitle());
 		postModel.setSummary(post.getSummary());
 		postModel.setCategoryName(post.getCategory().getCategoryName());
 		postModel.setContent(post.getContent());
+		postModel.setPublishDate(post.getPublishDate());
+		postModel.setIsPublished(post.getIsPublished());
+		for(Tag tag : post.getTags()) {
+			TagModel tagModel = new TagModel();
+			tagModel.setTagId(tag.getTagId());
+			tagModel.setTagName(tag.getTagName());
+			tagModels.add(tagModel);
+		}
+		postModel.setTagModels(tagModels);
 		try {
-			ultil.getImageByName(post.getSmallPictureId(),"/image/webktx/");
+			postModel.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),"/image/webktx/"));
 		} catch (IOException e) {
 			LOGGER.error("{}",e);
 		}
