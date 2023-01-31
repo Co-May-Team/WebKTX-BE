@@ -122,6 +122,8 @@ public class PostService {
 
 	public ResponseEntity<Object> edit(String json) {
 		Post post = null;
+		List<Integer> tagIds = new ArrayList<>();
+		List<Tag> tags = new ArrayList<>();
 		JsonMapper jsonMapper = new JsonMapper();
 		JsonNode jsonObjectPost;
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -135,6 +137,12 @@ public class PostService {
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
 			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean()
 					: true;
+			for (JsonNode jsonNode : jsonObjectPost.get("tagIds")) {
+				tagIds.add(jsonNode.asInt());
+			}
+			String thumbnail = (jsonObjectPost.get("thumbnail") != null
+					&& !jsonObjectPost.get("thumbnail").asText().equals("")) ? jsonObjectPost.get("thumbnail").asText()
+							: "";
 			CategoryModel categoryModel = categoryRepositoryImpl.findById(categoryId);
 			Category category = new Category();
 			category.setCategoryId(categoryModel.getCategoryId());
@@ -148,6 +156,14 @@ public class PostService {
 			post.setIsPublished(isPulished);
 			post.setCategory(category);
 			post.setUser(user);
+			post.setSmallPictureId(thumbnail);
+			for(Integer tagId: tagIds) {
+				Tag tag = tagRepositoryImpl.findById(tagId);
+				if(tag != null) {
+					tags.add(tag);
+				}
+			}
+			post.setTags(tags);
 
 			Integer message = postRepositoryImpl.edit(post);
 			if (message != 0) {

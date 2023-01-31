@@ -53,15 +53,24 @@ public class PostRepositoryImpl implements IPostRepository {
 			Query query = session.createQuery(hql.toString());
 			query.setParameter("id",id);
 			for (Iterator it = query.getResultList().iterator(); it.hasNext();) {		
-				Object[] obj = (Object[]) it.next();
-				Post post = (Post) obj[0];
+				Object obj = (Object) it.next();
+				Post post = (Post) obj;
 				customPost.setPostId(post.getPostId());
+				List<TagModel> tagModels = new ArrayList<>();
+				for(Tag tag : post.getTags()) {
+					TagModel tagModel = new TagModel();
+					tagModel.setTagId(tag.getTagId());
+					tagModel.setTagName(tag.getTagName());
+					tagModels.add(tagModel);
+				}
+				customPost.setTagModels(tagModels);
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
 				customPost.setUserName(post.getUser().getFullName());
 				customPost.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setIsPublished(post.getIsPublished());
 				customPost.setPublishDate(post.getPublishDate());
+				customPost.setSummary(post.getSummary());
 				try {
 					StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir")).append("/image/webktx/");
 					final InputStream in = new BufferedInputStream(new FileInputStream(baseURL + post.getSmallPictureId().trim()));
