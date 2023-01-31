@@ -65,6 +65,7 @@ public class SecurityConfig {
         .antMatchers("/user/**").permitAll()
         .antMatchers("/posts").permitAll()
         .antMatchers("/tags").permitAll()
+        .antMatchers("/category").permitAll()
         .anyRequest().authenticated();
     	http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
