@@ -1,6 +1,9 @@
 package com.webktx.service;
 
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -76,15 +79,14 @@ public class PostService {
 		}
 	}
 
-	public ResponseEntity<Object> findAll(String title, String content, String user_id, String category_id,
-			String is_published, String sort, String order, String page) {
+	public ResponseEntity<Object> findAll(String title, String content, String user_id, Integer category_id,Integer tag_id, String sort, String order, String page) {
 		title = title == null ? "" : title.trim();
 		content = content == null ? "" : content.trim();
-		category_id = category_id == null ? "" : category_id.trim();
+		category_id = category_id == null ? 0 : category_id;
+		tag_id = tag_id == null ? 0:tag_id;
 		user_id = user_id == null ? "" : user_id.trim();
-		is_published = is_published == null ? "1" : is_published;
 		order = order == null ? "DESC" : order;
-		sort = sort == null ? "post_id" : sort;
+		sort = sort == null ? "postId" : sort;
 		page = page == null ? "1" : page.trim();
 		Integer limit = Constant.LIMIT;
 		// Caculator offset
@@ -92,13 +94,12 @@ public class PostService {
 		Set<PostModel> postModelSet = new LinkedHashSet<PostModel>();
 		List<PostModel> postModelListTMP = new ArrayList<PostModel>();
 		try {
-			postModelListTMP = postRepositoryImpl.findAll(title, content, user_id, category_id, is_published, sort,
+			postModelListTMP = postRepositoryImpl.findAll(title, content, user_id, category_id,tag_id, sort,
 					order, offset, limit);
 			for (PostModel postModel : postModelListTMP) {
 				postModelSet.add(postModel);
 			}
-			Integer totalItemPost = postRepositoryImpl.countAllPaging(title, content, user_id, category_id,
-					is_published);
+			Integer totalItemPost = postRepositoryImpl.countAllPaging(title, content, user_id, category_id,tag_id);
 			Pagination pagination = new Pagination();
 			pagination.setLimit(limit);
 			pagination.setPage(Integer.valueOf(page));
@@ -122,7 +123,7 @@ public class PostService {
 
 	public ResponseEntity<Object> edit(String json) {
 		Post post = null;
-		List<Integer> tagIds = new ArrayList<>();
+		Set<Integer> tagIds = new LinkedHashSet();
 		List<Tag> tags = new ArrayList<>();
 		JsonMapper jsonMapper = new JsonMapper();
 		JsonNode jsonObjectPost;
@@ -135,8 +136,7 @@ public class PostService {
 			String content = jsonObjectPost.get("content") != null ? jsonObjectPost.get("content").asText() : "";
 			String summary = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("summary").asText() : "";
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
-			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean()
-					: true;
+			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean() : true;
 			for (JsonNode jsonNode : jsonObjectPost.get("tagIds")) {
 				tagIds.add(jsonNode.asInt());
 			}
@@ -154,7 +154,8 @@ public class PostService {
 			post.setContent(content);
 			post.setSummary(summary);
 			post.setIsPublished(isPulished);
-			post.setCategory(category);
+			post.setCategory(category);			
+			post.setTags(tags);
 			post.setUser(user);
 			post.setSmallPictureId(thumbnail);
 			for(Integer tagId: tagIds) {
@@ -182,10 +183,11 @@ public class PostService {
 
 	public ResponseEntity<Object> add(String json) {
 		JsonMapper jsonMapper = new JsonMapper();
-		List<Integer> tagIds = new ArrayList<>();
+		Set<Integer> tagIds = new LinkedHashSet<Integer>();
 		List<Tag> tags = new ArrayList<>();
 		JsonNode jsonObjectPost;
 		Post post = new Post();
+		PostModel postModel = null;
 		try {
 			jsonObjectPost = jsonMapper.readTree(json);
 			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -198,8 +200,12 @@ public class PostService {
 				tagIds.add(jsonNode.asInt());
 			}
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
-			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean()
+			Boolean isPulished = jsonObjectPost.get("isPublished") != null ? jsonObjectPost.get("isPublished").asBoolean()
 					: true;
+			String pulishedAt = jsonObjectPost.get("publishedAt") != null ? jsonObjectPost.get("publishedAt").asText() : "";
+		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+		    LocalDateTime localDateTime = LocalDateTime.parse(pulishedAt, formatter);
+		    Timestamp timestamp = Timestamp.valueOf(localDateTime);
 			String thumbnail = (jsonObjectPost.get("thumbnail") != null
 					&& !jsonObjectPost.get("thumbnail").asText().equals("")) ? jsonObjectPost.get("thumbnail").asText()
 							: "";
@@ -209,11 +215,11 @@ public class PostService {
 			category.setCategoryName(categoryModel.getCategoryName());
 			Integer createBy = userDetail.getId();
 			User user = userRepositoryImpl.findById(createBy);
-
 			post.setTitle(title);
 			post.setContent(content);
 			post.setSummary(summary);
 			post.setCategory(category);
+			post.setPublishedAt(timestamp);
 			post.setIsPublished(isPulished);
 			for(Integer tagId: tagIds) {
 				Tag tag = tagRepositoryImpl.findById(tagId);
@@ -229,9 +235,10 @@ public class PostService {
 			post.setSmallPictureId(thumbnail);
 
 			Integer message = postRepositoryImpl.insert(post);
+			postModel = postRepositoryImpl.findById(message);
 			if (message != 0) {
 				return ResponseEntity.status(HttpStatus.OK)
-						.body(new ResponseObject("OK", "Successfully", toModel(post)));
+						.body(new ResponseObject("OK", "Successfully", postModel));
 			} else {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseObject("ERROR", "Can not save a post", ""));
@@ -264,10 +271,12 @@ public class PostService {
 		postModel.setPostId(post.getPostId());
 		postModel.setTitle(post.getTitle());
 		postModel.setSummary(post.getSummary());
-		postModel.setCategoryName(post.getCategory().getCategoryName());
+		CategoryModel categoryModel = new CategoryModel();
+		categoryModel.setCategoryId(post.getCategory().getCategoryId());
+		categoryModel.setCategoryName(post.getCategory().getCategoryName());
+		postModel.setCategory(categoryModel);
 		postModel.setContent(post.getContent());
-		postModel.setPublishDate(post.getPublishDate());
-		postModel.setIsPublished(post.getIsPublished());
+		postModel.setPublishedAt(post.getPublishedAt());
 		for(Tag tag : post.getTags()) {
 			TagModel tagModel = new TagModel();
 			tagModel.setTagId(tag.getTagId());
@@ -275,8 +284,10 @@ public class PostService {
 			tagModels.add(tagModel);
 		}
 		postModel.setTagModels(tagModels);
+		postModel.setCreatedAt(post.getCreatedAt());
+		postModel.setUpdatedAt(post.getUpdatedAt());
 		try {
-			postModel.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),"/image/webktx/"));
+			postModel.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),Constant.URL_IMAGE_SERVER));
 		} catch (IOException e) {
 			LOGGER.error("{}",e);
 		}

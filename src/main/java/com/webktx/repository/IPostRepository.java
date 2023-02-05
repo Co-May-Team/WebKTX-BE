@@ -13,9 +13,9 @@ public interface IPostRepository {
 	List<PostModel> findAll( 
 			@Param("title") String title, 
 			@Param("content") String content, 
-			@Param("category_id") String category_id, 
 			@Param("user_id") String user_id,
-			@Param("is_published") String is_published,
+			@Param("category_id") Integer category_id, 
+			@Param("tag_id") Integer tag_id, 
 			@Param("sort") String sort,
 			@Param("order") String order,
 			@Param("offset") Integer offset,
@@ -23,9 +23,9 @@ public interface IPostRepository {
 	Integer countAllPaging( 
 			@Param("title") String title, 
 			@Param("content") String content, 
-			@Param("category_id") String category_id, 
 			@Param("user_id") String user_id,
-			@Param("is_published") String is_published);
+			@Param("category_id") Integer category_id, 
+			@Param("tag_id") Integer tag_id);
 	Integer edit (Post post);
 	Integer insert (Post post);
 	Integer deletePostById(Integer id);

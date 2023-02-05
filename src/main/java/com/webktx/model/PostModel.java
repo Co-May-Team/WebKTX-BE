@@ -1,5 +1,6 @@
 package com.webktx.model;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -23,13 +24,12 @@ public class PostModel {
 	private Integer postId;
 	private List<TagModel> tagModels;
 	private String userName;
-	private String categoryName;
+	private CategoryModel category;
 	private String title;
 	private byte[] thumbnail;
 	private String content;
-	private Boolean isPublished;
 	private String summary;	
-	private LocalDateTime publishDate;
+	private Timestamp publishedAt;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 

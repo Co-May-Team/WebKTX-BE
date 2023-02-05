@@ -1,5 +1,6 @@
 package com.webktx.entity;
 
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -57,7 +58,7 @@ public class Post extends BaseEntity{
 	private Boolean isPublished;
 	
 	@Column(name = "publish_date")
-	private LocalDateTime publishDate;
+	private Timestamp publishedAt;
 	
 	@ManyToMany()
 	@JsonIgnore

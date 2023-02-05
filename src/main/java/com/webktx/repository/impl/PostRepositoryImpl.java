@@ -23,8 +23,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.webktx.constant.Constant;
 import com.webktx.entity.Post;
 import com.webktx.entity.Tag;
+import com.webktx.model.CategoryModel;
 import com.webktx.model.PostModel;
 import com.webktx.model.TagModel;
 import com.webktx.repository.IPostRepository;
@@ -38,10 +40,9 @@ public class PostRepositoryImpl implements IPostRepository {
 
 	@Autowired
 	private SessionFactory sessionFactory;
-	
+
 	@Autowired
 	Ultil ultil = new Ultil();
-
 
 	@Override
 	public PostModel findById(Integer id) {
@@ -51,13 +52,13 @@ public class PostRepositoryImpl implements IPostRepository {
 		try {
 			Session session = sessionFactory.getCurrentSession();
 			Query query = session.createQuery(hql.toString());
-			query.setParameter("id",id);
-			for (Iterator it = query.getResultList().iterator(); it.hasNext();) {		
+			query.setParameter("id", id);
+			for (Iterator<?> it = query.getResultList().iterator(); it.hasNext();) {
 				Object obj = (Object) it.next();
 				Post post = (Post) obj;
 				customPost.setPostId(post.getPostId());
 				List<TagModel> tagModels = new ArrayList<>();
-				for(Tag tag : post.getTags()) {
+				for (Tag tag : post.getTags()) {
 					TagModel tagModel = new TagModel();
 					tagModel.setTagId(tag.getTagId());
 					tagModel.setTagName(tag.getTagName());
@@ -67,13 +68,17 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
 				customPost.setUserName(post.getUser().getFullName());
-				customPost.setCategoryName(post.getCategory().getCategoryName());
-				customPost.setIsPublished(post.getIsPublished());
-				customPost.setPublishDate(post.getPublishDate());
+				CategoryModel categoryModel = new CategoryModel();
+				categoryModel.setCategoryId(post.getCategory().getCategoryId());
+				categoryModel.setCategoryName(post.getCategory().getCategoryName());
+				customPost.setCategory(categoryModel);
 				customPost.setSummary(post.getSummary());
+				customPost.setPublishedAt(post.getPublishedAt());
 				try {
-					StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir")).append("/image/webktx/");
-					final InputStream in = new BufferedInputStream(new FileInputStream(baseURL + post.getSmallPictureId().trim()));
+					StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir"))
+							.append(Constant.URL_IMAGE_SERVER);
+					final InputStream in = new BufferedInputStream(
+							new FileInputStream(baseURL + post.getSmallPictureId().trim()));
 					customPost.setThumbnail(IOUtils.toByteArray(in));
 				} catch (Exception e) {
 					LOGGER.error("{}", e);
@@ -81,26 +86,27 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
 			}
-		}
-		catch (Exception e) {
-			LOGGER.error("Error has occured in Impl findById API: ",e);
+		} catch (Exception e) {
+			LOGGER.error("Error has occured in Impl findById API: ", e);
 		}
 		return customPost;
 	}
-	
+
 	@Override
 	@Transactional
-	public List<PostModel> findAll(String title, String content, String user_id, String category_id, String is_published, String sort, String order, Integer offset, Integer limit) {
+	public List<PostModel> findAll(String title, String content, String user_id, Integer category_id, Integer tag_id,
+			String sort, String order, Integer offset, Integer limit) {
 		List<PostModel> customPostList = new ArrayList<PostModel>();
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts p ");
+		hql.append(" INNER JOIN p.tags AS t");
 		hql.append(" WHERE p.title LIKE CONCAT('%',:title,'%')");
 		hql.append(" AND p.content LIKE CONCAT('%',:content,'%')");
 		hql.append(" AND p.user.fullName LIKE CONCAT('%',:user_id,'%')");
 		hql.append(" AND p.category.categoryName LIKE CONCAT('%',:category_id,'%')");
-		hql.append(" AND p.isPublished LIKE CONCAT('%',:is_published,'%')");
-		//hql.append(" order by p." + sort + " " + order );
-		
+		hql.append(" AND t.tagId LIKE CONCAT('%',:tag_id,'%')");
+		hql.append(" order by p." + sort + " " + order);
+
 		try {
 			Session session = sessionFactory.getCurrentSession();
 			Query query = session.createQuery(hql.toString());
@@ -108,23 +114,21 @@ public class PostRepositoryImpl implements IPostRepository {
 			query.setParameter("title", title);
 			query.setParameter("content", content);
 			query.setParameter("user_id", user_id);
-			query.setParameter("category_id", category_id);
-			query.setParameter("is_published", is_published);
-//			query.setParameter("order", order);
-//			query.setParameter("sort", sort);
+			query.setParameter("category_id", category_id == 0 ? "" : category_id);
+			query.setParameter("tag_id", tag_id == 0 ? "" : tag_id);
 			LOGGER.info(offset.toString());
 			query.setFirstResult(offset);
 			query.setMaxResults(limit);
-			for (Iterator it = query.getResultList().iterator(); it.hasNext();) {		
-				Object obj = (Object) it.next();
-				Post post = (Post) obj;
+			for (Iterator<?> it = query.getResultList().iterator(); it.hasNext();) {
+				Object[] obj = (Object[]) it.next();
+				Post post = (Post) obj[0];
 				postSet.add(post);
 			}
 			for (Post post : postSet) {
 				PostModel customPost = new PostModel();
 				customPost.setPostId(post.getPostId());
 				List<TagModel> tagModels = new ArrayList<>();
-				for(Tag tag : post.getTags()) {
+				for (Tag tag : post.getTags()) {
 					TagModel tagModel = new TagModel();
 					tagModel.setTagId(tag.getTagId());
 					tagModel.setTagName(tag.getTagName());
@@ -134,52 +138,55 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
 				customPost.setUserName(post.getUser().getFullName());
-				customPost.setCategoryName(post.getCategory().getCategoryName());
-				customPost.setIsPublished(post.getIsPublished());
-				customPost.setPublishDate(post.getPublishDate());
-				customPost.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),"/image/webktx/"));
+				CategoryModel categoryModel = new CategoryModel();
+				categoryModel.setCategoryId(post.getCategory().getCategoryId());
+				categoryModel.setCategoryName(post.getCategory().getCategoryName());
+				customPost.setCategory(categoryModel);
+				customPost.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),Constant.URL_IMAGE_SERVER));
 				customPost.setSummary(post.getSummary());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
 				customPostList.add(customPost);
 			}
 		} catch (Exception e) {
-			LOGGER.error("Error has occured in findAll "+e, e);
+			LOGGER.error("Error has occured in findAll " + e, e);
 		}
 		return customPostList;
 	}
+
 	@Override
-	public Integer countAllPaging(String title, String content, String user_id, String category_id, String is_published) {
+	public Integer countAllPaging(String title, String content, String user_id, Integer category_id, Integer tag_id) {
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts AS p ");
+		hql.append(" INNER JOIN p.tags AS t");
 		hql.append(" WHERE p.title LIKE CONCAT('%',:title,'%')");
 		hql.append(" AND p.content LIKE CONCAT('%',:content,'%')");
 		hql.append(" AND p.user.fullName LIKE CONCAT('%',:user_id,'%')");
 		hql.append(" AND p.category.categoryName LIKE CONCAT('%',:category_id,'%')");
-		hql.append(" AND p.isPublished LIKE CONCAT('%',:is_published,'%')");
+		hql.append(" AND t.tagId LIKE CONCAT('%',:tag_id,'%')");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
-			Query query = session.createQuery(hql.toString());			
+			Query query = session.createQuery(hql.toString());
 			query.setParameter("title", title);
 			query.setParameter("content", content);
 			query.setParameter("user_id", user_id);
-			query.setParameter("category_id", category_id);
-			query.setParameter("is_published", is_published);
+			query.setParameter("category_id", category_id == 0 ? "" : category_id);
+			query.setParameter("tag_id", tag_id == 0 ? "" : tag_id);
 			LOGGER.info(hql.toString());
-			for (Iterator it = query.getResultList().iterator(); it.hasNext();) {
-				Object ob = (Object) it.next();
-				postSet.add((Post) ob);
+			for (Iterator<?> it = query.getResultList().iterator(); it.hasNext();) {
+				Object ob[] = (Object[]) it.next();
+				postSet.add((Post) ob[0]);
 			}
-			
+
 		} catch (Exception e) {
-			LOGGER.error("Error has occured in count total Posts " +e, e);
-			
+			LOGGER.error("Error has occured in count total Posts " + e, e);
+
 		}
-		
+
 		return postSet.size();
-		
-		
+
 	}
+
 //	//insert a post
 //	@Override
 //	public Integer insert(Post post) {
@@ -234,6 +241,7 @@ public class PostRepositoryImpl implements IPostRepository {
 			return 0;
 		}
 	}
+
 	@Override
 	public Integer insert(Post post) {
 		Session session = sessionFactory.getCurrentSession();
@@ -245,6 +253,7 @@ public class PostRepositoryImpl implements IPostRepository {
 		}
 		return -1;
 	}
+
 	@Override
 	public Integer deletePostById(Integer id) {
 		Session session = sessionFactory.getCurrentSession();
@@ -266,11 +275,10 @@ public class PostRepositoryImpl implements IPostRepository {
 		try {
 			Session session = sessionFactory.getCurrentSession();
 			Query query = session.createQuery(hql.toString());
-			query.setParameter("id",id);
+			query.setParameter("id", id);
 			post = (Post) query.getSingleResult();
-		}
-		catch (Exception e) {
-			LOGGER.error("Error has occured in Impl findById API: ",e);
+		} catch (Exception e) {
+			LOGGER.error("Error has occured in Impl findById API: ", e);
 		}
 		return post;
 	}

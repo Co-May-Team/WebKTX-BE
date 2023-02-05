@@ -43,14 +43,14 @@ public class PostController {
 			@RequestParam(value="page",required = false) String page, 
 			@RequestParam(value="title",required = false) String title, 
 			@RequestParam(value="content", required = false) String content,  
-			@RequestParam(value="category_id", required = false) String category_id, 
+			@RequestParam(value="category_id", required = false) Integer category_id, 
+			@RequestParam(value="tag_id", required = false) Integer tag_id, 
 			@RequestParam(value="user_id", required = false) String user_id,
-			@RequestParam(value="is_published", required = false) String is_published,
 			@RequestParam(value="sort", required = false) String sort,
 			@RequestParam(value="order", required = false) String order
 			) {
 		LOGGER.info("Get all posts");
-		return postService.findAll(title, content, user_id, category_id, is_published, sort,order,page);
+		return postService.findAll(title, content, user_id, category_id,tag_id, sort,order,page);
 	}
 	
 	@PreAuthorize("@customRoleService.canUpdate('Post',principal)")
