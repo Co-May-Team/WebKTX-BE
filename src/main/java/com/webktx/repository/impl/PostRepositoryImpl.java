@@ -74,6 +74,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCategory(categoryModel);
 				customPost.setSummary(post.getSummary());
 				customPost.setPublishedAt(post.getPublishedAt());
+				
 				try {
 					StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir"))
 							.append(Constant.URL_IMAGE_SERVER);

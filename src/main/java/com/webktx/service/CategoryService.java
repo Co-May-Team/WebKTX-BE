@@ -63,19 +63,18 @@ public class CategoryService {
 			for(CategoryModel categorytModel : categoryModelListTMP) {
 				categoryModelSet.add(categorytModel);
 				}
-			Integer totalItemCategory = categoryRepositoryImpl.countAllPaging(category_name);
-			Pagination pagination = new Pagination();
-			pagination.setLimit(limit);
-			pagination.setPage(Integer.valueOf(page));
-			pagination.setTotalItem(totalItemCategory);
+//			Integer totalItemCategory = categoryRepositoryImpl.countAllPaging(category_name);
+//			Pagination pagination = new Pagination();
+//			pagination.setLimit(limit);
+//			pagination.setPage(Integer.valueOf(page));
+//			pagination.setTotalItem(totalItemCategory);
 			Map<String, Object> results = new TreeMap<String, Object>();
-			results.put("pagination", pagination);
+//			results.put("pagination", pagination);
 			results.put("categories", categoryModelSet);
 			if (results.size() > 0) {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseObject("OK", "Successfully", results));
 			} else {
-				pagination.setPage(1);
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Not found", "Not found", results));
 			}
 		} catch (Exception e) {

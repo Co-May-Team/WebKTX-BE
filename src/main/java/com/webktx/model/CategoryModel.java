@@ -1,7 +1,5 @@
 package com.webktx.model;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.Entity;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -21,8 +19,5 @@ import lombok.Setter;
 public class CategoryModel {
 	private Integer categoryId;
 	private String categoryName;
-	private LocalDateTime createdAt;
-	private LocalDateTime updatedAt;
-
 }
 

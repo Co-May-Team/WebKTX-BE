@@ -43,8 +43,6 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 				Category category = (Category) obj;
 				customCategory.setCategoryId(category.getCategoryId());
 				customCategory.setCategoryName(category.getCategoryName());
-				customCategory.setCreatedAt(category.getCreatedAt());
-				customCategory.setUpdatedAt(category.getUpdatedAt());
 			}
 		}
 		catch (Exception e) {
@@ -57,7 +55,7 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 	public List<CategoryModel> findAll(String category_name, String sort, String order, Integer offset, Integer limit) {
 		List<CategoryModel> customCategoryList = new ArrayList<CategoryModel>();
 		Set<Category> categorySet = new LinkedHashSet<Category>();
-		StringBuilder hql = new StringBuilder("FROM categories c ");
+		StringBuilder hql = new StringBuilder("FROM categories AS c ");
 		hql.append(" WHERE c.categoryName LIKE CONCAT('%',:category_name,'%')");
 		//hql.append(" order by p." + sort + " " + order );
 		try {
@@ -67,8 +65,8 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 			query.setParameter("category_name", category_name);
 //			query.setParameter("order", order);
 //			query.setParameter("sort", sort);
-			query.setFirstResult(offset);
-			query.setMaxResults(limit);
+//			query.setFirstResult(offset);
+//			query.setMaxResults(limit);
 			for (Iterator it = query.getResultList().iterator(); it.hasNext();) {		
 				Object obj = (Object) it.next();
 				Category category = (Category) obj;
@@ -78,8 +76,6 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 				CategoryModel customCategory = new CategoryModel();
 				customCategory.setCategoryId(category.getCategoryId());
 				customCategory.setCategoryName(category.getCategoryName());
-				customCategory.setCreatedAt(category.getCreatedAt());
-				customCategory.setUpdatedAt(category.getUpdatedAt());
 				customCategoryList.add(customCategory);
 			}
 		} catch (Exception e) {
@@ -91,7 +87,7 @@ public class CategoryRepositoryImpl implements ICategoryRepository{
 	public Integer countAllPaging( String category_name) {
 		Set<Category> categorySet = new LinkedHashSet<Category>();
 		StringBuilder hql = new StringBuilder("FROM categories c ");
-		hql.append(" WHERE c.category_name LIKE CONCAT('%',:category_name,'%')");
+		hql.append(" WHERE c.categoryName LIKE CONCAT('%',:category_name,'%')");
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			Query query = session.createQuery(hql.toString());			
