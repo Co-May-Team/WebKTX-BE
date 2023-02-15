@@ -104,8 +104,12 @@ public class PostRepositoryImpl implements IPostRepository {
 		hql.append(" WHERE p.title LIKE CONCAT('%',:title,'%')");
 		hql.append(" AND p.content LIKE CONCAT('%',:content,'%')");
 		hql.append(" AND p.user.fullName LIKE CONCAT('%',:user_id,'%')");
-		hql.append(" AND p.category.categoryName LIKE CONCAT('%',:category_id,'%')");
-		hql.append(" AND t.tagId LIKE CONCAT('%',:tag_id,'%')");
+		if(category_id!= 0) {
+			hql.append(" AND p.category.categoryId =:category_id ");
+		}
+		if(tag_id != 0) {
+			hql.append(" AND t.tagId = :tag_id ");
+		}
 		hql.append(" order by p." + sort + " " + order);
 
 		try {
@@ -115,8 +119,12 @@ public class PostRepositoryImpl implements IPostRepository {
 			query.setParameter("title", title);
 			query.setParameter("content", content);
 			query.setParameter("user_id", user_id);
-			query.setParameter("category_id", category_id == 0 ? "" : category_id);
-			query.setParameter("tag_id", tag_id == 0 ? "" : tag_id);
+			if(category_id!= 0) {
+				query.setParameter("category_id",category_id);
+			}
+			if(tag_id != 0) {
+				query.setParameter("tag_id", tag_id);
+			}
 			LOGGER.info(offset.toString());
 			query.setFirstResult(offset);
 			query.setMaxResults(limit);
@@ -163,16 +171,24 @@ public class PostRepositoryImpl implements IPostRepository {
 		hql.append(" WHERE p.title LIKE CONCAT('%',:title,'%')");
 		hql.append(" AND p.content LIKE CONCAT('%',:content,'%')");
 		hql.append(" AND p.user.fullName LIKE CONCAT('%',:user_id,'%')");
-		hql.append(" AND p.category.categoryName LIKE CONCAT('%',:category_id,'%')");
-		hql.append(" AND t.tagId LIKE CONCAT('%',:tag_id,'%')");
+		if(category_id!= 0) {
+			hql.append(" AND p.category.categoryId =:category_id ");
+		}
+		if(tag_id != 0) {
+			hql.append(" AND t.tagId = :tag_id ");
+		}
 		Session session = this.sessionFactory.getCurrentSession();
 		try {
 			Query query = session.createQuery(hql.toString());
 			query.setParameter("title", title);
 			query.setParameter("content", content);
 			query.setParameter("user_id", user_id);
-			query.setParameter("category_id", category_id == 0 ? "" : category_id);
-			query.setParameter("tag_id", tag_id == 0 ? "" : tag_id);
+			if(category_id!= 0) {
+				query.setParameter("category_id",category_id);
+			}
+			if(tag_id != 0) {
+				query.setParameter("tag_id", tag_id);
+			}
 			LOGGER.info(hql.toString());
 			for (Iterator<?> it = query.getResultList().iterator(); it.hasNext();) {
 				Object ob[] = (Object[]) it.next();
