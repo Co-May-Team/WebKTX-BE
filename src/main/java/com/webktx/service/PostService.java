@@ -223,6 +223,15 @@ public class PostService {
 			String thumbnail = (jsonObjectPost.get("thumbnail") != null
 					&& !jsonObjectPost.get("thumbnail").asText().equals("")) ? jsonObjectPost.get("thumbnail").asText()
 							: "";
+			if(summary == "") {
+				summary = content.substring(0, 255);
+				for(int i = summary.length() - 1; i >0 ; i--) {
+					if(summary.toCharArray()[i] == ' ') {
+						summary = summary.substring(0,i);
+						break;
+					}
+				}
+			}
 			CategoryModel categoryModel = categoryRepositoryImpl.findById(categoryId);
 			Category category = new Category();
 			category.setCategoryId(categoryModel.getCategoryId());
@@ -260,6 +269,7 @@ public class PostService {
 
 		} catch (Exception e) {
 			LOGGER.debug("ERROR", e);
+
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
 					.body(new ResponseObject("ERROR", "Have error insert service", e.getMessage()));
 		}
