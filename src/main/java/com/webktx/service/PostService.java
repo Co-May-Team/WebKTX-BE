@@ -65,10 +65,15 @@ public class PostService {
 
 	public ResponseEntity<Object> findById(Integer id) {
 		PostModel post = new PostModel();
-		post = postRepositoryImpl.findById(id);
+		List<PostModel> relatedPost =  null;
 		try {
-			if (post.getPostId() != null) {
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", post));
+			post = postRepositoryImpl.findById(id);	
+			relatedPost = postRepositoryImpl.findRelatedPosts(10);
+			Map<String, Object> results = new TreeMap<String, Object>();
+			results.put("posts", post);
+			results.put("relatedPost", relatedPost);
+			if (results.size()>0) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", results));
 			} else {
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Have error", ""));
 			}
@@ -276,7 +281,7 @@ public class PostService {
 		categoryModel.setCategoryName(post.getCategory().getCategoryName());
 		postModel.setCategory(categoryModel);
 		postModel.setContent(post.getContent());
-		postModel.setPublishedAt(post.getPublishedAt());
+		postModel.setPublishedAt(post.getPublishedAt().toLocalDateTime());
 		for(Tag tag : post.getTags()) {
 			TagModel tagModel = new TagModel();
 			tagModel.setTagId(tag.getTagId());

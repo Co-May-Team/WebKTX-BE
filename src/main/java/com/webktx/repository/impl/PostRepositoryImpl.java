@@ -73,7 +73,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setCategory(categoryModel);
 				customPost.setSummary(post.getSummary());
-				customPost.setPublishedAt(post.getPublishedAt());
+				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
 				
 				try {
 					StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir"))
@@ -155,7 +155,9 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setSummary(post.getSummary());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
+				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
 				customPostList.add(customPost);
+				
 			}
 		} catch (Exception e) {
 			LOGGER.error("Error has occured in findAll " + e, e);
@@ -299,4 +301,54 @@ public class PostRepositoryImpl implements IPostRepository {
 		}
 		return post;
 	}
+
+	@Override
+	public List<PostModel> findRelatedPosts(Integer numberPost) {
+		List<PostModel> customPostList = new ArrayList<PostModel>();
+		Set<Post> postSet = new LinkedHashSet<Post>();
+		StringBuilder hql = new StringBuilder("FROM posts p ");
+		hql.append(" INNER JOIN p.tags AS t");
+		hql.append(" order by p.updatedAt DESC");
+
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query query = session.createQuery(hql.toString());
+			LOGGER.info(hql.toString());
+			query.setMaxResults(numberPost);
+			for (Iterator<?> it = query.getResultList().iterator(); it.hasNext();) {
+				Object[] obj = (Object[]) it.next();
+				Post post = (Post) obj[0];
+				postSet.add(post);
+			}
+			for (Post post : postSet) {
+				PostModel customPost = new PostModel();
+				customPost.setPostId(post.getPostId());
+				List<TagModel> tagModels = new ArrayList<>();
+				for (Tag tag : post.getTags()) {
+					TagModel tagModel = new TagModel();
+					tagModel.setTagId(tag.getTagId());
+					tagModel.setTagName(tag.getTagName());
+					tagModels.add(tagModel);
+				}
+				customPost.setTagModels(tagModels);
+				customPost.setTitle(post.getTitle());
+				customPost.setContent(post.getContent());
+				customPost.setUserName(post.getUser().getFullName());
+				CategoryModel categoryModel = new CategoryModel();
+				categoryModel.setCategoryId(post.getCategory().getCategoryId());
+				categoryModel.setCategoryName(post.getCategory().getCategoryName());
+				customPost.setCategory(categoryModel);
+				customPost.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),Constant.URL_IMAGE_SERVER));
+				customPost.setSummary(post.getSummary());
+				customPost.setCreatedAt(post.getCreatedAt());
+				customPost.setUpdatedAt(post.getUpdatedAt());
+				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
+				customPostList.add(customPost);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error has occured in findAll " + e, e);
+		}
+		return customPostList;
+	}
+
 }

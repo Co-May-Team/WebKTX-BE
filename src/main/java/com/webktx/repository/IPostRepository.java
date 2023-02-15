@@ -29,6 +29,7 @@ public interface IPostRepository {
 	Integer edit (Post post);
 	Integer insert (Post post);
 	Integer deletePostById(Integer id);
+	List<PostModel> findRelatedPosts(Integer numberPost); 
 }
 
 

@@ -29,8 +29,9 @@ public class PostModel {
 	private byte[] thumbnail;
 	private String content;
 	private String summary;	
-	private Timestamp publishedAt;
+	private LocalDateTime publishedAt;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
+
 
 }
