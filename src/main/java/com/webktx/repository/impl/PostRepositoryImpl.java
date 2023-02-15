@@ -303,17 +303,19 @@ public class PostRepositoryImpl implements IPostRepository {
 	}
 
 	@Override
-	public List<PostModel> findRelatedPosts(Integer numberPost) {
+	public List<PostModel> findRelatedPosts(Integer numberPost, Integer postId) {
 		List<PostModel> customPostList = new ArrayList<PostModel>();
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts p ");
 		hql.append(" INNER JOIN p.tags AS t");
+		hql.append(" WHERE p.postId != :postId");
 		hql.append(" order by p.updatedAt DESC");
 
 		try {
 			Session session = sessionFactory.getCurrentSession();
 			Query query = session.createQuery(hql.toString());
 			LOGGER.info(hql.toString());
+			query.setParameter("postId", postId);
 			query.setMaxResults(numberPost);
 			for (Iterator<?> it = query.getResultList().iterator(); it.hasNext();) {
 				Object[] obj = (Object[]) it.next();

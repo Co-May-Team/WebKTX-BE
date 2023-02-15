@@ -68,7 +68,7 @@ public class PostService {
 		List<PostModel> relatedPost =  null;
 		try {
 			post = postRepositoryImpl.findById(id);	
-			relatedPost = postRepositoryImpl.findRelatedPosts(10);
+			relatedPost = postRepositoryImpl.findRelatedPosts(10,id);
 			Map<String, Object> results = new TreeMap<String, Object>();
 			results.put("posts", post);
 			results.put("relatedPost", relatedPost);
