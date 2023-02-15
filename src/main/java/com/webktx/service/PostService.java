@@ -84,21 +84,30 @@ public class PostService {
 		}
 	}
 
-	public ResponseEntity<Object> findAll(String title, String content, String user_id, Integer category_id,Integer tag_id, String sort, String order, String page) {
-		title = title == null ? "" : title.trim();
-		content = content == null ? "" : content.trim();
-		category_id = category_id == null ? 0 : category_id;
-		tag_id = tag_id == null ? 0:tag_id;
-		user_id = user_id == null ? "" : user_id.trim();
+	public ResponseEntity<Object> findAll(String json, String sort, String order, String page) {
+		JsonNode jsonObject = null;
+		JsonMapper jsonMapper = new JsonMapper();
+		
+
 		order = order == null ? "DESC" : order;
 		sort = sort == null ? "postId" : sort;
-		page = page == null ? "1" : page.trim();
+		page = (page == null || page == "") ? "1" : page.trim();
 		Integer limit = Constant.LIMIT;
 		// Caculator offset
 		int offset = (Integer.parseInt(page) - 1) * limit;
 		Set<PostModel> postModelSet = new LinkedHashSet<PostModel>();
 		List<PostModel> postModelListTMP = new ArrayList<PostModel>();
 		try {
+			jsonObject = jsonMapper.readTree(json);
+			
+			String title = ((jsonObject.get("title") == null) || (jsonObject.get("title").asText() == "")) ? ""
+					: jsonObject.get("title").asText();
+			String content = ((jsonObject.get("content") == null) || (jsonObject.get("content").asText() == "")) ? ""
+					: jsonObject.get("content").asText();
+			Integer category_id = jsonObject.get("category_id") == null  ? 0 : jsonObject.get("category_id").asInt();
+			Integer tag_id = jsonObject.get("tag_id") == null  ? 0 : jsonObject.get("tag_id").asInt();
+			String user_id = ((jsonObject.get("user_id") == null) || (jsonObject.get("user_id").asText() == "")) ? ""
+					: jsonObject.get("user_id").asText();
 			postModelListTMP = postRepositoryImpl.findAll(title, content, user_id, category_id,tag_id, sort,
 					order, offset, limit);
 			for (PostModel postModel : postModelListTMP) {
