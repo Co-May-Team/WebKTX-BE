@@ -9,4 +9,6 @@ public interface IUserRepository {
 	User loadUserByUsername(String username);
 	UserModel findByUsername(String username);
 	User findById(Integer userId);
+	Boolean checkExistingUserByCitizenId(String citizenId);
+
 }

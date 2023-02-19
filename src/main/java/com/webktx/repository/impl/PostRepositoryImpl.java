@@ -103,7 +103,7 @@ public class PostRepositoryImpl implements IPostRepository {
 		hql.append(" INNER JOIN p.tags AS t");
 		hql.append(" WHERE p.title LIKE CONCAT('%',:title,'%')");
 		hql.append(" AND p.content LIKE CONCAT('%',:content,'%')");
-		hql.append(" AND p.user.fullName LIKE CONCAT('%',:user_id,'%')");
+		hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
 		if(category_id!= 0) {
 			hql.append(" AND p.category.categoryId =:category_id ");
 		}
