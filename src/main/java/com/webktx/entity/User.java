@@ -1,5 +1,7 @@
 package com.webktx.entity;
 
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -39,7 +41,9 @@ public class User extends BaseEntity{
 	private String citizenId;
 	private String username;
 	private String password;
-	
+	private String dob;
+//	@Column(name = "created_at")
+// 	private Timestamp createAt;
 	@OneToOne
 	@JoinColumn(name = "role_id")
 	Role role;

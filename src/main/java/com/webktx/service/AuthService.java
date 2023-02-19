@@ -1,11 +1,18 @@
 package com.webktx.service;
 
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.validation.Valid;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,9 +24,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.webktx.entity.LoginRequest;
 import com.webktx.entity.Permission;
 import com.webktx.entity.ResponseObject;
+import com.webktx.entity.Role;
+import com.webktx.entity.SignupRequest;
+import com.webktx.entity.User;
 import com.webktx.model.OptionModel;
 import com.webktx.model.PermissionModel;
 import com.webktx.model.RoleDetailModel;
@@ -48,6 +60,7 @@ public class AuthService {
 	
 	@Autowired
 	PermissionRepositoryImpl permissionRepositoryImpl;
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	public ResponseEntity<?> login(@RequestBody LoginRequest loginRequest) {
 		List<Integer> roleIds = new ArrayList<>();
@@ -122,4 +135,66 @@ public class AuthService {
 
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Đăng nhập hoàn tất", result));
 	}
+	public ResponseEntity<?> signup(SignupRequest signUpRequest) {
+		if (userRepository.checkExistingUserByUsername(signUpRequest.getUsername())) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Tên đăng nhập đã tồn tại", ""));
+		}
+		if (userRepository.checkExistingUserByCitizenId(signUpRequest.getCitizenId())) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số căn cước công dân đã tồn tại", ""));
+		}
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+	    LocalDateTime localDateTime = LocalDateTime.now();
+//	    Timestamp timestamp = Timestamp.valueOf(formatter.format(localDateTime));
+		User user = new User();
+		user.setFullName(signUpRequest.getFullName());
+		user.setPhoneNumber(signUpRequest.getPhoneNumber());
+		user.setCitizenId(signUpRequest.getCitizenId());
+		user.setDob(signUpRequest.getDob().toString());
+		user.setCreatedAt(localDateTime);
+		user.setUsername(signUpRequest.getUsername());
+		user.setEmail(signUpRequest.getEmail());
+		user.setPassword(encoder.encode(signUpRequest.getPassword()));
+		Role role = new Role();
+		// set default role
+		role.setRoleId(2);
+		user.setRole(role);
+		userRepository.add(user);
+		return ResponseEntity.ok("User registered successfully!");
+	}
+//	public ResponseEntity<Object> changePassword(String json) {
+//		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+//				.getPrincipal();
+//		JsonMapper jsonMapper = new JsonMapper();
+//		Integer userId = null;
+//		String existingPassword = null;
+//		String newPassword = null;
+//		try {
+//			JsonNode jsonObject = jsonMapper.readTree(json);
+//			userId = jsonObject.get("userId").asInt();
+//			existingPassword = jsonObject.get("existingPassword").asText();
+//			newPassword = jsonObject.get("newPassword").asText();
+//		} catch (Exception e) {
+//			LOGGER.error("Have error at changePassword();", e);
+//			return ResponseEntity.status(HttpStatus.OK)
+//					.body(new ResponseObject("ERROR", "Cập nhật mật khẩu thất bại", ""));
+//		}
+//		// check if matches user id
+//		if (userDetail.getId().equals(userId)) {
+//			if (encoder.matches(existingPassword, userDetail.getPassword())) {
+//				String newPasswordEncoder = encoder.encode(newPassword);
+//				userDetail.setPassword(newPasswordEncoder);
+//				Employee employee = employeeRepository.findById(empId);
+//				employee.setPassword(newPasswordEncoder);
+//				employeeRepository.edit(employee);
+//
+//			}else {
+//				return ResponseEntity.status(HttpStatus.OK)
+//						.body(new ResponseObject("ERROR", "Mật khẩu cũ không chính xác", ""));
+//			}
+//		} else {
+//			return ResponseEntity.status(HttpStatus.OK)
+//					.body(new ResponseObject("ERROR", "Không có quyền cập nhật mật khẩu của người khác", ""));
+//		}
+//		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Cập nhật mật khẩu thành công",""));
+//	}
 }

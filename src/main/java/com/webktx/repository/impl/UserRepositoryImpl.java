@@ -1,5 +1,7 @@
 package com.webktx.repository.impl;
 
+import java.util.List;
+
 import javax.persistence.Query;
 import javax.transaction.Transactional;
 
@@ -46,10 +48,11 @@ public class UserRepositoryImpl implements IUserRepository {
 	public Boolean checkExistingUserByUsername(String username) {
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			String hql = "FROM user as u WHERE u.userName = " + username.trim();
+			String hql = "FROM users as u WHERE u.username = :username";
 			Query query = session.createQuery(hql);
-			User user = (User) query.getSingleResult();
-			if(null != user) {
+			query.setParameter("username", username.trim());
+			List<User> users = (List<User>) query.getResultList();
+			if(!users.isEmpty()) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -120,6 +123,22 @@ public class UserRepositoryImpl implements IUserRepository {
 
 		return user;
 	}
-
+	@Override
+	public Boolean checkExistingUserByCitizenId(String citizenId) {
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.citizenId = :citizenId ");
+		Query query = session.createQuery(hql.toString());
+		query.setParameter("citizenId",citizenId );
+		try {
+			String result = (String) query.getSingleResult();
+			if (!result.equals("")) {
+				return true;
+			}
+		}
+		 catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return false;
+	}
 
 }
