@@ -157,6 +157,12 @@ public class PostService {
 			String thumbnail = (jsonObjectPost.get("thumbnail") != null
 					&& !jsonObjectPost.get("thumbnail").asText().equals("")) ? jsonObjectPost.get("thumbnail").asText()
 							: "";
+			StringBuilder baseURL = new StringBuilder();
+			baseURL.append(Constant.SERVER_IP).append("/api/get-image/");
+			if(!thumbnail.equals("") && thumbnail.contains(baseURL)) {
+				// Extract image name from link
+				thumbnail = thumbnail.replace(baseURL, "");
+			}
 			CategoryModel categoryModel = categoryRepositoryImpl.findById(categoryId);
 			Category category = new Category();
 			category.setCategoryId(categoryModel.getCategoryId());
@@ -202,6 +208,7 @@ public class PostService {
 		JsonNode jsonObjectPost;
 		Post post = new Post();
 		PostModel postModel = null;
+		LocalDateTime localDateTime = null;
 		try {
 			jsonObjectPost = jsonMapper.readTree(json);
 			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -217,12 +224,24 @@ public class PostService {
 			Boolean isPulished = jsonObjectPost.get("isPublished") != null ? jsonObjectPost.get("isPublished").asBoolean()
 					: true;
 			String pulishedAt = jsonObjectPost.get("publishedAt") != null ? jsonObjectPost.get("publishedAt").asText() : "";
-		    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-		    LocalDateTime localDateTime = LocalDateTime.parse(pulishedAt, formatter);
+			if(isPulished) {
+				if(!pulishedAt.equals("")) {
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+					localDateTime = LocalDateTime.parse(pulishedAt, formatter);
+				}else {
+					localDateTime = LocalDateTime.now();
+				}
+			}
 		    Timestamp timestamp = Timestamp.valueOf(localDateTime);
 			String thumbnail = (jsonObjectPost.get("thumbnail") != null
 					&& !jsonObjectPost.get("thumbnail").asText().equals("")) ? jsonObjectPost.get("thumbnail").asText()
 							: "";
+			StringBuilder baseURL = new StringBuilder();
+			baseURL.append(Constant.SERVER_IP).append("/api/get-image/");
+			if(!thumbnail.equals("") && thumbnail.contains(baseURL)) {
+				// Extract image name from link
+				thumbnail = thumbnail.replace(baseURL, "");
+			}
 			if(summary == "") {
 				summary = content.substring(0, 255);
 				for(int i = summary.length() - 1; i >0 ; i--) {
@@ -310,11 +329,7 @@ public class PostService {
 		postModel.setTagModels(tagModels);
 		postModel.setCreatedAt(post.getCreatedAt());
 		postModel.setUpdatedAt(post.getUpdatedAt());
-		try {
-			postModel.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),Constant.URL_IMAGE_SERVER));
-		} catch (IOException e) {
-			LOGGER.error("{}",e);
-		}
+		postModel.setThumbnail(ultil.converImageNameToLink(post.getSmallPictureId()));
 
 		return postModel;
 	}
