@@ -26,7 +26,7 @@ public class PostModel {
 	private String userName;
 	private CategoryModel category;
 	private String title;
-	private byte[] thumbnail;
+	private String thumbnail;
 	private String content;
 	private String summary;	
 	private LocalDateTime publishedAt;

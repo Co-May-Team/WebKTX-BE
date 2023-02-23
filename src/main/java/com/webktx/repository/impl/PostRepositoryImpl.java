@@ -76,11 +76,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
 				
 				try {
-					StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir"))
-							.append(Constant.URL_IMAGE_SERVER);
-					final InputStream in = new BufferedInputStream(
-							new FileInputStream(baseURL + post.getSmallPictureId().trim()));
-					customPost.setThumbnail(IOUtils.toByteArray(in));
+					customPost.setThumbnail(ultil.converImageNameToLink(post.getSmallPictureId()));
 				} catch (Exception e) {
 					LOGGER.error("{}", e);
 				}
@@ -151,7 +147,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setCategory(categoryModel);
-				customPost.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),Constant.URL_IMAGE_SERVER));
+				customPost.setThumbnail(ultil.converImageNameToLink(post.getSmallPictureId()));
 				customPost.setSummary(post.getSummary());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
@@ -340,7 +336,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setCategory(categoryModel);
-				customPost.setThumbnail(ultil.getImageByName(post.getSmallPictureId(),Constant.URL_IMAGE_SERVER));
+				customPost.setThumbnail(ultil.converImageNameToLink(post.getSmallPictureId()));
 				customPost.setSummary(post.getSummary());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
