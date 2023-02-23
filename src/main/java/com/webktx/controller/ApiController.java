@@ -1,20 +1,27 @@
 package com.webktx.controller;
 
+import java.awt.image.BufferedImage;
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
 import javax.servlet.ServletContext;
 
 import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.poi.util.IOUtils;
+import org.imgscalr.Scalr;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -30,6 +37,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.webktx.constant.Constant;
 import com.webktx.entity.ResponseObject;
 import com.webktx.service.APIService;
 import com.webktx.ultil.Ultil;
@@ -43,6 +51,7 @@ public class ApiController {
 	
 	@Autowired
 	Ultil ultil;
+	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@GetMapping(value = "/get-image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImageWithMediaType(
@@ -53,7 +62,7 @@ public class ApiController {
 	
 	@PostMapping("/upload-images")
 	@ResponseBody
-	public ResponseEntity<Object> uploadFile(MultipartHttpServletRequest request) {
+	public ResponseEntity<Object> uploadFile(MultipartHttpServletRequest request) throws IOException {
 		String base64Result = "";
 //		// Lay r ds ten file
 		MultiValueMap<String, MultipartFile> form = request.getMultiFileMap();
@@ -67,30 +76,61 @@ public class ApiController {
 //				B1: lay ra duong dan se luu file
 			pathSaveFile.append("/image/webktx/");
 
-//				pathSaveFile = "/com/webktx/image/";
 			// Get extension
 			String[] extensions = mpf.getOriginalFilename().split("\\.");
 			StringBuilder ext = new StringBuilder(".").append(extensions[extensions.length - 1]);
 			String name = String.format("%s_%s", new SimpleDateFormat("yyyy-MM-dd-HHmmss").format(new Date().getTime()),
 					RandomStringUtils.randomAlphanumeric(5) + ext);
 //				B2: Tao file
-			File file = new File(pathSaveFile + name);
-//				File file = new File(pathSaveFile + mpf.getOriginalFilename());
 			System.out.println("Path save file: " + pathSaveFile);
-//			B3: dung ham trong thu vien commmon de save
-			try {
-				mpf.transferTo(file);
-				base64Result = APIService.convertToBase64(name);
-				result.put("name", name);
-				result.put("base64Data", base64Result);
+			String newFileName = resizeImage(mpf, Constant.IMAGE_WIDTH, Constant.IMAGE_HEIGHT);
+			if (!newFileName.equals("")) {
+				result.put("name", newFileName);
+				StringBuilder link = new StringBuilder();
+				link.append(Constant.SERVER_IP).append("/api/get-image/").append(name);
+				result.put("link",link.toString());
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "", result));
-			} catch (IOException e) {
-				System.err.println(e.getMessage());
-				return ResponseEntity.status(HttpStatus.OK)
-						.body(new ResponseObject("OK", e.getMessage(), mpf.getOriginalFilename()));
+			}else {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Some error when save file", ""));
 			}
+			
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "No image to save", ""));
 
 	}
+	 public String resizeImage(MultipartFile imageFile,int targetWidth, int targetHeight) {
+//	        try {
+//	            BufferedImage bufferedImage = ImageIO.read(sourceFile);
+//	            Image resultingImage = bufferedImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_DEFAULT);
+//			    BufferedImage outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
+//			    outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
+//	            return true;
+//	        } catch (IOException e) {
+//	        	LOGGER.error(e.getMessage(), e);
+//	            return false;
+//	        }
+		 try {
+	            BufferedImage bufferedImage = ImageIO.read(imageFile.getInputStream());
+	            BufferedImage outputImage = Scalr.resize(bufferedImage, targetWidth);
+//	            String newFileName ="(" + CMDConstrant.IMAGE_WIDTH + ")" + sourceFile.getName() ;
+	            String[] extensions = imageFile.getOriginalFilename().split("\\.");
+//	            String newFileName = "(" + targetWidth + ")" + imageFile.getOriginalFilename();
+	            String newFileName = String.format("%s_%s", new SimpleDateFormat("yyyy-MM-dd-HHmmss").format(new Date().getTime()),
+						RandomStringUtils.randomAlphanumeric(5) + "." +  extensions[extensions.length-1]);
+	            LOGGER.info("resizeImage: file name: " +  newFileName);
+	    		StringBuilder pathSaveFile = new StringBuilder(System.getProperty("user.dir"));
+				pathSaveFile.append("/image/webktx/");
+
+	            Path path = Paths.get(pathSaveFile.toString(),newFileName);
+	            LOGGER.info("resizeImage: path save: " +  path.toString());
+	            File newImageFile = path.toFile();
+	            ImageIO.write(outputImage, extensions[extensions.length-1], newImageFile);
+	            outputImage.flush();
+	            return newFileName;
+	        } catch (IOException e) {
+	        	System.out.println("Some error when resize file:");
+	            e.printStackTrace();
+	            return "";
+	        }
+	    }
 }
