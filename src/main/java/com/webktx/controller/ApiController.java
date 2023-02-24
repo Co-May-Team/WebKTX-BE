@@ -79,15 +79,13 @@ public class ApiController {
 			// Get extension
 			String[] extensions = mpf.getOriginalFilename().split("\\.");
 			StringBuilder ext = new StringBuilder(".").append(extensions[extensions.length - 1]);
-			String name = String.format("%s_%s", new SimpleDateFormat("yyyy-MM-dd-HHmmss").format(new Date().getTime()),
-					RandomStringUtils.randomAlphanumeric(5) + ext);
 //				B2: Tao file
 			System.out.println("Path save file: " + pathSaveFile);
 			String newFileName = resizeImage(mpf, Constant.IMAGE_WIDTH, Constant.IMAGE_HEIGHT);
 			if (!newFileName.equals("")) {
 				result.put("name", newFileName);
 				StringBuilder link = new StringBuilder();
-				link.append(Constant.SERVER_IP).append("/api/get-image/").append(name);
+				link.append(Constant.SERVER_IP).append("/api/get-image/").append(newFileName);
 				result.put("link",link.toString());
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "", result));
 			}else {
