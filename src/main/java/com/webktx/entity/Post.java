@@ -66,5 +66,6 @@ public class Post extends BaseEntity{
 			@JoinColumn(name = "post_id") }, inverseJoinColumns = {
 					@JoinColumn(name = "tag_id") })
 	private List<Tag> tags;
+	private int viewed;
 	
 }

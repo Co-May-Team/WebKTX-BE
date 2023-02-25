@@ -74,7 +74,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCategory(categoryModel);
 				customPost.setSummary(post.getSummary());
 				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
-				
+				customPost.setViewed(post.getViewed());
 				try {
 					customPost.setThumbnail(ultil.converImageNameToLink(post.getSmallPictureId()));
 				} catch (Exception e) {
@@ -152,6 +152,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
 				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
+				customPost.setViewed(post.getViewed());
 				customPostList.add(customPost);
 				
 			}
@@ -341,12 +342,28 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
 				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
+				customPost.setViewed(post.getViewed());
 				customPostList.add(customPost);
 			}
 		} catch (Exception e) {
 			LOGGER.error("Error has occured in findAll " + e, e);
 		}
 		return customPostList;
+	}
+	@Override
+	public void updateView(int postId, int viewedCount) {
+		String hql  = "UPDATE posts as s set s.viewed = :viewed where s.postId = :postId";
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query query = session.createQuery(hql);
+			query.setParameter("postId", postId);
+			query.setParameter("viewed", viewedCount);
+			LOGGER.info(hql);
+			query.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }
