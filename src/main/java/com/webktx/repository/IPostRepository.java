@@ -30,6 +30,7 @@ public interface IPostRepository {
 	Integer insert (Post post);
 	Integer deletePostById(Integer id);
 	List<PostModel> findRelatedPosts(Integer numberPost, Integer postId); 
+	void updateView(int postId,  int viewCount);
 }
 
 

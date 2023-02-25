@@ -32,6 +32,6 @@ public class PostModel {
 	private LocalDateTime publishedAt;
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
-
+	private int viewed;
 
 }

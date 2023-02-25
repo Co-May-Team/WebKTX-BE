@@ -73,6 +73,8 @@ public class PostService {
 			results.put("posts", post);
 			results.put("relatedPost", relatedPost);
 			if (results.size()>0) {
+				postRepositoryImpl.updateView(post.getPostId(), post.getViewed()+1);
+				post.setViewed(post.getViewed() + 1);
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", results));
 			} else {
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Have error", ""));
