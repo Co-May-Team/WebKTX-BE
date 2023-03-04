@@ -51,15 +51,28 @@ public class ApiController {
 	
 	@Autowired
 	Ultil ultil;
+	@Autowired
+	APIService apiService;
+	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@GetMapping(value = "/get-image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
     public @ResponseBody byte[] getImageWithMediaType(
     		@PathVariable String name
     		) throws IOException {
-        return ultil.getImageByName(name.trim(), "/image/webktx/");
+        return ultil.getImageByName(name.trim(), Constant.URL_IMAGE_SERVER_POST);
     }
-	
+	@GetMapping(value = "/get-base-images")
+    public  ResponseEntity<Object> getListBaseImage(
+    		) throws IOException {
+        return apiService.getListBaseImage();
+    }
+	@GetMapping(value = "/get-base-image/{name}")
+	 public @ResponseBody byte[] getBaseImageWithMediaType(
+	    		@PathVariable String name
+	    		) throws IOException {
+	        return ultil.getImageByName(name.trim(), Constant.URL_IMAGE_SERVER);
+	    }
 	@PostMapping("/upload-images")
 	@ResponseBody
 	public ResponseEntity<Object> uploadFile(MultipartHttpServletRequest request) throws IOException {
@@ -74,7 +87,7 @@ public class ApiController {
 				continue;
 			}
 //				B1: lay ra duong dan se luu file
-			pathSaveFile.append("/image/webktx/");
+			pathSaveFile.append(Constant.URL_IMAGE_SERVER_POST);
 
 			// Get extension
 			String[] extensions = mpf.getOriginalFilename().split("\\.");
@@ -117,7 +130,7 @@ public class ApiController {
 						RandomStringUtils.randomAlphanumeric(5) + "." +  extensions[extensions.length-1]);
 	            LOGGER.info("resizeImage: file name: " +  newFileName);
 	    		StringBuilder pathSaveFile = new StringBuilder(System.getProperty("user.dir"));
-				pathSaveFile.append("/image/webktx/");
+				pathSaveFile.append(Constant.URL_IMAGE_SERVER_POST);
 
 	            Path path = Paths.get(pathSaveFile.toString(),newFileName);
 	            LOGGER.info("resizeImage: path save: " +  path.toString());

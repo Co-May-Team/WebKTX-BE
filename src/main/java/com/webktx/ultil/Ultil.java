@@ -24,4 +24,9 @@ public class Ultil {
 		link.append(Constant.SERVER_IP).append("/api/get-image/").append(imgName);
 		return link.toString();
 	}
+	public String converBaseImageNameToLink(String imgName) {
+		StringBuilder link = new StringBuilder();
+		link.append(Constant.SERVER_IP).append("/api/get-base-image/").append(imgName);
+		return link.toString();
+	}
 }
