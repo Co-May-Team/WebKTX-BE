@@ -67,7 +67,7 @@ public class ApiController {
     		) throws IOException {
         return apiService.getListBaseImage();
     }
-	@GetMapping(value = "/get-base-image/{name}")
+	@GetMapping(value = "/get-base-image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
 	 public @ResponseBody byte[] getBaseImageWithMediaType(
 	    		@PathVariable String name
 	    		) throws IOException {
