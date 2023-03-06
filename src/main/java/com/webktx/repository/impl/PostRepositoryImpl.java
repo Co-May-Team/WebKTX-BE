@@ -41,8 +41,6 @@ public class PostRepositoryImpl implements IPostRepository {
 	@Autowired
 	private SessionFactory sessionFactory;
 
-	@Autowired
-	Ultil ultil = new Ultil();
 
 	@Override
 	public PostModel findById(Integer id) {
@@ -76,7 +74,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
 				customPost.setViewed(post.getViewed());
 				try {
-					customPost.setThumbnail(ultil.converImageNameToLink(post.getSmallPictureId()));
+					customPost.setThumbnail(Ultil.converImageNameToLink(post.getSmallPictureId()));
 				} catch (Exception e) {
 					LOGGER.error("{}", e);
 				}
@@ -147,7 +145,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setCategory(categoryModel);
-				customPost.setThumbnail(ultil.converImageNameToLink(post.getSmallPictureId()));
+				customPost.setThumbnail(Ultil.converImageNameToLink(post.getSmallPictureId()));
 				customPost.setSummary(post.getSummary());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
@@ -337,7 +335,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setCategory(categoryModel);
-				customPost.setThumbnail(ultil.converImageNameToLink(post.getSmallPictureId()));
+				customPost.setThumbnail(Ultil.converImageNameToLink(post.getSmallPictureId()));
 				customPost.setSummary(post.getSummary());
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());

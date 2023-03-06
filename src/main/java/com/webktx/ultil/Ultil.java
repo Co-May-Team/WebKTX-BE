@@ -19,12 +19,12 @@ public class Ultil {
 		image = IOUtils.toByteArray(in);
 		return image;
 	}
-	public String converImageNameToLink(String imgName) {
+	public static String converImageNameToLink(String imgName) {
 		StringBuilder link = new StringBuilder();
 		link.append(Constant.SERVER_IP).append("/api/get-image/").append(imgName);
 		return link.toString();
 	}
-	public String converBaseImageNameToLink(String imgName) {
+	public static String converBaseImageNameToLink(String imgName) {
 		StringBuilder link = new StringBuilder();
 		link.append(Constant.SERVER_IP).append("/api/get-base-image/").append(imgName);
 		return link.toString();

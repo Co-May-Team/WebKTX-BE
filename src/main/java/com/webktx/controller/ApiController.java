@@ -9,6 +9,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -29,9 +30,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,12 +71,32 @@ public class ApiController {
     		) throws IOException {
         return apiService.getListBaseImage();
     }
+	@GetMapping(value = "/base-image/{id}")
+    public  ResponseEntity<Object> findById(
+    		@PathVariable Integer id) {
+        return apiService.findById(id);
+    }
 	@GetMapping(value = "/get-base-image/{name}", produces = MediaType.IMAGE_JPEG_VALUE)
 	 public @ResponseBody byte[] getBaseImageWithMediaType(
 	    		@PathVariable String name
 	    		) throws IOException {
 	        return ultil.getImageByName(name.trim(), Constant.URL_IMAGE_SERVER);
 	    }
+	@PostMapping("/upload-base-images")
+	@ResponseBody
+	public ResponseEntity<Object> uploadBaseImage(MultipartHttpServletRequest request){
+		return apiService.uploadBaseImage(request);
+	}
+	@PutMapping("/base-image/edit")
+	@ResponseBody
+	public ResponseEntity<Object> editBaseImage(@RequestBody String json){
+		return apiService.edit(json);
+	}
+	@DeleteMapping("/base-image/delete/{id}")
+	@ResponseBody
+	public ResponseEntity<Object> deleteBaseImage(@PathVariable Integer id){
+		return apiService.delete(id, Constant.URL_IMAGE_SERVER);
+	}
 	@PostMapping("/upload-images")
 	@ResponseBody
 	public ResponseEntity<Object> uploadFile(MultipartHttpServletRequest request) throws IOException {
@@ -94,7 +118,7 @@ public class ApiController {
 			StringBuilder ext = new StringBuilder(".").append(extensions[extensions.length - 1]);
 //				B2: Tao file
 			System.out.println("Path save file: " + pathSaveFile);
-			String newFileName = resizeImage(mpf, Constant.IMAGE_WIDTH, Constant.IMAGE_HEIGHT);
+			String newFileName = apiService.resizeImage(mpf, Constant.IMAGE_WIDTH, Constant.IMAGE_HEIGHT,Constant.URL_IMAGE_SERVER_POST);
 			if (!newFileName.equals("")) {
 				result.put("name", newFileName);
 				StringBuilder link = new StringBuilder();
@@ -109,39 +133,6 @@ public class ApiController {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "No image to save", ""));
 
 	}
-	 public String resizeImage(MultipartFile imageFile,int targetWidth, int targetHeight) {
-//	        try {
-//	            BufferedImage bufferedImage = ImageIO.read(sourceFile);
-//	            Image resultingImage = bufferedImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_DEFAULT);
-//			    BufferedImage outputImage = new BufferedImage(targetWidth, targetHeight, BufferedImage.TYPE_INT_RGB);
-//			    outputImage.getGraphics().drawImage(resultingImage, 0, 0, null);
-//	            return true;
-//	        } catch (IOException e) {
-//	        	LOGGER.error(e.getMessage(), e);
-//	            return false;
-//	        }
-		 try {
-	            BufferedImage bufferedImage = ImageIO.read(imageFile.getInputStream());
-	            BufferedImage outputImage = Scalr.resize(bufferedImage, targetWidth);
-//	            String newFileName ="(" + CMDConstrant.IMAGE_WIDTH + ")" + sourceFile.getName() ;
-	            String[] extensions = imageFile.getOriginalFilename().split("\\.");
-//	            String newFileName = "(" + targetWidth + ")" + imageFile.getOriginalFilename();
-	            String newFileName = String.format("%s_%s", new SimpleDateFormat("yyyy-MM-dd-HHmmss").format(new Date().getTime()),
-						RandomStringUtils.randomAlphanumeric(5) + "." +  extensions[extensions.length-1]);
-	            LOGGER.info("resizeImage: file name: " +  newFileName);
-	    		StringBuilder pathSaveFile = new StringBuilder(System.getProperty("user.dir"));
-				pathSaveFile.append(Constant.URL_IMAGE_SERVER_POST);
 
-	            Path path = Paths.get(pathSaveFile.toString(),newFileName);
-	            LOGGER.info("resizeImage: path save: " +  path.toString());
-	            File newImageFile = path.toFile();
-	            ImageIO.write(outputImage, extensions[extensions.length-1], newImageFile);
-	            outputImage.flush();
-	            return newFileName;
-	        } catch (IOException e) {
-	        	System.out.println("Some error when resize file:");
-	            e.printStackTrace();
-	            return "";
-	        }
-	    }
+	
 }
