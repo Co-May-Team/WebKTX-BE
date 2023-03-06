@@ -58,8 +58,6 @@ public class PostService {
 	@Autowired
 	TagRepositoryImpl tagRepositoryImpl;
 	
-	@Autowired
-	Ultil ultil;
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
@@ -331,7 +329,7 @@ public class PostService {
 		postModel.setTagModels(tagModels);
 		postModel.setCreatedAt(post.getCreatedAt());
 		postModel.setUpdatedAt(post.getUpdatedAt());
-		postModel.setThumbnail(ultil.converImageNameToLink(post.getSmallPictureId()));
+		postModel.setThumbnail(Ultil.converImageNameToLink(post.getSmallPictureId()));
 
 		return postModel;
 	}
