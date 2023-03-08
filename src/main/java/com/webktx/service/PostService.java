@@ -243,13 +243,18 @@ public class PostService {
 				thumbnail = thumbnail.replace(baseURL, "");
 			}
 			if(summary == "") {
-				summary = content.substring(0, 255);
-				for(int i = summary.length() - 1; i >0 ; i--) {
-					if(summary.toCharArray()[i] == ' ') {
-						summary = summary.substring(0,i);
-						break;
+				if(summary.length() > 255) {
+					summary = content.substring(0, 255);
+					for(int i = summary.length() - 1; i >0 ; i--) {
+						if(summary.toCharArray()[i] == ' ') {
+							summary = summary.substring(0,i);
+							break;
+						}
 					}
+				}else {
+					summary = title;
 				}
+
 			}
 			CategoryModel categoryModel = categoryRepositoryImpl.findById(categoryId);
 			Category category = new Category();
