@@ -90,7 +90,7 @@ public class PostService {
 		
 
 		order = order == null ? "DESC" : order;
-		sort = sort == null ? "postId" : sort;
+		sort = sort == null ? "publishedAt" : sort;
 		page = (page == null || page == "") ? "1" : page.trim();
 		Integer limit = Constant.LIMIT;
 		// Caculator offset
@@ -143,6 +143,7 @@ public class PostService {
 		JsonNode jsonObjectPost;
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
+		LocalDateTime localDateTime = null;
 		try {
 			jsonObjectPost = jsonMapper.readTree(json);
 			Integer id = jsonObjectPost.get("postId").asInt();
@@ -151,6 +152,7 @@ public class PostService {
 			String summary = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("summary").asText() : "";
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
 			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean() : true;
+			String pulishedAt = jsonObjectPost.get("publishedAt") != null ? jsonObjectPost.get("publishedAt").asText() : "";
 			for (JsonNode jsonNode : jsonObjectPost.get("tagIds")) {
 				tagIds.add(jsonNode.asInt());
 			}
@@ -163,6 +165,15 @@ public class PostService {
 				// Extract image name from link
 				thumbnail = thumbnail.replace(baseURL, "");
 			}
+			if(isPulished) {
+				if(!pulishedAt.equals("")) {
+					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+					localDateTime = LocalDateTime.parse(pulishedAt, formatter);
+				}else {
+					localDateTime = LocalDateTime.now();
+				}
+			}
+		    Timestamp timestamp = Timestamp.valueOf(localDateTime);
 			CategoryModel categoryModel = categoryRepositoryImpl.findById(categoryId);
 			Category category = new Category();
 			category.setCategoryId(categoryModel.getCategoryId());
@@ -178,6 +189,7 @@ public class PostService {
 			post.setTags(tags);
 			post.setUser(user);
 			post.setSmallPictureId(thumbnail);
+			post.setPublishedAt(timestamp);
 			for(Integer tagId: tagIds) {
 				Tag tag = tagRepositoryImpl.findById(tagId);
 				if(tag != null) {
