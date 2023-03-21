@@ -8,6 +8,9 @@ import org.springframework.boot.autoconfigure.jdbc.DataSourceTransactionManagerA
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.context.annotation.ComponentScan;
 
+import com.ulisesbocchio.jasyptspringboot.annotation.EnableEncryptableProperties;
+
+@EnableEncryptableProperties
 @SpringBootApplication
 @ComponentScan({ "com.webktx" })
 @EnableAutoConfiguration(exclude = { 
