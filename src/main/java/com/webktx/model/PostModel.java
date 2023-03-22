@@ -1,6 +1,5 @@
 package com.webktx.model;
 
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -33,5 +32,6 @@ public class PostModel {
 	private LocalDateTime createdAt;
 	private LocalDateTime updatedAt;
 	private int viewed;
+	private Boolean isPublished;
 
 }

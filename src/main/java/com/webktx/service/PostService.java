@@ -347,6 +347,7 @@ public class PostService {
 		postModel.setCreatedAt(post.getCreatedAt());
 		postModel.setUpdatedAt(post.getUpdatedAt());
 		postModel.setThumbnail(Ultil.converImageNameToLink(post.getSmallPictureId()));
+		postModel.setIsPublished(post.getIsPublished());
 
 		return postModel;
 	}

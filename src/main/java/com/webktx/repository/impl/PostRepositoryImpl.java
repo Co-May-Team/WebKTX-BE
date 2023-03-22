@@ -72,6 +72,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCategory(categoryModel);
 				customPost.setSummary(post.getSummary());
 				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
+				customPost.setIsPublished(post.getIsPublished());
 				customPost.setViewed(post.getViewed());
 				try {
 					customPost.setThumbnail(Ultil.converImageNameToLink(post.getSmallPictureId()));
@@ -150,6 +151,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
 				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
+				customPost.setIsPublished(post.getIsPublished());
 				customPost.setViewed(post.getViewed());
 				customPostList.add(customPost);
 				
@@ -340,6 +342,7 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setCreatedAt(post.getCreatedAt());
 				customPost.setUpdatedAt(post.getUpdatedAt());
 				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
+				customPost.setIsPublished(post.getIsPublished());
 				customPost.setViewed(post.getViewed());
 				customPostList.add(customPost);
 			}
