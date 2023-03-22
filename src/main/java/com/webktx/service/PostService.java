@@ -54,24 +54,23 @@ public class PostService {
 
 	@Autowired
 	APIService apiService;
-	
+
 	@Autowired
 	TagRepositoryImpl tagRepositoryImpl;
-	
 
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	public ResponseEntity<Object> findById(Integer id) {
 		PostModel post = new PostModel();
-		List<PostModel> relatedPost =  null;
+		List<PostModel> relatedPost = null;
 		try {
-			post = postRepositoryImpl.findById(id);	
-			relatedPost = postRepositoryImpl.findRelatedPosts(10,id);
+			post = postRepositoryImpl.findById(id);
+			relatedPost = postRepositoryImpl.findRelatedPosts(10, id);
 			Map<String, Object> results = new TreeMap<String, Object>();
 			results.put("posts", post);
 			results.put("relatedPost", relatedPost);
-			if (results.size()>0) {
-				postRepositoryImpl.updateView(post.getPostId(), post.getViewed()+1);
+			if (results.size() > 0) {
+				postRepositoryImpl.updateView(post.getPostId(), post.getViewed() + 1);
 				post.setViewed(post.getViewed() + 1);
 				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", results));
 			} else {
@@ -87,7 +86,6 @@ public class PostService {
 	public ResponseEntity<Object> findAll(String json, String sort, String order, String page) {
 		JsonNode jsonObject = null;
 		JsonMapper jsonMapper = new JsonMapper();
-		
 
 		order = order == null ? "DESC" : order;
 		sort = sort == null ? "publishedAt" : sort;
@@ -99,21 +97,21 @@ public class PostService {
 		List<PostModel> postModelListTMP = new ArrayList<PostModel>();
 		try {
 			jsonObject = jsonMapper.readTree(json);
-			
+
 			String title = ((jsonObject.get("title") == null) || (jsonObject.get("title").asText() == "")) ? ""
 					: jsonObject.get("title").asText();
 			String content = ((jsonObject.get("content") == null) || (jsonObject.get("content").asText() == "")) ? ""
 					: jsonObject.get("content").asText();
-			Integer category_id = jsonObject.get("category_id") == null  ? 0 : jsonObject.get("category_id").asInt();
-			Integer tag_id = jsonObject.get("tag_id") == null  ? 0 : jsonObject.get("tag_id").asInt();
+			Integer category_id = jsonObject.get("category_id") == null ? 0 : jsonObject.get("category_id").asInt();
+			Integer tag_id = jsonObject.get("tag_id") == null ? 0 : jsonObject.get("tag_id").asInt();
 			String user_id = ((jsonObject.get("user_id") == null) || (jsonObject.get("user_id").asText() == "")) ? ""
 					: jsonObject.get("user_id").asText();
-			postModelListTMP = postRepositoryImpl.findAll(title, content, user_id, category_id,tag_id, sort,
-					order, offset, limit);
+			postModelListTMP = postRepositoryImpl.findAll(title, content, user_id, category_id, tag_id, sort, order,
+					offset, limit);
 			for (PostModel postModel : postModelListTMP) {
 				postModelSet.add(postModel);
 			}
-			Integer totalItemPost = postRepositoryImpl.countAllPaging(title, content, user_id, category_id,tag_id);
+			Integer totalItemPost = postRepositoryImpl.countAllPaging(title, content, user_id, category_id, tag_id);
 			Pagination pagination = new Pagination();
 			pagination.setLimit(limit);
 			pagination.setPage(Integer.valueOf(page));
@@ -144,6 +142,7 @@ public class PostService {
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
 		LocalDateTime localDateTime = null;
+		Timestamp timestamp = null;
 		try {
 			jsonObjectPost = jsonMapper.readTree(json);
 			Integer id = jsonObjectPost.get("postId").asInt();
@@ -151,8 +150,11 @@ public class PostService {
 			String content = jsonObjectPost.get("content") != null ? jsonObjectPost.get("content").asText() : "";
 			String summary = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("summary").asText() : "";
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
-			Boolean isPulished = jsonObjectPost.get("isPulished") != null ? jsonObjectPost.get("isPulished").asBoolean() : true;
-			String pulishedAt = jsonObjectPost.get("publishedAt") != null ? jsonObjectPost.get("publishedAt").asText() : "";
+			Boolean isPulished = jsonObjectPost.get("isPublished") != null
+					? jsonObjectPost.get("isPublished").asBoolean()
+					: true;
+			String pulishedAt = jsonObjectPost.get("publishedAt") != null ? jsonObjectPost.get("publishedAt").asText()
+					: "";
 			for (JsonNode jsonNode : jsonObjectPost.get("tagIds")) {
 				tagIds.add(jsonNode.asInt());
 			}
@@ -161,19 +163,17 @@ public class PostService {
 							: "";
 			StringBuilder baseURL = new StringBuilder();
 			baseURL.append(Constant.SERVER_IP).append("/api/get-image/");
-			if(!thumbnail.equals("") && thumbnail.contains(baseURL)) {
+			if (!thumbnail.equals("") && thumbnail.contains(baseURL)) {
 				// Extract image name from link
 				thumbnail = thumbnail.replace(baseURL, "");
 			}
-			if(isPulished) {
-				if(!pulishedAt.equals("")) {
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-					localDateTime = LocalDateTime.parse(pulishedAt, formatter);
-				}else {
-					localDateTime = LocalDateTime.now();
-				}
+			if (!pulishedAt.equals("")) {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+				localDateTime = LocalDateTime.parse(pulishedAt, formatter);
+			} else {
+				localDateTime = LocalDateTime.now();
 			}
-		    Timestamp timestamp = Timestamp.valueOf(localDateTime);
+
 			CategoryModel categoryModel = categoryRepositoryImpl.findById(categoryId);
 			Category category = new Category();
 			category.setCategoryId(categoryModel.getCategoryId());
@@ -185,14 +185,17 @@ public class PostService {
 			post.setContent(content);
 			post.setSummary(summary);
 			post.setIsPublished(isPulished);
-			post.setCategory(category);			
+			post.setCategory(category);
 			post.setTags(tags);
 			post.setUser(user);
 			post.setSmallPictureId(thumbnail);
-			post.setPublishedAt(timestamp);
-			for(Integer tagId: tagIds) {
+			if (localDateTime != null) {
+				timestamp = Timestamp.valueOf(localDateTime);
+				post.setPublishedAt(timestamp);
+			}
+			for (Integer tagId : tagIds) {
 				Tag tag = tagRepositoryImpl.findById(tagId);
-				if(tag != null) {
+				if (tag != null) {
 					tags.add(tag);
 				}
 			}
@@ -221,6 +224,7 @@ public class PostService {
 		Post post = new Post();
 		PostModel postModel = null;
 		LocalDateTime localDateTime = null;
+		Timestamp timestamp = null;
 		try {
 			jsonObjectPost = jsonMapper.readTree(json);
 			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -233,37 +237,37 @@ public class PostService {
 				tagIds.add(jsonNode.asInt());
 			}
 			Integer categoryId = jsonObjectPost.get("summary") != null ? jsonObjectPost.get("category").asInt() : 2;
-			Boolean isPulished = jsonObjectPost.get("isPublished") != null ? jsonObjectPost.get("isPublished").asBoolean()
+			Boolean isPulished = jsonObjectPost.get("isPublished") != null
+					? jsonObjectPost.get("isPublished").asBoolean()
 					: true;
-			String pulishedAt = jsonObjectPost.get("publishedAt") != null ? jsonObjectPost.get("publishedAt").asText() : "";
-			if(isPulished) {
-				if(!pulishedAt.equals("")) {
-					DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
-					localDateTime = LocalDateTime.parse(pulishedAt, formatter);
-				}else {
-					localDateTime = LocalDateTime.now();
-				}
+			String pulishedAt = jsonObjectPost.get("publishedAt") != null ? jsonObjectPost.get("publishedAt").asText()
+					: "";
+			if (!pulishedAt.equals("")) {
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+				localDateTime = LocalDateTime.parse(pulishedAt, formatter);
+			} else {
+				localDateTime = LocalDateTime.now();
 			}
-		    Timestamp timestamp = Timestamp.valueOf(localDateTime);
+
 			String thumbnail = (jsonObjectPost.get("thumbnail") != null
 					&& !jsonObjectPost.get("thumbnail").asText().equals("")) ? jsonObjectPost.get("thumbnail").asText()
 							: "";
 			StringBuilder baseURL = new StringBuilder();
 			baseURL.append(Constant.SERVER_IP).append("/api/get-image/");
-			if(!thumbnail.equals("") && thumbnail.contains(baseURL)) {
+			if (!thumbnail.equals("") && thumbnail.contains(baseURL)) {
 				// Extract image name from link
 				thumbnail = thumbnail.replace(baseURL, "");
 			}
-			if(summary == "") {
-				if(summary.length() > 255) {
+			if (summary == "") {
+				if (summary.length() > 255) {
 					summary = content.substring(0, 255);
-					for(int i = summary.length() - 1; i >0 ; i--) {
-						if(summary.toCharArray()[i] == ' ') {
-							summary = summary.substring(0,i);
+					for (int i = summary.length() - 1; i > 0; i--) {
+						if (summary.toCharArray()[i] == ' ') {
+							summary = summary.substring(0, i);
 							break;
 						}
 					}
-				}else {
+				} else {
 					summary = title;
 				}
 
@@ -278,11 +282,15 @@ public class PostService {
 			post.setContent(content);
 			post.setSummary(summary);
 			post.setCategory(category);
-			post.setPublishedAt(timestamp);
+			if (localDateTime != null) {
+				timestamp = Timestamp.valueOf(localDateTime);
+				post.setPublishedAt(timestamp);
+			}
+
 			post.setIsPublished(isPulished);
-			for(Integer tagId: tagIds) {
+			for (Integer tagId : tagIds) {
 				Tag tag = tagRepositoryImpl.findById(tagId);
-				if(tag != null) {
+				if (tag != null) {
 					tags.add(tag);
 				}
 			}
@@ -296,8 +304,7 @@ public class PostService {
 			Integer message = postRepositoryImpl.insert(post);
 			postModel = postRepositoryImpl.findById(message);
 			if (message != 0) {
-				return ResponseEntity.status(HttpStatus.OK)
-						.body(new ResponseObject("OK", "Successfully", postModel));
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", postModel));
 			} else {
 				return ResponseEntity.status(HttpStatus.OK)
 						.body(new ResponseObject("ERROR", "Can not save a post", ""));
@@ -337,7 +344,7 @@ public class PostService {
 		postModel.setCategory(categoryModel);
 		postModel.setContent(post.getContent());
 		postModel.setPublishedAt(post.getPublishedAt().toLocalDateTime());
-		for(Tag tag : post.getTags()) {
+		for (Tag tag : post.getTags()) {
 			TagModel tagModel = new TagModel();
 			tagModel.setTagId(tag.getTagId());
 			tagModel.setTagName(tag.getTagName());
