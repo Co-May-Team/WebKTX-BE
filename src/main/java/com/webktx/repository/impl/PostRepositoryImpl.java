@@ -167,9 +167,9 @@ public class PostRepositoryImpl implements IPostRepository {
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts AS p ");
 		hql.append(" INNER JOIN p.tags AS t");
-		hql.append(" WHERE p.title LIKE CONCAT('%',:title,'%')");
-		hql.append(" AND p.content LIKE CONCAT('%',:content,'%')");
-		hql.append(" AND p.user.fullName LIKE CONCAT('%',:user_id,'%')");
+		hql.append(" WHERE p.isPublished = '1' AND ( p.title LIKE CONCAT('%',:title,'%')");
+		hql.append(" OR p.content LIKE CONCAT('%',:content,'%'))");
+		hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
 		if(category_id!= 0) {
 			hql.append(" AND p.category.categoryId =:category_id ");
 		}
