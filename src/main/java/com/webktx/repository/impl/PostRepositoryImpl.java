@@ -96,8 +96,13 @@ public class PostRepositoryImpl implements IPostRepository {
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts p ");
 		hql.append(" INNER JOIN p.tags AS t");
-		hql.append(" WHERE p.isPublished = '1' AND ( p.title LIKE CONCAT('%',:title,'%')");
-		hql.append(" OR p.content LIKE CONCAT('%',:content,'%'))");
+		hql.append(" WHERE p.isPublished = '1' AND ");
+		if(!title.trim().equals("") && !content.trim().equals("")) {
+			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') OR p.content LIKE CONCAT('%',:content,'%'))");
+		}else {
+			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') AND p.content LIKE CONCAT('%',:content,'%'))");
+		}
+
 		hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
 		if(category_id!= 0) {
 			hql.append(" AND p.category.categoryId =:category_id ");
@@ -167,8 +172,12 @@ public class PostRepositoryImpl implements IPostRepository {
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts AS p ");
 		hql.append(" INNER JOIN p.tags AS t");
-		hql.append(" WHERE p.isPublished = '1' AND ( p.title LIKE CONCAT('%',:title,'%')");
-		hql.append(" OR p.content LIKE CONCAT('%',:content,'%'))");
+		hql.append(" WHERE p.isPublished = '1' AND ");
+		if(!title.trim().equals("") && !content.trim().equals("")) {
+			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') OR p.content LIKE CONCAT('%',:content,'%'))");
+		}else {
+			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') AND p.content LIKE CONCAT('%',:content,'%'))");
+		}
 		hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
 		if(category_id!= 0) {
 			hql.append(" AND p.category.categoryId =:category_id ");
