@@ -2,6 +2,8 @@ package com.webktx.service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -16,7 +18,6 @@ public class CustomRoleService {
 
 	public static String getTokenFromRequest(HttpServletRequest request) {
 		String token = request.getHeader("Authorization");
-
 		if (StringUtils.hasText(token) && token.startsWith("Bearer ")) {
 			return token.substring(7, token.length());
 		}

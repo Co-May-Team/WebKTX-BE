@@ -22,6 +22,7 @@ import com.webktx.entity.User;
 import com.webktx.repository.impl.UserDetailsServiceImpl;
 import com.webktx.repository.impl.UserRepositoryImpl;
 import com.webktx.service.CustomRoleService;
+import com.webktx.service.UserDetailsImpl;
 
 public class AuthenticationFilter extends OncePerRequestFilter {
 	@Autowired
@@ -39,11 +40,12 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String token = CustomRoleService.getTokenFromRequest(request);
-            UserDetails userDetails = null;
+            UserDetails userDetail = null;
+            UserDetailsImpl userDetailImpl = null;
             if (token != null && jwtUtils.validateJwtToken(token)) {
                 String username = jwtUtils.getUserNameFromJwtToken(token);
                 try {
-                	userDetails = userDetailsService.loadUserByUsername(username);
+                	userDetail = userDetailsService.loadUserByUsername(username);
 				} catch (Exception e) {
 					logger.error("",e);
 				}
@@ -57,17 +59,20 @@ public class AuthenticationFilter extends OncePerRequestFilter {
             		user.setUsername(object.getString("email"));
             		user.setEmail(object.getString("email"));
             		user.setFullName(object.getString("name"));
+            		user.setAvatar(object.getString("picture"));
+            		user.setGoogleAccount(true);
             		Role role = new Role();
+            		// Default role
             		role.setRoleId(2);
             		user.setRole(role);
             		userRepositoryImpl.add(user);
             	}
-            	userDetails = userDetailsService.loadUserByUsername(object.getString("email"));
+            	userDetail = userDetailsService.loadUserByUsername(object.getString("email"));
             }
             // Store user infomation
-            if(userDetails!=null) {
+            if(userDetail!=null) {
             	UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-            			userDetails, null, userDetails.getAuthorities());
+            			userDetail, null, userDetail.getAuthorities());
             	authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             	SecurityContextHolder.getContext().setAuthentication(authentication);
             }

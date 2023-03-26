@@ -1,8 +1,5 @@
 package com.webktx.repository.impl;
 
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.InputStream;
 //import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 //import java.util.Comparator;
@@ -14,22 +11,26 @@ import java.util.Set;
 
 import javax.persistence.Query;
 
-import org.apache.poi.util.IOUtils;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.webktx.constant.Constant;
+import com.webktx.entity.Comment;
 import com.webktx.entity.Post;
 import com.webktx.entity.Tag;
+import com.webktx.entity.User;
 import com.webktx.model.CategoryModel;
+import com.webktx.model.CommentModel;
 import com.webktx.model.PostModel;
 import com.webktx.model.TagModel;
+import com.webktx.model.UserModel;
 import com.webktx.repository.IPostRepository;
+import com.webktx.service.UserDetailsImpl;
 import com.webktx.ultil.Ultil;
 
 @Repository
@@ -375,5 +376,120 @@ public class PostRepositoryImpl implements IPostRepository {
 		}
 		
 	}
+	/** Comment a post **/
+	
+	@Override
+	public List<CommentModel> findCommentByPostId(Integer postId) {
+		List<Comment> commentList = new ArrayList<>();
+		List<CommentModel> commentModelList = new ArrayList<>();
+		Comment comment = null;
+		StringBuilder hql = new StringBuilder("FROM comments as cm");
+		hql.append(" WHERE cm.post.postId = :postId order by cm.createdAt desc");
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query query = session.createQuery(hql.toString());
+			query.setParameter("postId", postId);
+			for (Iterator<?> it = query.getResultList().iterator(); it.hasNext();) {
+				comment = new Comment();
+				CommentModel commentModel = new CommentModel();
+				comment = (Comment) it.next();
+				commentModel = toCommentModel(comment);
+				commentModelList.add(commentModel);
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error has occured in Impl findById API: ", e);
+		}
+		return commentModelList;
+	}
+//	@Override
+//	public Integer edit(Post post) {
+//		Session session = sessionFactory.getCurrentSession();
+//		try {
+//			session.update(post);
+//			return 1;
+//		} catch (Exception e) {
+//			LOGGER.error("Error has occured at edit() ", e);
+//			return 0;
+//		}
+//	}
+//
+//	@Override
+//	public Integer insert(Post post) {
+//		Session session = sessionFactory.getCurrentSession();
+//		try {
+//			Integer id = (Integer) session.save(post);
+//			return id;
+//		} catch (Exception e) {
+//			LOGGER.error("Error has occured at add() ", e);
+//		}
+//		return -1;
+//	}
 
+
+	@Override
+	public Integer addComment(Comment comment) {
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			Integer id = (Integer) session.save(comment);
+			return id;
+		} catch (Exception e) {
+			LOGGER.error("Error has occured at add() ", e);
+		}
+		return -1;
+	}
+	@Override
+	public Integer editComment(Comment comment) {
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.update(comment);
+			return 1;
+		} catch (Exception e) {
+			LOGGER.error("Error has occured at edit() ", e);
+			return -1;
+		}
+	}
+	@Override
+	public Integer deleteCommentById(Integer id) {
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			Comment comment = session.find(Comment.class, id);
+			session.remove(comment);
+			return 1;
+		} catch (Exception e) {
+			LOGGER.error("Error has occured in delete() ", e);
+			return 0;
+		}
+	}
+	@Override
+	public Comment findCommentById(Integer id) {
+		Comment comment = null;
+		StringBuilder hql = new StringBuilder("FROM comments as cm");
+		hql.append(" WHERE cm.id = :id");
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query query = session.createQuery(hql.toString());
+			query.setParameter("id", id);
+			comment = (Comment) query.getSingleResult();
+		} catch (Exception e) {
+			LOGGER.error("Error has occured in Impl findById API: ", e);
+		}
+		return comment;
+	}
+
+	public CommentModel toCommentModel(Comment comment) {
+		UserModel userModel = new UserModel();
+		CommentModel commentModel = new CommentModel();
+		
+		User user = comment.getUser();
+		userModel.setId(user.getUserId());
+		userModel.setFullName(user.getFullName());
+		userModel.setAvatar(user.getAvatar());
+		userModel.setGoogleAccount(user.isGoogleAccount());
+		
+		commentModel.setId(comment.getId());
+		commentModel.setCommentText(comment.getCommentText());
+		commentModel.setUser(userModel);
+		commentModel.setParentId(comment.getParentId());
+		return commentModel;
+	}
 }
