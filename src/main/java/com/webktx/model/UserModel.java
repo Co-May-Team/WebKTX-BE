@@ -18,9 +18,12 @@ import lombok.Setter;
 public class UserModel {
 	private Integer id;
 	private String username;
+	private String fullName;
 	private String password;
 	private boolean enableLogin;
 	private String email;
 	private RoleDetailModel role;
 	private Map<String, Object> roleCustom;
+	private String avatar;
+	private boolean isGoogleAccount;
 }

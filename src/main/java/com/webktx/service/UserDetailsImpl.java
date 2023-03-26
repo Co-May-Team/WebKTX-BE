@@ -36,6 +36,8 @@ public class UserDetailsImpl implements UserDetails {
     private String username;
     private String email;
     private String password;
+    private String avatar;
+    private String fullname;
     private RoleDetailModel roles;
     private Collection<? extends GrantedAuthority> authorities;
 	
@@ -54,7 +56,8 @@ public class UserDetailsImpl implements UserDetails {
 			LOGGER.error("Have error at build(): ", e);
 		}
 
-		return new UserDetailsImpl(userModel.getId(), userModel.getUsername(), userModel.getEmail(), userModel.getPassword(),
+		return new UserDetailsImpl(userModel.getId(), userModel.getUsername(), userModel.getEmail(), userModel.getPassword(),userModel.getAvatar(),
+				userModel.getFullName(),
 				roleDetailModel, authorities);
 	}
 
