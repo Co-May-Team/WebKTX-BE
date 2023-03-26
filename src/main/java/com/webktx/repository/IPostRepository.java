@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.springframework.data.repository.query.Param;
 
+import com.webktx.entity.Comment;
 import com.webktx.entity.Post;
+import com.webktx.model.CommentModel;
 import com.webktx.model.PostModel;
 public interface IPostRepository {
 	
@@ -31,6 +33,11 @@ public interface IPostRepository {
 	Integer deletePostById(Integer id);
 	List<PostModel> findRelatedPosts(Integer numberPost, Integer postId); 
 	void updateView(int postId,  int viewCount);
+	List<CommentModel> findCommentByPostId(Integer postId);
+	Integer editComment(Comment comment);
+	Integer addComment(Comment comment);
+	Integer deleteCommentById(Integer id);
+	Comment findCommentById(Integer id);
 }
 
 
