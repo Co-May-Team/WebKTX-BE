@@ -103,8 +103,10 @@ public class PostRepositoryImpl implements IPostRepository {
 		}else {
 			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') AND p.content LIKE CONCAT('%',:content,'%'))");
 		}
+		if(null != user_id && !user_id.equals("")) {
+			hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
+		}
 
-		hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
 		if(category_id!= 0) {
 			hql.append(" AND p.category.categoryId =:category_id ");
 		}
@@ -119,7 +121,10 @@ public class PostRepositoryImpl implements IPostRepository {
 			LOGGER.info(hql.toString());
 			query.setParameter("title", title);
 			query.setParameter("content", content);
-			query.setParameter("user_id", user_id);
+			if(null != user_id && !user_id.equals("")) {
+				query.setParameter("user_id", user_id);
+			}
+
 			if(category_id!= 0) {
 				query.setParameter("category_id",category_id);
 			}
@@ -179,7 +184,9 @@ public class PostRepositoryImpl implements IPostRepository {
 		}else {
 			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') AND p.content LIKE CONCAT('%',:content,'%'))");
 		}
-		hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
+		if(null != user_id && !user_id.equals("")) {
+			hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
+		}
 		if(category_id!= 0) {
 			hql.append(" AND p.category.categoryId =:category_id ");
 		}
@@ -191,7 +198,9 @@ public class PostRepositoryImpl implements IPostRepository {
 			Query query = session.createQuery(hql.toString());
 			query.setParameter("title", title);
 			query.setParameter("content", content);
-			query.setParameter("user_id", user_id);
+			if(null != user_id && !user_id.equals("")) {
+				query.setParameter("user_id", user_id);
+			}
 			if(category_id!= 0) {
 				query.setParameter("category_id",category_id);
 			}

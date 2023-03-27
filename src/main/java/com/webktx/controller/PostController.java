@@ -39,7 +39,6 @@ public class PostController {
 	}
 
 	@PostMapping(value= "",produces = "application/json")
-	@PreAuthorize("@customRoleService.canView('Post',principal)")
 	public ResponseEntity<Object> findAll(				
 			@RequestBody String json,
 			@RequestParam(value="page", required = false) String page,
