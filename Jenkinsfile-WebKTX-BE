@@ -23,7 +23,7 @@ pipeline {
 				sh 'sudo systemctl start dev-webKTX-BE'
 				sh 'sudo systemctl status dev-webKTX-BE'
 				sh 'rm -rf changelog*'
-				sh "cp /var/lib/jenkins/jobs/WebKTX-BE/builds/${env.BUILD_NUMBER}/changelog* /var/lib/jenkins/workspace/dev-WebKTX-BE/"
+				sh "cp /var/lib/jenkins/jobs/dev-WebKTX-BE/builds/${env.BUILD_NUMBER}/changelog* /var/lib/jenkins/workspace/dev-WebKTX-BE/"
             }
         }		
 	}
