@@ -16,6 +16,9 @@ import com.webktx.entity.User;
 import com.webktx.model.RoleDetailModel;
 import com.webktx.model.UserModel;
 import com.webktx.repository.IUserRepository;
+import com.webktx.ultil.Ultil;
+
+import ch.qos.logback.classic.pattern.Util;
 
 @Transactional
 @Repository
@@ -97,6 +100,13 @@ public class UserRepositoryImpl implements IUserRepository {
 				userModel.setUsername(user.getUsername());
 				userModel.setPassword(user.getPassword());
 				userModel.setId(user.getUserId());
+				userModel.setFullName(user.getFullName());
+				userModel.setGoogleAccount(user.isGoogleAccount());
+				if(user.isGoogleAccount()) {
+					userModel.setAvatar(user.getAvatar());
+				}else if(user.getAvatar()!=null){
+					userModel.setAvatar(Ultil.converImageNameToLink(user.getAvatar()) );
+				}
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());

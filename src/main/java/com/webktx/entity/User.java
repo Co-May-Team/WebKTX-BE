@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -52,4 +54,13 @@ public class User extends BaseEntity{
     @JoinColumn(name = "user_id")
     private List<Post> posts;
 	
+	@OneToMany
+    @JoinColumn(name = "user_id")
+	@JsonIgnore
+    private List<Comment> comments;
+	
+	@Column(name = "avatar")
+	private String avatar;
+	@Column(name = "is_google_account")
+	private boolean isGoogleAccount;
 }

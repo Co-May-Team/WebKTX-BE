@@ -71,4 +71,29 @@ public class PostController {
 		LOGGER.info("Delete a post");
 			return postService.deletePostById(id);
 	}
+	
+	
+	/** Comment a post **/
+	@GetMapping(value = "/comment", produces = "application/json")
+	public ResponseEntity<Object> findCommentByPostId(@RequestParam(value="postId", required = true) Integer postId){
+		LOGGER.info("Get post by Id");
+		return postService.findCommentByPostId(postId);
+	}
+	
+	@PostMapping("/comment/add")
+	@ResponseBody
+	public ResponseEntity<Object> addComment(@RequestBody String json) {
+		return postService.addComment(json);
+	}
+	@ResponseBody
+	@PutMapping("/comment/edit")
+	public ResponseEntity<Object> editComment(@RequestBody String json) {
+		return postService.editComment(json);
+	}
+	@ResponseBody
+	@DeleteMapping("/comment/delete/{id}")
+	public ResponseEntity<Object> editComment(@PathVariable Integer id) {
+		return postService.deleteCommentById(id);
+	}
+	
 }

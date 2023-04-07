@@ -5,6 +5,7 @@ import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -23,12 +24,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.webktx.constant.Constant;
 import com.webktx.entity.Category;
+import com.webktx.entity.Comment;
 import com.webktx.entity.Pagination;
 import com.webktx.entity.Post;
 import com.webktx.entity.ResponseObject;
 import com.webktx.entity.Tag;
 import com.webktx.entity.User;
 import com.webktx.model.CategoryModel;
+import com.webktx.model.CommentModel;
 import com.webktx.model.PostModel;
 import com.webktx.model.TagModel;
 import com.webktx.repository.impl.CategoryRepositoryImpl;
@@ -358,5 +361,131 @@ public class PostService {
 
 		return postModel;
 	}
+	public ResponseEntity<Object> findCommentByPostId(Integer postId) {
+		List<CommentModel> commnentModelList = new ArrayList<>();
+		List<CommentModel> commnentModelListTMP = new ArrayList<>();
+		commnentModelList = postRepositoryImpl.findCommentByPostId(postId);
+		for(CommentModel cm : commnentModelList) {
+			List<CommentModel> commentModels = findChildren(cm.getId(), commnentModelList);
+			cm.setChilds(commentModels);
+			commnentModelListTMP.addAll(commentModels);
+		}
+		// delete comment exist in child list
+		commnentModelList.removeAll(commnentModelListTMP);
+		if (!commnentModelList.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", commnentModelList));
+		} else {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Not found", "Not found", commnentModelList));
+		}
+	}
+	public List<CommentModel> findChildren(Integer parentId, List<CommentModel> comments){
+        List<CommentModel> result = new ArrayList<CommentModel>();
+        for (CommentModel comment : comments) {
+            if (comment.getParentId() != null && comment.getParentId().equals(parentId)) {
+                List<CommentModel> children = findChildren(comment.getId(), comments);
+                comment.setChilds(children);
+                result.add(comment);
+            }
+        }
+        return result;
+	}
+	public ResponseEntity<Object> addComment(String json) {
+		JsonMapper jsonMapper = new JsonMapper();
+		JsonNode jsonObjectComment;
+		Date date = new Date();
+		try {
+			jsonObjectComment = jsonMapper.readTree(json);
+			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+					.getPrincipal();
 
+			Integer postId = jsonObjectComment.get("postId") != null ? jsonObjectComment.get("postId").asInt() : -1;
+			String commentText = jsonObjectComment.get("commentText") != null ? jsonObjectComment.get("commentText").asText() : "";
+			Integer parentId = jsonObjectComment.get("parentId") != null ? jsonObjectComment.get("parentId").asInt() : null;
+			
+			
+			User user = new User();
+			user = userRepositoryImpl.findById(userDetail.getId());
+			
+			Post post = new Post();
+			post.setPostId(postId);
+			Comment comment = new Comment();
+			comment.setPost(post);
+			comment.setUser(user);
+			comment.setCommentText(commentText);
+			comment.setParentId(parentId);
+			comment.setCreatedAt(new Timestamp(date.getTime()));
+			Integer id = postRepositoryImpl.addComment(comment);
+			if ( id != -1) {
+				CommentModel commentModel = new CommentModel();
+				commentModel = postRepositoryImpl.toCommentModel(comment);
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", commentModel));
+			} else {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseObject("ERROR", "Can not save a comment", ""));
+			}
+
+		} catch (Exception e) {
+			LOGGER.debug("ERROR", e);
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseObject("ERROR", "Have error insert service", e.getMessage()));
+		}  
+	}
+	public ResponseEntity<Object> editComment(String json) {
+		JsonMapper jsonMapper = new JsonMapper();
+		JsonNode jsonObjectComment;
+		Date date = new Date();
+		try {
+			jsonObjectComment = jsonMapper.readTree(json);
+			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+					.getPrincipal();
+
+			Integer id = jsonObjectComment.get("id") != null ? jsonObjectComment.get("id").asInt() : -1;
+			String commentText = jsonObjectComment.get("commentText") != null ? jsonObjectComment.get("commentText").asText() : "";
+			
+			Comment comment = new Comment();
+			comment = postRepositoryImpl.findCommentById(id);
+			if(!userDetail.getId().equals(comment.getUser().getUserId())) {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseObject("ERROR", "Can not edit this comment - Permission denied", ""));
+			}
+			comment.setCommentText(commentText);
+			Integer statusUpdate = postRepositoryImpl.editComment(comment);
+			if ( id != -1) {
+				CommentModel commentModel = new CommentModel();
+				commentModel = postRepositoryImpl.toCommentModel(comment);
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", commentModel));
+			} else {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseObject("ERROR", "Can not edit a comment", ""));
+			}
+
+		} catch (Exception e) {
+			LOGGER.debug("ERROR", e);
+
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseObject("ERROR", "Have error insert service", e.getMessage()));
+		}  
+	}
+	public ResponseEntity<Object> deleteCommentById(Integer id) {
+		Comment comment = new Comment();
+		comment = postRepositoryImpl.findCommentById(id);
+		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
+		if(!userDetail.getId().equals(comment.getUser().getUserId())) {
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("ERROR", "Can not edit this comment - Permission denied", ""));
+		}
+		Integer updateStatus = postRepositoryImpl.deleteCommentById(id);
+		try {
+			if (updateStatus.equals(1)) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", updateStatus + " ", " "));
+			} else {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Error", updateStatus + "", ""));
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+					.body(new ResponseObject("ERROR", "Have error delete service: ", e.getMessage()));
+		}
+	}
 }
