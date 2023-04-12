@@ -3,9 +3,11 @@ package com.webktx.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.webktx.service.UserService;
 
@@ -19,5 +21,9 @@ public class UserController {
 	@PostMapping("/add")
 	public ResponseEntity<Object> add(@RequestBody String json){
 		return userService.add(json);
+	}
+	@GetMapping("/get-info")
+	public ResponseEntity<Object> findByUsername(@RequestParam(value="username") String username){
+		return userService.findByUsername(username);
 	}
 }
