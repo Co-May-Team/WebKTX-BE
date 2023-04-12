@@ -1,5 +1,8 @@
 package com.webktx.service;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.webktx.entity.ResponseObject;
 import com.webktx.entity.User;
+import com.webktx.model.UserModel;
 import com.webktx.repository.impl.UserRepositoryImpl;
 
 @Service
@@ -19,12 +23,12 @@ public class UserService {
 
 	@Autowired
 	UserRepositoryImpl userRepositoryImpl;
-	
+
 	@Autowired
 	PasswordEncoder encoder;
-	
+
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
-	
+
 	public ResponseEntity<Object> add(String json) {
 		JsonNode jsonNode;
 		JsonMapper jsonMapper = new JsonMapper();
@@ -43,12 +47,12 @@ public class UserService {
 			citizenId = jsonNode.get("citizenId") != null ? jsonNode.get("citizenId").asText() : "";
 			username = jsonNode.get("username") != null ? jsonNode.get("username").asText() : "";
 			password = jsonNode.get("password") != null ? jsonNode.get("password").asText() : "";
-			if(!username.equals("")) {
+			if (!username.equals("")) {
 				Boolean isExisted = userRepositoryImpl.checkExistingUserByUsername(username);
 				user = new User();
-				if(isExisted) {
-					return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "", "")); 
-				}else {
+				if (isExisted) {
+					return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "", ""));
+				} else {
 					user.setFullName(fullName);
 					user.setEmail(email);
 					user.setPhoneNumber(phoneNumber);
@@ -56,10 +60,11 @@ public class UserService {
 					user.setUsername(username);
 					user.setPassword(encoder.encode(password));
 					user = userRepositoryImpl.add(user);
-					if(null != user) {
-						return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", user)); 
-					}else {
-						return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Failure", "")); 
+					if (null != user) {
+						return ResponseEntity.status(HttpStatus.OK)
+								.body(new ResponseObject("OK", "Successfully", user));
+					} else {
+						return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Failure", ""));
 					}
 				}
 			}
@@ -68,6 +73,20 @@ public class UserService {
 			LOGGER.error(e.getMessage());
 		}
 		return null;
+	}
+
+	public ResponseEntity<Object> findByUsername(String username) {
+		UserModel userModel = new UserModel();
+		userModel = userRepositoryImpl.findByUsername(username);
+		Map<String, Object> result = new HashMap<>(); 
+		if (null != userModel) {
+			result.put("userInfo", userModel);
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("OK", "Successfully", result));
+		} else {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Tài khoản không tồn tại", ""));
+		}
+		
 	}
 
 }

@@ -105,7 +105,12 @@ public class UserRepositoryImpl implements IUserRepository {
 				if(user.isGoogleAccount()) {
 					userModel.setAvatar(user.getAvatar());
 				}else if(user.getAvatar()!=null){
-					userModel.setAvatar(Ultil.converImageNameToLink(user.getAvatar()) );
+					userModel.setAvatar(Ultil.converBaseImageNameToLink(user.getAvatar()) );
+				}
+				if(user.getRole().getRoleId()==1) {
+					userModel.setAdmin(true);
+				}else {
+					userModel.setAdmin(false);
 				}
 			}
 		} catch (Exception e) {
