@@ -42,6 +42,8 @@ public class PostRepositoryImpl implements IPostRepository {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	@Autowired
+	UserRepositoryImpl userRepositoryImpl;
 
 	@Override
 	public PostModel findById(Integer id) {
@@ -66,7 +68,9 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setTagModels(tagModels);
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
-				customPost.setUserName(post.getUser().getFullName());
+				UserModel userInfo = userRepositoryImpl.findByUsername(post.getUser().getFullName());
+				userInfo.setRole(null);
+				customPost.setUserInfo(userInfo);
 				CategoryModel categoryModel = new CategoryModel();
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
@@ -152,8 +156,9 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setTagModels(tagModels);
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
-				customPost.setUserName(post.getUser().getFullName());
-				CategoryModel categoryModel = new CategoryModel();
+				UserModel userInfo = userRepositoryImpl.findByUsername(post.getUser().getFullName());
+				userInfo.setRole(null);
+				customPost.setUserInfo(userInfo);				CategoryModel categoryModel = new CategoryModel();
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setCategory(categoryModel);
@@ -351,8 +356,9 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setTagModels(tagModels);
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
-				customPost.setUserName(post.getUser().getFullName());
-				CategoryModel categoryModel = new CategoryModel();
+				UserModel userInfo = userRepositoryImpl.findByUsername(post.getUser().getFullName());
+				userInfo.setRole(null);
+				customPost.setUserInfo(userInfo);				CategoryModel categoryModel = new CategoryModel();
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setCategory(categoryModel);

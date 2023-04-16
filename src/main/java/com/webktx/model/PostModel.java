@@ -22,7 +22,7 @@ import lombok.Setter;
 public class PostModel {
 	private Integer postId;
 	private List<TagModel> tagModels;
-	private String userName;
+	private UserModel userInfo;
 	private CategoryModel category;
 	private String title;
 	private String thumbnail;
