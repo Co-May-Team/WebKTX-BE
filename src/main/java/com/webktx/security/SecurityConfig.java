@@ -68,6 +68,7 @@ public class SecurityConfig {
         .antMatchers("/tags").permitAll()
         .antMatchers("/category").permitAll()
         .antMatchers("/api/get-base-image/**").permitAll()
+        .antMatchers("/admission/gen-file").permitAll()
         .anyRequest().authenticated();
     	http.authenticationProvider(authenticationProvider());
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
