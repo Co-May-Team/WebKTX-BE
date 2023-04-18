@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Base64;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -52,7 +54,8 @@ public class AdmissionsService {
 	private ResourceLoader resourceLoader;
 
 	public byte[] generateReportFromJson(String json) throws Exception {
-		JSONObject jsonObject = new JSONObject(json);
+		StringEntity entity = new StringEntity(json,StandardCharsets.UTF_8);
+		JSONObject jsonObject = new JSONObject(entity);
 		String templatePath = "";
 		templatePath = env.getProperty("report.templatepath");
 

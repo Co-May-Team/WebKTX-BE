@@ -84,7 +84,7 @@ public class UserService {
 			return ResponseEntity.status(HttpStatus.OK)
 					.body(new ResponseObject("OK", "Successfully", result));
 		} else {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Tài khoản không tồn tại", ""));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Tài khoản không tồn tại", result));
 		}
 		
 	}
