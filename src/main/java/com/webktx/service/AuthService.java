@@ -142,6 +142,9 @@ public class AuthService {
 		if (userRepository.checkExistingUserByCitizenId(signUpRequest.getCitizenId())) {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số căn cước công dân đã tồn tại", ""));
 		}
+		if (userRepository.checkExistingEmail(signUpRequest.getEmail())) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Email đã tồn tại", ""));
+		}
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	    LocalDateTime localDateTime = LocalDateTime.now();
 //	    Timestamp timestamp = Timestamp.valueOf(formatter.format(localDateTime));

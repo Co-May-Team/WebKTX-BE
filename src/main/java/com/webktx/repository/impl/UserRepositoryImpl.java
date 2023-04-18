@@ -155,5 +155,21 @@ public class UserRepositoryImpl implements IUserRepository {
 		}
 		return false;
 	}
-
+	@Override
+	public Boolean checkExistingEmail(String email) {
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.email = :email ");
+		Query query = session.createQuery(hql.toString());
+		query.setParameter("email",email );
+		try {
+			String result = (String) query.getSingleResult();
+			if (!result.equals("")) {
+				return true;
+			}
+		}
+		 catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return false;
+	}
 }

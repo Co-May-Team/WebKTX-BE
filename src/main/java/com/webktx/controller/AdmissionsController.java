@@ -24,7 +24,7 @@ public class AdmissionsController {
 	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
-	@PostMapping(value= "/gen-file",produces = "application/json")
+	@PostMapping(value= "/gen-file",produces = {"application/json; charset=UTF-8"})
 	public byte[] generateReportFromJson(				
 			@RequestBody String json
 			) {

@@ -61,6 +61,9 @@ public class PostService {
 	@Autowired
 	TagRepositoryImpl tagRepositoryImpl;
 
+	@Autowired 
+	CustomRoleService customRolService;
+	
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	public ResponseEntity<Object> findById(Integer id) {
@@ -87,6 +90,8 @@ public class PostService {
 	}
 
 	public ResponseEntity<Object> findAll(String json, String sort, String order, String page) {
+		UserDetailsImpl userDetail =(UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		boolean canEdit = customRolService.canUpdate("Post", userDetail);
 		JsonNode jsonObject = null;
 		JsonMapper jsonMapper = new JsonMapper();
 
@@ -110,11 +115,11 @@ public class PostService {
 			String user_id = ((jsonObject.get("user_id") == null) || (jsonObject.get("user_id").asText() == "")) ? ""
 					: jsonObject.get("user_id").asText();
 			postModelListTMP = postRepositoryImpl.findAll(title, content, user_id, category_id, tag_id, sort, order,
-					offset, limit);
+					offset, limit,canEdit);
 			for (PostModel postModel : postModelListTMP) {
 				postModelSet.add(postModel);
 			}
-			Integer totalItemPost = postRepositoryImpl.countAllPaging(title, content, user_id, category_id, tag_id);
+			Integer totalItemPost = postRepositoryImpl.countAllPaging(title, content, user_id, category_id, tag_id,canEdit);
 			Pagination pagination = new Pagination();
 			pagination.setLimit(limit);
 			pagination.setPage(Integer.valueOf(page));
