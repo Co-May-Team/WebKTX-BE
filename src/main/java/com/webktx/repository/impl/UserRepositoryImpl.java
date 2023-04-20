@@ -112,6 +112,7 @@ public class UserRepositoryImpl implements IUserRepository {
 				}else {
 					userModel.setAdmin(false);
 				}
+				userModel.setCitizenId(user.getCitizenId());
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());

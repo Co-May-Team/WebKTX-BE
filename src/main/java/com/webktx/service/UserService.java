@@ -80,10 +80,16 @@ public class UserService {
 		userModel = userRepositoryImpl.findByUsername(username);
 		Map<String, Object> result = new HashMap<>(); 
 		if (null != userModel) {
-			result.put("userInfo", userModel);
-			return ResponseEntity.status(HttpStatus.OK)
-					.body(new ResponseObject("OK", "Successfully", result));
-		} else {
+			if(userModel.getCitizenId() == null || userModel.getCitizenId().equals("")) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Chưa có thông tin cccd", result));
+			}else {
+				result.put("userInfo", userModel);
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseObject("OK", "Successfully", result));
+			}
+			
+		}
+		else {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Tài khoản không tồn tại", result));
 		}
 		
