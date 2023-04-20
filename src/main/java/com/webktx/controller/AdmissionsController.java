@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.webktx.service.AdmissionsService;
@@ -25,6 +26,7 @@ public class AdmissionsController {
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 
 	@PostMapping(value= "/gen-file",produces = {"application/json; charset=UTF-8"})
+	@ResponseBody
 	public byte[] generateReportFromJson(				
 			@RequestBody String json
 			) {
