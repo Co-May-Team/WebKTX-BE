@@ -8,11 +8,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.google.gson.JsonObject;
 import com.webktx.entity.ResponseObject;
 import com.webktx.entity.User;
 import com.webktx.model.UserModel;
@@ -74,7 +76,33 @@ public class UserService {
 		}
 		return null;
 	}
+	public ResponseEntity<Object> edit(String json){
+		JsonNode userInfoNode;
+		JsonMapper jsonMapper = new JsonMapper();
+		String citizenId;
+		String phoneNumber;
+		String dob;
+		try {
+			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User user = userRepositoryImpl.loadUserByUsername(userDetail.getUsername());
+			userInfoNode = jsonMapper.readTree(json);
+			citizenId = userInfoNode.get("citizenId") != null ? userInfoNode.get("citizenId").asText() : "";
+			phoneNumber = userInfoNode.get("phoneNumber") != null ? userInfoNode.get("phoneNumber").asText() : "";
+			dob = userInfoNode.get("dob") != null ? userInfoNode.get("dob").asText() : "";
+			user.setCitizenId(citizenId);
+			user.setPhoneNumber(phoneNumber);
+			user.setDob(dob);
+			int editStatus = userRepositoryImpl.edit(user);
+			if(editStatus>0) {
+				return this.findByUsername(userDetail.getUsername());
+			}else { 
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Cập nhật thông tin thất bại", new Object() ));
 
+			}
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", e.getMessage(), new Object() ));
+		}
+	}
 	public ResponseEntity<Object> findByUsername(String username) {
 		UserModel userModel = new UserModel();
 		userModel = userRepositoryImpl.findByUsername(username);

@@ -68,8 +68,9 @@ public class UserRepositoryImpl implements IUserRepository {
 	public User loadUserByUsername(String username) {
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			String hql = "FROM user as u WHERE u.userName = " + username.trim();
+			String hql = "FROM users as u WHERE u.username = :username";
 			Query query = session.createQuery(hql);
+			query.setParameter("username", username);
 			User user = (User) query.getSingleResult();
 			if(null != user) {
 				return user;
@@ -172,5 +173,16 @@ public class UserRepositoryImpl implements IUserRepository {
 			LOGGER.error(e.getMessage());
 		}
 		return false;
+	}
+
+	@Override
+	public Integer edit(User user) {
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.update(user);
+			return 1;
+		} catch (Exception e) {
+			return 0;
+		}
 	}
 }
