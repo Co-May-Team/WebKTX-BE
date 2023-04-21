@@ -13,7 +13,8 @@ pipeline {
         }
         stage('Build') { 
             steps {
-				sh 'mvn clean install'
+				sh 'sudo mvn install:install-file -Dfile=./jars/VN-time-new-roman.jar -DgroupId=com.webktx.font -DartifactId=VN-time-new-roman -Dversion=1.0 -Dpackaging=jar'
+				sh 'sudo mvn clean install'
             }
         } 
 		stage('Deploy') { 
