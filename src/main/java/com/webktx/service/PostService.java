@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -90,8 +91,16 @@ public class PostService {
 	}
 
 	public ResponseEntity<Object> findAll(String json, String sort, String order, String page) {
-		UserDetailsImpl userDetail =(UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		boolean canEdit = customRolService.canUpdate("Post", userDetail);
+		boolean canEdit;
+		String defineUser = (String) SecurityContextHolder.getContext()
+				.getAuthentication().getPrincipal();
+		if(!defineUser.equals("anonymousUser")) {
+			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal();
+			canEdit = customRolService.canUpdate("Post", userDetail);
+		}else {
+			canEdit = false;
+		}
 		JsonNode jsonObject = null;
 		JsonMapper jsonMapper = new JsonMapper();
 
