@@ -19,12 +19,12 @@ pipeline {
         } 
 		stage('Deploy') { 
             steps {
-				sh 'systemctl enable dev-webKTX-BE.service'
-				sh 'systemctl stop dev-webKTX-BE'
-				sh 'systemctl start dev-webKTX-BE'
-				sh 'systemctl status dev-webKTX-BE'
-				sh 'rm -rf changelog*'
-				sh "cp /var/lib/jenkins/jobs/dev-WebKTX-BE/builds/${env.BUILD_NUMBER}/changelog* /var/lib/jenkins/workspace/dev-WebKTX-BE/"
+				sh 'sudo systemctl enable dev-webKTX-BE.service'
+				sh 'sudo systemctl stop dev-webKTX-BE'
+				sh 'sudo systemctl start dev-webKTX-BE'
+				sh 'sudo systemctl status dev-webKTX-BE'
+				sh 'sudo rm -rf changelog*'
+				sh "sudo cp /var/lib/jenkins/jobs/dev-WebKTX-BE/builds/${env.BUILD_NUMBER}/changelog* /var/lib/jenkins/workspace/dev-WebKTX-BE/"
             }
         }		
 	}
