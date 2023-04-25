@@ -92,8 +92,12 @@ public class PostService {
 
 	public ResponseEntity<Object> findAll(String json, String sort, String order, String page) {
 		boolean canEdit;
-		String defineUser = (String) SecurityContextHolder.getContext()
-				.getAuthentication().getPrincipal();
+		
+		String defineUser = "";
+		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String ) {
+			defineUser = (String)SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal();
+		}
 		if(!defineUser.equals("anonymousUser")) {
 			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext()
 					.getAuthentication().getPrincipal();
