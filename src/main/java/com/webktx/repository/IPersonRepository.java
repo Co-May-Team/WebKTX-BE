@@ -11,4 +11,5 @@ public interface IPersonRepository {
 	Integer add (Person person);
 	Integer edit (Person person);
 	Integer deleteById (Integer personId);
+	Person findByUserId(Integer userId);
 }

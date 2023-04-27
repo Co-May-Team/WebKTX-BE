@@ -12,4 +12,6 @@ public interface IStudentRepository {
 	Integer add (Student student);
 	Integer edit (Student student);
 	Integer deleteById (Integer studentId);
+	boolean isExistWithUserId(Integer userId);
+	Student findByUserId(Integer userId);
 }

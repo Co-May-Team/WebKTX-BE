@@ -1,5 +1,11 @@
 package com.webktx.repository.impl;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import javax.persistence.Query;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.slf4j.Logger;
@@ -8,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.webktx.entity.Person;
+import com.webktx.entity.Post;
 import com.webktx.entity.Relative;
 import com.webktx.repository.IRelativeRepository;
 @Repository
@@ -54,5 +62,18 @@ public class RelativeRepositoryImpl implements IRelativeRepository{
 			return 0;
 		}
 	}
-
+	@Override
+	public List<Relative> findByUserId(Integer userId) {
+		List<Relative> relativeList = new ArrayList<>();
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			String hql = "FROM relatives rl WHERE rl.user.userId = :userId";
+			Query query = session.createQuery(hql);
+			query.setParameter("userId", userId);
+			relativeList = query.getResultList();
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return relativeList;
+	}
 }
