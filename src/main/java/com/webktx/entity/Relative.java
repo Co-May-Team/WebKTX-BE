@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,8 +22,6 @@ public class Relative {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "id")
 	private Integer id;
-	@Column(name = "user_id")
-	private Integer user_id;
 	private String relationship;
 	private String fullname;
 	@Column(name="year_of_birth")
@@ -41,4 +41,8 @@ public class Relative {
 	private String income;
 	private String healthStatus;
 	private String status;
+	
+	@OneToOne
+	@JoinColumn(name = "user_id")
+	private User user;
 }
