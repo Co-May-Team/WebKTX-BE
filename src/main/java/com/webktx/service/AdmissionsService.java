@@ -1,14 +1,15 @@
 package com.webktx.service;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -16,8 +17,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import javax.imageio.ImageIO;
 
 import org.apache.http.entity.StringEntity;
 import org.json.JSONArray;
@@ -36,12 +35,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.MultiValueMap;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.webktx.entity.Image;
 import com.webktx.entity.Person;
 import com.webktx.entity.Relative;
 import com.webktx.entity.ResponseObject;
@@ -110,8 +109,8 @@ public class AdmissionsService {
 			relativesObject = familyObject.get("relatives");
 			studentObject = jsonObject.get("studentInfo");
 			// ---Person-info-start---
-			String fullname = ((personalObject.get("fullname") == null)
-					|| (personalObject.get("fullname").asText() == "")) ? "" : personalObject.get("fullname").asText();
+			String fullname = ((personalObject.get("fullName") == null)
+					|| (personalObject.get("fullName").asText() == "")) ? "" : personalObject.get("fullName").asText();
 			String dateOfBirth = ((personalObject.get("dateOfBirth") == null)
 					|| (personalObject.get("dateOfBirth").asText() == "")) ? ""
 							: personalObject.get("dateOfBirth").asText();
@@ -325,8 +324,8 @@ public class AdmissionsService {
 			relativesObject = familyObject.get("relatives");
 			studentObject = jsonObject.get("studentInfo");
 			// ---Person-info-start---
-			String fullname = ((personalObject.get("fullname") == null)
-					|| (personalObject.get("fullname").asText() == "")) ? "" : personalObject.get("fullname").asText();
+			String fullname = ((personalObject.get("fullName") == null)
+					|| (personalObject.get("fullName").asText() == "")) ? "" : personalObject.get("fullName").asText();
 			String dateOfBirth = ((personalObject.get("dateOfBirth") == null)
 					|| (personalObject.get("dateOfBirth").asText() == "")) ? ""
 							: personalObject.get("dateOfBirth").asText();
@@ -574,12 +573,15 @@ public class AdmissionsService {
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
 		Person person = personRepositoryImpl.findByUserId(userDetail.getId());
-//			// Lay r ds ten file
+//			// Lay r ds file
 		MultiValueMap<String, MultipartFile> form = request.getMultiFileMap();
 		List<MultipartFile> files = form.get("file");
+		// Dat ten folder (userId-fullName)
 		String nameConverted = removeDiacritic(person.getFullname());
 		String[] strList = nameConverted.split(" ");
 		StringBuilder title = new StringBuilder();
+		title.append(String.valueOf(userDetail.getId()));
+		title.append("-");
 		for (int i = 0; i < strList.length; i++) {
 			title.append(strList[i]);
 		}
@@ -588,41 +590,33 @@ public class AdmissionsService {
 		List<MultipartFile> listImageSave = new ArrayList<>();
 		List<ImageModel> imageModels = new ArrayList<>();
 //		B1: lay ra duong dan se luu file cho tung ca nhan
-		pathSaveFile.append("/TuyenSinh");
-		pathSaveFile.append(title);
+		pathSaveFile.append("/TuyenSinh/");
 		File dirToSave = new File(pathSaveFile.toString());
 		if (!dirToSave.exists()) {
 			if (dirToSave.mkdir()) {
-				System.out.println("Directory Created");
+				System.out.println("Directory Created" + pathSaveFile);
+			}
+		}
+		// Xoa file va folder da ton tai
+		deleteFolder(dirToSave, String.valueOf(userDetail.getId()));
+		pathSaveFile.append(title + "/");
+		dirToSave = new File(pathSaveFile.toString());
+		if (!dirToSave.exists()) {
+			if (dirToSave.mkdir()) {
+				System.out.println("Directory Created" + pathSaveFile);
 			}
 		}
 		for (MultipartFile mpf : files) {
-			String fileName = "";
-			if (mpf.getOriginalFilename().equals("")) {
-				continue;
-			} else {
-				fileName = mpf.getOriginalFilename().split("\\.")[0];
-			}
-			try {
-				BufferedImage bufferedImage = ImageIO.read(mpf.getInputStream());
-				// Get extension
-				String[] extensions = mpf.getOriginalFilename().split("\\.");
-				StringBuilder ext = new StringBuilder(".").append(extensions[extensions.length - 1]);
-				Path path = Paths.get(pathSaveFile.toString(), fileName);
-				LOGGER.info("resizeImage: path save: " + path.toString());
-				File fileUpload = path.toFile();
-				ImageIO.write(bufferedImage, ext.toString(), fileUpload);
-				bufferedImage.flush();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			String filename = StringUtils.cleanPath(mpf.getOriginalFilename());
+	        try {
+	            Path path = Paths.get(pathSaveFile.toString() + filename);
+	            Files.copy(mpf.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
 
 		}
-		if (listImageSave.isEmpty()) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "No image to save", ""));
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", ""));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "No image to save", ""));
 	}
 
 	public static String removeDiacritic(String str) {
@@ -630,4 +624,21 @@ public class AdmissionsService {
 		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 		return pattern.matcher(nfdNormalizedString).replaceAll("").replaceAll("Đ", "D").replaceAll("đ", "d");
 	}
+	public static void deleteFolder(File srcfolder, String startWith) {
+            File[] files = srcfolder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory() && file.getName().startsWith(startWith)) {
+                        deleteFolder(file,startWith);
+                    } else {
+	                	if(srcfolder.getName().startsWith(startWith)) {
+	                		file.delete();
+	                	}
+                    }
+                }
+                if(srcfolder.getName().startsWith(startWith)) {
+                	srcfolder.delete();
+                }
+            }
+    }
 }
