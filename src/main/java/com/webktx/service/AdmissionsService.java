@@ -616,7 +616,7 @@ public class AdmissionsService {
 	        }
 
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "No image to save", ""));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Upload Successfully", ""));
 	}
 
 	public static String removeDiacritic(String str) {
