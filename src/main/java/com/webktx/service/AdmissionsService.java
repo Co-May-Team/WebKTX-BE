@@ -10,7 +10,9 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.sql.Timestamp;
 import java.text.Normalizer;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,11 +36,14 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.webktx.entity.Person;
@@ -65,6 +70,7 @@ import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
 
 @Service
+@Transactional(rollbackFor = Exception.class)
 public class AdmissionsService {
 	private final Logger LOGGER = LoggerFactory.getLogger(this.getClass());
 	@Autowired
@@ -81,11 +87,17 @@ public class AdmissionsService {
 	public ResponseEntity<ResponseObject> submitForm(String json) {
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
-		if (studentRepositoryImpl.isExistWithUserId(userDetail.getId())) {
-			return this.edit(json);
-		} else {
-			return this.add(json);
+		try {
+			if (personRepositoryImpl.isExistWithUserId(userDetail.getId())) {
+				return this.edit(json);
+			} else {
+				return this.add(json);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
 		}
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(new ResponseObject("ERROR", "Have error when submit form", ""));
 	}
 
 	public ResponseEntity<ResponseObject> add(String json) {
@@ -102,6 +114,8 @@ public class AdmissionsService {
 		user.setUserId(userDetail.getId());
 		Status status = new Status();
 		status.setCode("CD");
+		LocalDateTime localDateTime = null;
+		String dormStudentCode = "";
 		try {
 			jsonObject = jsonMapper.readTree(json);
 			personalObject = jsonObject.get("personalInfo");
@@ -167,6 +181,10 @@ public class AdmissionsService {
 			person.setIdIssueDate(idIssueDate);
 			person.setIdIssuePlace(idIssuePlace);
 			person.setUser(user);
+			localDateTime = LocalDateTime.now();
+			person.setCreatedAt(Timestamp.valueOf(localDateTime));
+			person.setUpdatedAt(Timestamp.valueOf(localDateTime));
+			dormStudentCode = calculationDormStudentCode(personalObject.get("gender").get("value").asText());
 			// ---Person-info-end---
 
 			// ---Family-info-start---
@@ -221,7 +239,7 @@ public class AdmissionsService {
 				relativeList.add(relativeInsert);
 
 			}
-			String relativeFamilyBackground = ((familyObject.get("familyBackground") == null)
+			String familyBackground = ((familyObject.get("familyBackground") == null)
 					|| (familyObject.get("familyBackground").asText() == "")) ? ""
 							: familyObject.get("familyBackground").asText();
 			// ---Family-info-end---
@@ -278,9 +296,10 @@ public class AdmissionsService {
 			student.setAdmissionViaDirectMethod(studentAdmissionViaDirectMethod);
 			student.setAchievements(studentAchievements);
 			student.setDream(studentDream);
-			student.setFamilyBackground(relativeFamilyBackground);
+			student.setFamilyBackground(familyBackground);
 			student.setUser(user);
 			student.setStatus(status);
+			student.setStudentCodeDorm(dormStudentCode);
 			// ---Student-info-end---
 
 			/* Insert data */
@@ -314,9 +333,17 @@ public class AdmissionsService {
 		JsonNode familyObject;
 		JsonNode relativesObject;
 		JsonNode studentObject;
+		User user = new User();
+		user.setUserId(userDetail.getId());
 		Person person = personRepositoryImpl.findByUserId(userDetail.getId());
 		Student student = studentRepositoryImpl.findByUserId(userDetail.getId());
-		List<Relative> relativeList = relativeRepositoryImpl.findByUserId(userDetail.getId());
+		List<Relative> relativeList = new ArrayList<>();
+		LocalDateTime localDateTime = null;
+		boolean deleteRelative = relativeRepositoryImpl.deleteAllByUserId(userDetail.getId());
+		if(deleteRelative == false) {
+			return ResponseEntity.status(HttpStatus.OK)
+					.body(new ResponseObject("ERROR", "Have error when update relative", ""));
+		}
 		try {
 			jsonObject = jsonMapper.readTree(json);
 			personalObject = jsonObject.get("personalInfo");
@@ -335,13 +362,15 @@ public class AdmissionsService {
 			String phoneNumber = ((personalObject.get("phoneNumber") == null)
 					|| (personalObject.get("phoneNumber").asText() == "")) ? ""
 							: personalObject.get("phoneNumber").asText();
-			String email = ((personalObject.get("email") == null) || (personalObject.get("email").asText() == "")) ? ""
-					: personalObject.get("email").asText();
-			String ethnic = ((personalObject.get("ethnic") == null) || (personalObject.get("ethnic").asText() == ""))
-					? ""
-					: personalObject.get("ethnic").asText();
+			String email = ((personalObject.get("email") == null) 
+					|| (personalObject.get("email").asText() == "")) ? ""
+							: personalObject.get("email").asText();
+			String ethnic = ((personalObject.get("ethnic") == null) 
+					|| (personalObject.get("ethnic").toString() == "")) ? "" 
+							: personalObject.get("ethnic").toString();
 			String religion = ((personalObject.get("religion") == null)
-					|| (personalObject.get("religion").asText() == "")) ? "" : personalObject.get("religion").asText();
+					|| (personalObject.get("religion").toString() == "")) ? ""
+							: personalObject.get("religion").toString();
 			String hometown = ((personalObject.get("hometown") == null)
 					|| (personalObject.get("hometown").toString() == "")) ? ""
 							: personalObject.get("hometown").toString();
@@ -380,10 +409,12 @@ public class AdmissionsService {
 			person.setCitizenId(idNumber);
 			person.setIdIssueDate(idIssueDate);
 			person.setIdIssuePlace(idIssuePlace);
+			localDateTime = LocalDateTime.now();
+			person.setUpdatedAt(Timestamp.valueOf(localDateTime));
 			// ---Person-info-end---
 
 			// ---Family-info-start---
-
+				// Relatives-start
 			for (JsonNode relative : relativesObject) {
 				String relativeRelationship = ((relative.get("relationship") == null)
 						|| (relative.get("relationship").toString() == "")) ? ""
@@ -416,22 +447,26 @@ public class AdmissionsService {
 						: relative.get("income").asText();
 				String relativeHealthStatus = ((relative.get("healthStatus") == null)
 						|| (relative.get("healthStatus").asText() == "")) ? "" : relative.get("healthStatus").asText();
-				for (Relative relativeUpdate : relativeList) {
-					relativeUpdate.setRelationship(relativeRelationship);
-					relativeUpdate.setStatus(relativeStatus);
-					relativeUpdate.setFullname(relativeFullname);
-					relativeUpdate.setYearOfBirth(relativeYearOfBirth);
-					relativeUpdate.setPhoneNumber(relativePhoneNumber);
-					relativeUpdate.setProvinceAddress(relativeProvinceAddress);
-					relativeUpdate.setDistrictAddress(relativeDistrictAddress);
-					relativeUpdate.setWardAddress(relativeWardAddress);
-					relativeUpdate.setDetailAddress(relativeDetailAddress);
-					relativeUpdate.setCurrentJob(relativeCurrentJob);
-					relativeUpdate.setIncome(relativeIncome);
-					relativeUpdate.setHealthStatus(relativeHealthStatus);
-				}
+
+				Relative relativeInsert = new Relative();
+				relativeInsert.setRelationship(relativeRelationship);
+				relativeInsert.setStatus(relativeStatus);
+				relativeInsert.setFullname(relativeFullname);
+				relativeInsert.setYearOfBirth(relativeYearOfBirth);
+				relativeInsert.setPhoneNumber(relativePhoneNumber);
+				relativeInsert.setProvinceAddress(relativeProvinceAddress);
+				relativeInsert.setDistrictAddress(relativeDistrictAddress);
+				relativeInsert.setWardAddress(relativeWardAddress);
+				relativeInsert.setDetailAddress(relativeDetailAddress);
+				relativeInsert.setCurrentJob(relativeCurrentJob);
+				relativeInsert.setIncome(relativeIncome);
+				relativeInsert.setHealthStatus(relativeHealthStatus);
+				relativeInsert.setUser(user);
+				relativeList.add(relativeInsert);
+
 			}
-			String relativeFamilyBackground = ((familyObject.get("familyBackground") == null)
+				// Relatives-end
+			String familyBackground = ((familyObject.get("familyBackground") == null)
 					|| (familyObject.get("familyBackground").asText() == "")) ? ""
 							: familyObject.get("familyBackground").asText();
 			// ---Family-info-end---
@@ -487,7 +522,7 @@ public class AdmissionsService {
 			student.setAdmissionViaDirectMethod(studentAdmissionViaDirectMethod);
 			student.setAchievements(studentAchievements);
 			student.setDream(studentDream);
-			student.setFamilyBackground(relativeFamilyBackground);
+			student.setFamilyBackground(familyBackground);
 			// ---Student-info-end---
 
 			/* Insert data */
@@ -500,7 +535,8 @@ public class AdmissionsService {
 						.body(new ResponseObject("ERROR", "Have error when update student", ""));
 			}
 			for (Relative r : relativeList) {
-				if (relativeRepositoryImpl.edit(r) < 0) {
+				// all relative have been delete before
+				if (relativeRepositoryImpl.add(r) < 0) {
 					return ResponseEntity.status(HttpStatus.OK)
 							.body(new ResponseObject("ERROR", "Have error when update relative", ""));
 				}
@@ -512,61 +548,65 @@ public class AdmissionsService {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", ""));
 	}
 
-	public byte[] generateReportFromJson(String json) throws Exception {
+	public byte[] generateReportFromJson(String json){
 		StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
 		JSONObject jsonObject = new JSONObject(entity);
-		String templatePath = "";
-		templatePath = env.getProperty("report.templatepath");
 
 		// Load .jrxml file from resources
-		Resource jrxmlFileResource = resourceLoader.getResource("classpath:/templates/DonXinVaoKTX.jrxml");
+		try {
+			Resource jrxmlFileResource = resourceLoader.getResource("classpath:/templates/DonXinVaoKTX.jrxml");
+			
+			InputStream jrxmlInput = jrxmlFileResource.getInputStream();
+			JasperDesign jasperDesign = JRXmlLoader.load(jrxmlInput);
 
-		InputStream jrxmlInput = jrxmlFileResource.getInputStream();
-		JasperDesign jasperDesign = JRXmlLoader.load(jrxmlInput);
+			// Compile .jrxml to .jasper
+			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
 
-		// Compile .jrxml to .jasper
-		JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
-
-		Map<String, Object> data = new HashMap<>();
-		Iterator<String> keys = jsonObject.keys();
-		while (keys.hasNext()) {
-			String key = keys.next();
-			Object value = jsonObject.get(key);
-			if (value instanceof JSONArray) {
-				// nếu giá trị là một mảng JSON, chuyển đổi thành danh sách
-				value = ((JSONArray) value).toList();
-			} else if (value instanceof JSONObject) {
-				// nếu giá trị là một đối tượng JSON, chuyển đổi thành Map
-				value = ((JSONObject) value).toMap();
+			Map<String, Object> data = new HashMap<>();
+			Iterator<String> keys = jsonObject.keys();
+			while (keys.hasNext()) {
+				String key = keys.next();
+				Object value = jsonObject.get(key);
+				if (value instanceof JSONArray) {
+					// nếu giá trị là một mảng JSON, chuyển đổi thành danh sách
+					value = ((JSONArray) value).toList();
+				} else if (value instanceof JSONObject) {
+					// nếu giá trị là một đối tượng JSON, chuyển đổi thành Map
+					value = ((JSONObject) value).toMap();
+				}
+				data.put(key, value);
 			}
-			data.put(key, value);
+
+			// Create JsonDataSource from json string
+			JRDataSource dataSource = new JsonDataSource(new ByteArrayInputStream(json.getBytes()));
+
+			// Set parameters
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("data", data);
+
+			// Fill JasperPrint with data
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+			ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
+			JRPdfExporter exporter = new JRPdfExporter();
+//			JRDocxExporter exporter = new JRDocxExporter();
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfOutputStream));
+			exporter.exportReport();
+
+			// Set headers for the response
+			HttpHeaders headers = new HttpHeaders();
+			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+			headers.setContentDisposition(
+					ContentDisposition.builder("attachment").filename("DonXetTuyenVaoKtx.pdf").build());
+
+			// Return the response with the DOCX file bytes and headers
+			return pdfOutputStream.toByteArray();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
-
-		// Create JsonDataSource from json string
-		JRDataSource dataSource = new JsonDataSource(new ByteArrayInputStream(json.getBytes()));
-
-		// Set parameters
-		Map<String, Object> parameters = new HashMap<>();
-		parameters.put("data", data);
-
-		// Fill JasperPrint with data
-		JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-		ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
-		JRPdfExporter exporter = new JRPdfExporter();
-//		JRDocxExporter exporter = new JRDocxExporter();
-		exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
-
-		exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfOutputStream));
-		exporter.exportReport();
-
-		// Set headers for the response
-		HttpHeaders headers = new HttpHeaders();
-		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-		headers.setContentDisposition(
-				ContentDisposition.builder("attachment").filename("DonXetTuyenVaoKtx.pdf").build());
-
-		// Return the response with the DOCX file bytes and headers
-		return pdfOutputStream.toByteArray();
+		
 	}
 
 	public ResponseEntity<ResponseObject> uploadFiles(MultipartHttpServletRequest request) {
@@ -608,12 +648,12 @@ public class AdmissionsService {
 		}
 		for (MultipartFile mpf : files) {
 			String filename = StringUtils.cleanPath(mpf.getOriginalFilename());
-	        try {
-	            Path path = Paths.get(pathSaveFile.toString() + filename);
-	            Files.copy(mpf.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-	        } catch (IOException e) {
-	            e.printStackTrace();
-	        }
+			try {
+				Path path = Paths.get(pathSaveFile.toString() + filename);
+				Files.copy(mpf.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Upload Successfully", ""));
@@ -624,21 +664,53 @@ public class AdmissionsService {
 		Pattern pattern = Pattern.compile("\\p{InCombiningDiacriticalMarks}+");
 		return pattern.matcher(nfdNormalizedString).replaceAll("").replaceAll("Đ", "D").replaceAll("đ", "d");
 	}
+
 	public static void deleteFolder(File srcfolder, String startWith) {
-            File[] files = srcfolder.listFiles();
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isDirectory() && file.getName().startsWith(startWith)) {
-                        deleteFolder(file,startWith);
-                    } else {
-	                	if(srcfolder.getName().startsWith(startWith)) {
-	                		file.delete();
-	                	}
-                    }
-                }
-                if(srcfolder.getName().startsWith(startWith)) {
-                	srcfolder.delete();
-                }
-            }
-    }
+		File[] files = srcfolder.listFiles();
+		if (files != null) {
+			for (File file : files) {
+				if (file.isDirectory() && file.getName().startsWith(startWith)) {
+					deleteFolder(file, startWith);
+				} else {
+					if (srcfolder.getName().startsWith(startWith)) {
+						file.delete();
+					}
+				}
+			}
+			if (srcfolder.getName().startsWith(startWith)) {
+				srcfolder.delete();
+			}
+		}
+	}
+	public String calculationDormStudentCode(String gender) {
+		/**
+		 Format: Term + (Nam ? 01 : Nữ ? 02) + (count by gender  + 1) 
+		 */
+		int yearOfFoundation = 2016;
+		String term = LocalDateTime.now().getYear() - yearOfFoundation + 1 + "";
+		if(Integer.valueOf(term)<10) {
+			term = "0" + term;
+		}
+		String result = "";
+		
+		JsonMapper jsonMapper = new JsonMapper();
+		JsonNode genderNode = null;
+		List<Person> persons = personRepositoryImpl.findAllAtCurrentYear();
+		int countByGender = 0;
+		for(Person p : persons) {
+			try {
+				genderNode = jsonMapper.readTree(p.getGender());
+				if(genderNode.get("value").asText().equals(gender)) {
+					countByGender++;
+				}
+			} catch (JsonMappingException e) {
+				e.printStackTrace();
+			} catch (JsonProcessingException e) {
+				e.printStackTrace();
+			}
+		}
+		countByGender = countByGender + 1;
+		result = term + (gender.equals("Nam") ? "01" : "02") + (countByGender < 10 ? "00" + countByGender : "0" + countByGender);
+		return result;
+	}
 }

@@ -1,5 +1,7 @@
 package com.webktx.entity;
 
+import java.sql.Timestamp;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -50,4 +52,8 @@ public class Person {
 	@OneToOne
 	@JoinColumn(name = "user_id")
 	private User user;
+	@Column(name="created_at")
+	private Timestamp createdAt;
+	@Column(name="updated_at")
+	private Timestamp updatedAt; 
 }

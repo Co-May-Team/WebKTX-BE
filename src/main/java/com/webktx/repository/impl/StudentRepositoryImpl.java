@@ -21,24 +21,6 @@ public class StudentRepositoryImpl implements IStudentRepository{
 	private static final Logger LOGGER = LoggerFactory.getLogger(RelativeRepositoryImpl.class);
 	@Autowired
 	private SessionFactory sessionFactory;
-
-	@Override
-	public boolean isExistWithUserId(Integer userId) {
-		Session session = sessionFactory.getCurrentSession();
-		String hql = "FROM students as st where st.user.userId = :userId";
-		try {
-			Query query = session.createQuery(hql.toString());
-			LOGGER.info(hql.toString());
-			query.setParameter("userId", userId);
-			Student user = (Student) query.getSingleResult();
-			if (user!=null) {
-				return true;
-			}
-		} catch (Exception e) {
-			LOGGER.error("Error has occured at isExistWithUserId() ", e);
-		}
-		return false;
-	}
 	@Override
 	public Integer add(Student student) {
 		Session session = sessionFactory.getCurrentSession();
