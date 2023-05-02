@@ -1,5 +1,7 @@
 package com.webktx.repository;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,4 +14,6 @@ public interface IPersonRepository {
 	Integer edit (Person person);
 	Integer deleteById (Integer personId);
 	Person findByUserId(Integer userId);
+	boolean isExistWithUserId(Integer userId);
+	List<Person> findAllAtCurrentYear();
 }

@@ -76,4 +76,25 @@ public class RelativeRepositoryImpl implements IRelativeRepository{
 		}
 		return relativeList;
 	}
+	@Override
+	public boolean deleteAllByUserId(Integer userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "DELETE relatives rl where rl.user.userId = :userId";
+		try {
+			Query query = session.createQuery(hql);
+			query.setParameter("userId", userId);
+			int result = query.executeUpdate();
+			if (result >= 0) {
+				StringBuilder noticeMessage = new StringBuilder("All relatives of user ");
+				noticeMessage.append(userId);
+				noticeMessage.append("have been deleted");
+			    System.out.println(noticeMessage);
+			    return true;
+			}
+			
+		} catch (Exception e) {
+			LOGGER.debug(e.getMessage());
+		}
+		return false;
+	}
 }

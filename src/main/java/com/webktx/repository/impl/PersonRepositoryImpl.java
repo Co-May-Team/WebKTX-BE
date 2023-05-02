@@ -1,5 +1,8 @@
 package com.webktx.repository.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Query;
 
 import org.hibernate.Session;
@@ -74,4 +77,35 @@ public class PersonRepositoryImpl implements IPersonRepository{
 		}
 		return null;
 	}
+	@Override
+	public boolean isExistWithUserId(Integer userId) {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "SELECT fullname FROM persons as ps where ps.user.userId = :userId";
+		try {
+			Query query = session.createQuery(hql.toString());
+			LOGGER.info(hql.toString());
+			query.setParameter("userId", userId);
+			String fullname = (String) query.getSingleResult();
+			if (!fullname.isEmpty()) {
+				return true;
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error has occured at isExistWithUserId() ", e);
+		}
+		return false;
+	}
+	@Override
+	public List<Person> findAllAtCurrentYear() {
+		Session session = sessionFactory.getCurrentSession();
+		String hql = "FROM persons as ps where YEAR(ps.createdAt) = YEAR(CURRENT_DATE()) ";
+		List<Person> persons = new ArrayList<>();
+		try {
+			Query query = session.createQuery(hql);
+			persons = query.getResultList();
+		} catch (Exception e) {
+			LOGGER.error("Error has occured at findAllAtCurrentYear() ", e);
+		}
+		return persons;
+	}
 }
+

@@ -10,4 +10,5 @@ public interface IRelativeRepository {
 	Integer edit (Relative relative);
 	Integer deleteById (Integer relativeId);
 	List<Relative> findByUserId(Integer userId);
+	boolean deleteAllByUserId(Integer userId);
 }

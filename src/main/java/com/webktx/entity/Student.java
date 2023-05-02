@@ -60,4 +60,7 @@ public class Student {
 	private List<Relative> relatives;
 	@Column(name="family_background")
 	private String familyBackground;
+	
+	@Column(name="dorm_student_code")
+	private String studentCodeDorm;
 }

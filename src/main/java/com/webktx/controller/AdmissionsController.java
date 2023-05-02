@@ -37,39 +37,21 @@ public class AdmissionsController {
 	public ResponseEntity<ResponseObject> submitForm(				
 			@RequestBody String json
 			) {
-		LOGGER.info("Submit form");
-		try {
+			LOGGER.info("Submit form");
 			return admissionService.submitForm(json);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
 	}
 	@PostMapping(value= "/upload-files",produces = {"application/json; charset=UTF-8"})
 	@ResponseBody
 	public ResponseEntity<ResponseObject> uploadFiles (MultipartHttpServletRequest request) {
 		LOGGER.info("Submit form");
-		try {
-			return admissionService.uploadFiles(request);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		return admissionService.uploadFiles(request);
 	}
 	@PostMapping(value= "/gen-file",produces = {"application/json; charset=UTF-8"})
 	@ResponseBody
 	public byte[] generateReportFromJson(				
 			@RequestBody String json
 			) {
-		LOGGER.info("Get all posts");
-		try {
-			return admissionService.generateReportFromJson(json);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		return null;
+		LOGGER.info("generateReportFromJson()");
+		return admissionService.generateReportFromJson(json);
 	}
 }

@@ -51,11 +51,11 @@ public class UserRepositoryImpl implements IUserRepository {
 	public Boolean checkExistingUserByUsername(String username) {
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			String hql = "FROM users as u WHERE u.username = :username";
+			String hql = "SELECT username FROM users as u WHERE u.username = :username";
 			Query query = session.createQuery(hql);
 			query.setParameter("username", username.trim());
-			List<User> users = (List<User>) query.getResultList();
-			if(!users.isEmpty()) {
+			String result = (String) query.getSingleResult();
+			if(!result.isEmpty()) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -165,7 +165,7 @@ public class UserRepositoryImpl implements IUserRepository {
 		query.setParameter("email",email );
 		try {
 			String result = (String) query.getSingleResult();
-			if (!result.equals("")) {
+			if (!result.isEmpty()) {
 				return true;
 			}
 		}
