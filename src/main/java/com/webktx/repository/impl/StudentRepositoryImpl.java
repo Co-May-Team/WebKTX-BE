@@ -10,9 +10,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.webktx.entity.Relative;
 import com.webktx.entity.Student;
 import com.webktx.entity.User;
+import com.webktx.model.StudentModel;
 import com.webktx.repository.IStudentRepository;
 
 @Repository
@@ -72,5 +77,50 @@ public class StudentRepositoryImpl implements IStudentRepository{
 			LOGGER.error(e.getMessage());
 		}
 		return null;
+	}
+	public StudentModel findModelByUserId(Integer userId) {
+		try {
+			Student student = null; 
+			StudentModel studentModel = null;
+			student = findByUserId(userId);
+			studentModel = toModel(student);
+			return studentModel;
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			return null;
+		}
+	}
+	public StudentModel toModel(Student student) {
+		JsonMapper jsonMapper = new JsonMapper(); 
+		JsonNode parser = null; 
+		StudentModel studentModel = new StudentModel();
+		studentModel.setMajor(student.getMajor());
+		studentModel.setClassCode(student.getClassCode());
+		studentModel.setStudentCode(student.getStudentCode());
+		studentModel.setAverageGrade10(student.getGpa10());
+		studentModel.setAverageGrade11(student.getGpa11());
+		studentModel.setAverageGrade12(student.getGpa12());
+		studentModel.setHighSchoolGraduationExamScore(student.getHighschoolGraduationExamScore());
+		studentModel.setDgnlScore(student.getDgnlScore());
+		studentModel.setAdmissionViaDirectMethod(student.getAdmissionViaDirectMethod());
+		studentModel.setAchievements(student.getAchievements());
+		studentModel.setDream(student.getDream());
+		studentModel.setFamilyBackground(student.getFamilyBackground());
+			// parse to object
+			try {
+				parser = jsonMapper.readTree(student.getStudentType());
+				studentModel.setStudentType(parser);
+				parser = jsonMapper.readTree(student.getUniversityName());
+				studentModel.setUniversityName(parser);
+			} catch (JsonMappingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			} catch (JsonProcessingException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				return null;
+			}
+		return studentModel;
 	}
 }

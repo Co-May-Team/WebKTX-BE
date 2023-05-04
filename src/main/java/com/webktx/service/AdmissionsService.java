@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -52,7 +53,11 @@ import com.webktx.entity.ResponseObject;
 import com.webktx.entity.Status;
 import com.webktx.entity.Student;
 import com.webktx.entity.User;
+import com.webktx.model.AdmissionModel;
 import com.webktx.model.ImageModel;
+import com.webktx.model.PersonModel;
+import com.webktx.model.RelativeModel;
+import com.webktx.model.StudentModel;
 import com.webktx.repository.impl.PersonRepositoryImpl;
 import com.webktx.repository.impl.RelativeRepositoryImpl;
 import com.webktx.repository.impl.StudentRepositoryImpl;
@@ -136,11 +141,11 @@ public class AdmissionsService {
 							: personalObject.get("phoneNumber").asText();
 			String email = ((personalObject.get("email") == null) || (personalObject.get("email").asText() == "")) ? ""
 					: personalObject.get("email").asText();
-			String ethnic = ((personalObject.get("ethnic") == null) || (personalObject.get("ethnic").asText() == ""))
+			String ethnic = ((personalObject.get("ethnic") == null) || (personalObject.get("ethnic").toString() == ""))
 					? ""
-					: personalObject.get("ethnic").asText();
+					: personalObject.get("ethnic").toString();
 			String religion = ((personalObject.get("religion") == null)
-					|| (personalObject.get("religion").asText() == "")) ? "" : personalObject.get("religion").asText();
+					|| (personalObject.get("religion").toString() == "")) ? "" : personalObject.get("religion").toString();
 			String hometown = ((personalObject.get("hometown") == null)
 					|| (personalObject.get("hometown").toString() == "")) ? ""
 							: personalObject.get("hometown").toString();
@@ -216,12 +221,17 @@ public class AdmissionsService {
 								: relative.get("detailAddress").asText();
 				String relativeCurrentJob = ((relative.get("currentJob") == null)
 						|| (relative.get("currentJob").asText() == "")) ? "" : relative.get("currentJob").asText();
+				String relativePlaceOfWork = ((relative.get("placeOfWork") == null)
+						|| (relative.get("placeOfWork").asText() == "")) ? "" : relative.get("placeOfWork").asText();
+				String relativePhoneNumberOfCompany = ((relative.get("phoneNumberOfCompany") == null)
+						|| (relative.get("phoneNumberOfCompany").asText() == "")) ? "" : relative.get("phoneNumberOfCompany").asText();
 				String relativeIncome = ((relative.get("income") == null) || (relative.get("income").asText() == ""))
 						? ""
 						: relative.get("income").asText();
 				String relativeHealthStatus = ((relative.get("healthStatus") == null)
 						|| (relative.get("healthStatus").asText() == "")) ? "" : relative.get("healthStatus").asText();
 
+				
 				Relative relativeInsert = new Relative();
 				relativeInsert.setRelationship(relativeRelationship);
 				relativeInsert.setStatus(relativeStatus);
@@ -233,6 +243,8 @@ public class AdmissionsService {
 				relativeInsert.setWardAddress(relativeWardAddress);
 				relativeInsert.setDetailAddress(relativeDetailAddress);
 				relativeInsert.setCurrentJob(relativeCurrentJob);
+				relativeInsert.setPlaceOfWork(relativePlaceOfWork);
+				relativeInsert.setPhoneNumberOfCompany(relativePhoneNumberOfCompany);
 				relativeInsert.setIncome(relativeIncome);
 				relativeInsert.setHealthStatus(relativeHealthStatus);
 				relativeInsert.setUser(user);
@@ -442,6 +454,11 @@ public class AdmissionsService {
 								: relative.get("detailAddress").asText();
 				String relativeCurrentJob = ((relative.get("currentJob") == null)
 						|| (relative.get("currentJob").asText() == "")) ? "" : relative.get("currentJob").asText();
+				String relativePlaceOfWork = ((relative.get("placeOfWork") == null)
+						|| (relative.get("placeOfWork").asText() == "")) ? "" : relative.get("placeOfWork").asText();
+				String relativePhoneNumberOfCompany = ((relative.get("phoneNumberOfCompany") == null)
+						|| (relative.get("phoneNumberOfCompany").asText() == "")) ? "" : relative.get("phoneNumberOfCompany").asText();
+
 				String relativeIncome = ((relative.get("income") == null) || (relative.get("income").asText() == ""))
 						? ""
 						: relative.get("income").asText();
@@ -459,6 +476,8 @@ public class AdmissionsService {
 				relativeInsert.setWardAddress(relativeWardAddress);
 				relativeInsert.setDetailAddress(relativeDetailAddress);
 				relativeInsert.setCurrentJob(relativeCurrentJob);
+				relativeInsert.setPlaceOfWork(relativePlaceOfWork);
+				relativeInsert.setPhoneNumberOfCompany(relativePhoneNumberOfCompany);
 				relativeInsert.setIncome(relativeIncome);
 				relativeInsert.setHealthStatus(relativeHealthStatus);
 				relativeInsert.setUser(user);
@@ -695,7 +714,7 @@ public class AdmissionsService {
 		
 		JsonMapper jsonMapper = new JsonMapper();
 		JsonNode genderNode = null;
-		List<Person> persons = personRepositoryImpl.findAllAtCurrentYear();
+		List<Person> persons = personRepositoryImpl.findAllByYear(LocalDateTime.now().getYear());
 		int countByGender = 0;
 		for(Person p : persons) {
 			try {
@@ -712,5 +731,56 @@ public class AdmissionsService {
 		countByGender = countByGender + 1;
 		result = term + (gender.equals("Nam") ? "01" : "02") + (countByGender < 10 ? "00" + countByGender : "0" + countByGender);
 		return result;
+	}
+	public ResponseEntity<ResponseObject> findAllAdmissionByYear(int year){
+		List<Person> persons = personRepositoryImpl.findAllByYear(year);
+		List<AdmissionModel> admissionModelList = new ArrayList<>();
+		List<Integer> userIdInvalidForm = new ArrayList<>();
+		for(Person p : persons) {
+			Student student = studentRepositoryImpl.findByUserId(p.getUser().getUserId());
+			if(student==null) {
+				userIdInvalidForm.add(p.getUser().getUserId());
+				continue;
+			}
+			Status status = student.getStatus();
+			AdmissionModel admissionModel = new AdmissionModel();
+			admissionModel.setUserId(p.getUser().getUserId());
+			admissionModel.setFullname(p.getFullname());
+			admissionModel.setDob(p.getDob());
+			admissionModel.setPhone(p.getPhoneNumber());
+			admissionModel.setEmail(p.getEmail());
+			admissionModel.setStatus(status.getLabel());
+			admissionModelList.add(admissionModel);
+		}
+		if(!admissionModelList.isEmpty() && userIdInvalidForm.isEmpty()) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully",admissionModelList));
+		}else if(!admissionModelList.isEmpty() && !userIdInvalidForm.isEmpty()){
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Thông tin tuyển sinh không hoàn chỉnh " + userIdInvalidForm ,admissionModelList));
+		}else {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Not found",admissionModelList));
+		}
+	}
+	public ResponseEntity<ResponseObject> findByUserId(int userId){
+		
+		Map<String, Object> result = new LinkedHashMap<String, Object>();
+		JsonMapper jsonMapper = new JsonMapper(); 
+		JsonNode parser = null; 
+		
+		try {
+			PersonModel personModel = personRepositoryImpl.findModelByUserId(userId);
+			StudentModel studentModel = studentRepositoryImpl.findModelByUserId(userId);
+			List<RelativeModel> relativeModelList = new ArrayList<>();
+			relativeModelList = relativeRepositoryImpl.findModelByUserId(userId);
+			Map<String, Object> familyInfoMap = new LinkedHashMap<String, Object>();
+			familyInfoMap.put("relatives", relativeModelList);
+			familyInfoMap.put("familyBackground", studentModel.getFamilyBackground());
+			result.put("personalInfo", personModel);
+			result.put("familyInfo", familyInfoMap);
+			result.put("studentInfo", studentModel);
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully",result));
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Not found",result));
+
+		}
 	}
 }

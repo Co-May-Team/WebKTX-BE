@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.webktx.entity.Person;
 import com.webktx.entity.Student;
+import com.webktx.model.PersonModel;
 @Repository
 @Transactional(rollbackFor = Exception.class)
 public interface IPersonRepository {
@@ -15,5 +16,7 @@ public interface IPersonRepository {
 	Integer deleteById (Integer personId);
 	Person findByUserId(Integer userId);
 	boolean isExistWithUserId(Integer userId);
-	List<Person> findAllAtCurrentYear();
+	List<Person> findAllByYear(int year);
+	PersonModel toModel(Person person);
+	PersonModel findModelByUserId(Integer userId);
 }

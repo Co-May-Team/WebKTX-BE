@@ -7,6 +7,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,5 +55,20 @@ public class AdmissionsController {
 			) {
 		LOGGER.info("generateReportFromJson()");
 		return admissionService.generateReportFromJson(json);
+	}
+	
+	@GetMapping(value= "/find-all-by-year")
+	public ResponseEntity<ResponseObject>  findAllByYear(				
+			@RequestParam(value="year", required = true) int year
+			) {
+		LOGGER.info("findAllAdmissionByYear()");
+		return admissionService.findAllAdmissionByYear(year);
+	}
+	@GetMapping(value= "/{userId}")
+	public ResponseEntity<ResponseObject> findByUserId(				
+			@PathVariable Integer userId
+			) {
+		LOGGER.info("findAdmissionByUserId()");
+		return admissionService.findByUserId(userId);
 	}
 }
