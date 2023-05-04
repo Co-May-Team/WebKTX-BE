@@ -10,6 +10,10 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,6 +24,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "persons")
+@JsonInclude(Include.NON_EMPTY)
 public class Person {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -51,6 +56,7 @@ public class Person {
 	
 	@OneToOne
 	@JoinColumn(name = "user_id")
+	@JsonIgnore
 	private User user;
 	@Column(name="created_at")
 	private Timestamp createdAt;

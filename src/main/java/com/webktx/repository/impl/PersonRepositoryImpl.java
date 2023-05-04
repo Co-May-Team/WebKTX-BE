@@ -13,9 +13,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.webktx.entity.Person;
 import com.webktx.entity.Relative;
 import com.webktx.entity.Student;
+import com.webktx.model.PersonModel;
 import com.webktx.repository.IPersonRepository;
 
 @Repository
@@ -78,6 +83,56 @@ public class PersonRepositoryImpl implements IPersonRepository{
 		return null;
 	}
 	@Override
+	public PersonModel findModelByUserId(Integer userId) {
+		PersonModel personModel = null;
+		Person person = null;
+		person = findByUserId(userId);
+		personModel = toModel(person);
+		return personModel;
+	}
+	@Override
+	public PersonModel toModel(Person person) {
+		JsonMapper jsonMapper = new JsonMapper(); 
+		JsonNode parser = null; 
+		//convert to PersonModel start
+		PersonModel personModel = new PersonModel();
+		personModel.setFullName(person.getFullname());
+		personModel.setDateOfBirth(person.getDob());
+		personModel.setPhoneNumber(person.getPhoneNumber());
+		personModel.setEmail(person.getEmail());
+		personModel.setDetailAddress(person.getDetailAddress());
+		personModel.setIdNumber(person.getCitizenId());
+		personModel.setIdIssueDate(person.getIdIssueDate());
+		personModel.setIdIssuePlace(person.getIdIssuePlace());
+			// parse to object
+		try {
+			parser = jsonMapper.readTree(person.getGender());
+			personModel.setGender(parser);
+			parser = jsonMapper.readTree(person.getEthnic());
+			personModel.setEthnic(parser);
+			parser = jsonMapper.readTree(person.getReligion());
+			personModel.setReligion(parser);
+			parser = jsonMapper.readTree(person.getHometown());
+			personModel.setHometown(parser);
+			parser = jsonMapper.readTree(person.getProvinceAddress());
+			personModel.setProvinceAddress(parser);
+			parser = jsonMapper.readTree(person.getDistrictAddress());
+			personModel.setDistrictAddress(parser);
+			parser = jsonMapper.readTree(person.getWardAddress());
+			personModel.setWardAddress(parser);
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		return personModel;
+		//convert to PersonModel end
+	}
+	@Override
 	public boolean isExistWithUserId(Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
 		String hql = "SELECT fullname FROM persons as ps where ps.user.userId = :userId";
@@ -95,12 +150,13 @@ public class PersonRepositoryImpl implements IPersonRepository{
 		return false;
 	}
 	@Override
-	public List<Person> findAllAtCurrentYear() {
+	public List<Person> findAllByYear(int year) {
 		Session session = sessionFactory.getCurrentSession();
-		String hql = "FROM persons as ps where YEAR(ps.createdAt) = YEAR(CURRENT_DATE()) ";
+		String hql = "FROM persons as ps where YEAR(ps.createdAt) = :year order by ps.id desc";
 		List<Person> persons = new ArrayList<>();
 		try {
 			Query query = session.createQuery(hql);
+			query.setParameter("year", year);
 			persons = query.getResultList();
 		} catch (Exception e) {
 			LOGGER.error("Error has occured at findAllAtCurrentYear() ", e);

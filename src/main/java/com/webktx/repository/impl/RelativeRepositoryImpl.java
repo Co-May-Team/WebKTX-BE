@@ -14,9 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.webktx.entity.Person;
 import com.webktx.entity.Post;
 import com.webktx.entity.Relative;
+import com.webktx.model.RelativeModel;
 import com.webktx.repository.IRelativeRepository;
 @Repository
 @Transactional(rollbackFor = Exception.class)
@@ -73,9 +78,60 @@ public class RelativeRepositoryImpl implements IRelativeRepository{
 			relativeList = query.getResultList();
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
+			e.printStackTrace();
 		}
 		return relativeList;
 	}
+	@Override
+	public List<RelativeModel> findModelByUserId(Integer userId) {
+		List<Relative> relativeList = new ArrayList<>();
+		List<RelativeModel> relativeModelList = new ArrayList<>();
+		relativeList = findByUserId(userId);
+		relativeModelList = toModel(relativeList);
+		return relativeModelList;
+	}
+	@Override
+	public List<RelativeModel> toModel(List<Relative> relativeList) {
+		JsonMapper jsonMapper = new JsonMapper(); 
+		JsonNode parser = null; 
+		List<RelativeModel> relativeModelList = new ArrayList<>();
+		for(Relative relative : relativeList) {
+			RelativeModel relativeModel = new RelativeModel();
+			relativeModel.setFullName(relative.getFullname());
+			relativeModel.setYearOfBirth(relative.getYearOfBirth());
+			relativeModel.setPhoneNumber(relative.getPhoneNumber());
+			relativeModel.setDetailAddress(relative.getDetailAddress());
+			relativeModel.setCurrentJob(relative.getCurrentJob());
+			relativeModel.setPhoneNumberOfCompany(relative.getPhoneNumberOfCompany());
+			relativeModel.setIncome(relative.getIncome());
+			relativeModel.setHealthStatus(relative.getHealthStatus());
+				// parse to object
+				try {
+					parser = jsonMapper.readTree(relative.getRelationship());
+					relativeModel.setRelationship(parser);
+					parser = jsonMapper.readTree(relative.getStatus());
+					relativeModel.setStatus(parser);
+					parser = jsonMapper.readTree(relative.getProvinceAddress());
+					relativeModel.setProvinceAddress(parser);
+					parser = jsonMapper.readTree(relative.getDistrictAddress());
+					relativeModel.setDistrictAddress(parser);
+					parser = jsonMapper.readTree(relative.getWardAddress());
+					relativeModel.setWardAddress(parser);
+				} catch (JsonMappingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return null;
+				} catch (JsonProcessingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+					return null;
+				}
+			relativeModelList.add(relativeModel);
+		}
+		
+		return relativeModelList;
+	}
+	
 	@Override
 	public boolean deleteAllByUserId(Integer userId) {
 		Session session = sessionFactory.getCurrentSession();

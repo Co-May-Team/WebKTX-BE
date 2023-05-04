@@ -5,6 +5,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.webktx.entity.Relative;
 import com.webktx.entity.Student;
+import com.webktx.model.StudentModel;
 
 @Repository
 @Transactional(rollbackFor = Exception.class)
@@ -13,5 +14,7 @@ public interface IStudentRepository {
 	Integer edit (Student student);
 	Integer deleteById (Integer studentId);
 	Student findByUserId(Integer userId);
+	StudentModel findModelByUserId(Integer userId);
+	StudentModel toModel(Student student);
 
 }
