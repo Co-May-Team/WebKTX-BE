@@ -261,7 +261,7 @@
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textField>
-					<reportElement mode="Transparent" x="0" y="0" width="280" height="15" uuid="49138893-1869-47fe-9ae5-e6745168cf3e">
+					<reportElement mode="Transparent" x="0" y="0" width="280" height="17" uuid="49138893-1869-47fe-9ae5-e6745168cf3e">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement>

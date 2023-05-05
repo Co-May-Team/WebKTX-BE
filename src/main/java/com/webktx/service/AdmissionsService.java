@@ -1,8 +1,11 @@
 package com.webktx.service;
 
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -22,6 +25,7 @@ import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.apache.http.entity.StringEntity;
+import org.apache.poi.util.IOUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -47,6 +51,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.webktx.constant.Constant;
 import com.webktx.entity.Person;
 import com.webktx.entity.Relative;
 import com.webktx.entity.ResponseObject;
@@ -614,10 +619,10 @@ public class AdmissionsService {
 			exporter.exportReport();
 
 			// Set headers for the response
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-			headers.setContentDisposition(
-					ContentDisposition.builder("attachment").filename("DonXetTuyenVaoKtx.pdf").build());
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//			headers.setContentDisposition(
+//					ContentDisposition.builder("attachment").filename("DonXetTuyenVaoKtx.pdf").build());
 
 			// Return the response with the DOCX file bytes and headers
 			return pdfOutputStream.toByteArray();
@@ -649,7 +654,7 @@ public class AdmissionsService {
 		List<MultipartFile> listImageSave = new ArrayList<>();
 		List<ImageModel> imageModels = new ArrayList<>();
 //		B1: lay ra duong dan se luu file cho tung ca nhan
-		pathSaveFile.append("/TuyenSinh/");
+		pathSaveFile.append(Constant.URL_ADMISSON_FILE_UPLOAD);
 		File dirToSave = new File(pathSaveFile.toString());
 		if (!dirToSave.exists()) {
 			if (dirToSave.mkdir()) {
@@ -772,15 +777,52 @@ public class AdmissionsService {
 			List<RelativeModel> relativeModelList = new ArrayList<>();
 			relativeModelList = relativeRepositoryImpl.findModelByUserId(userId);
 			Map<String, Object> familyInfoMap = new LinkedHashMap<String, Object>();
+			Map<String, byte[]> fileUuploadContent = new LinkedHashMap<>();
+			List<Object> fileUuploadContentList = new ArrayList<>();
+			StringBuilder usrDir = new StringBuilder(Constant.USR_DIR).append(Constant.URL_ADMISSON_FILE_UPLOAD);
+			File dir = new File(usrDir.toString());
+			if(dir.exists()) {
+				fileUuploadContent = getFileContentMap(dir,String.valueOf(userId), fileUuploadContent);
+				for(Map.Entry<String, byte[]> entry : fileUuploadContent.entrySet()) {
+					Map<String, Object> tmp = new LinkedHashMap<>();
+					tmp.put("fileName", entry.getKey());
+					tmp.put("fileContent", entry.getValue());
+					fileUuploadContentList.add(tmp);
+				}
+			}
+			
 			familyInfoMap.put("relatives", relativeModelList);
 			familyInfoMap.put("familyBackground", studentModel.getFamilyBackground());
 			result.put("personalInfo", personModel);
 			result.put("familyInfo", familyInfoMap);
 			result.put("studentInfo", studentModel);
+			result.put("fileUploaded", fileUuploadContentList);
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully",result));
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Not found",result));
 
 		}
+	}
+	public Map<String,byte[]> getFileContentMap(File srcDir, String startWith, Map<String,byte[]> fileContentMap){
+		File[] files = srcDir.listFiles();
+		if(files!=null) {
+			for(File file : files) {
+				if(file.isDirectory() && file.getName().startsWith(startWith)) {
+					getFileContentMap(file, startWith,fileContentMap);
+				}else if(file.isFile()){
+					byte[] fileByte = null;
+					try {
+						InputStream in = new BufferedInputStream(new FileInputStream(file.getAbsolutePath()));
+						fileByte = IOUtils.toByteArray(in);
+						fileContentMap.put(file.getName(), fileByte);
+					} catch (FileNotFoundException e) {
+						e.printStackTrace();
+					}catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+		return fileContentMap;
 	}
 }
