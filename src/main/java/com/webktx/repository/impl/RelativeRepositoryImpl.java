@@ -102,6 +102,7 @@ public class RelativeRepositoryImpl implements IRelativeRepository{
 			relativeModel.setPhoneNumber(relative.getPhoneNumber());
 			relativeModel.setDetailAddress(relative.getDetailAddress());
 			relativeModel.setCurrentJob(relative.getCurrentJob());
+			relativeModel.setPlaceOfWork(relative.getPlaceOfWork());
 			relativeModel.setPhoneNumberOfCompany(relative.getPhoneNumberOfCompany());
 			relativeModel.setIncome(relative.getIncome());
 			relativeModel.setHealthStatus(relative.getHealthStatus());
