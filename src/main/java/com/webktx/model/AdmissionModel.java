@@ -27,4 +27,5 @@ public class AdmissionModel {
 	private String phone;
 	private String email;
 	private String status;
+	private String avatar;
 }

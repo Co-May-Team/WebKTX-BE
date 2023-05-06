@@ -27,6 +27,7 @@ public class RelativeModel {
 	private Object wardAddress;
 	private String detailAddress;
 	private String currentJob;
+	private String placeOfWork;
 	private String phoneNumberOfCompany;
 	private String income;
 	private String healthStatus;

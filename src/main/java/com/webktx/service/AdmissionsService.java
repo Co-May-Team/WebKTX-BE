@@ -66,6 +66,7 @@ import com.webktx.model.StudentModel;
 import com.webktx.repository.impl.PersonRepositoryImpl;
 import com.webktx.repository.impl.RelativeRepositoryImpl;
 import com.webktx.repository.impl.StudentRepositoryImpl;
+import com.webktx.ultil.Ultil;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperCompileManager;
@@ -755,6 +756,12 @@ public class AdmissionsService {
 			admissionModel.setPhone(p.getPhoneNumber());
 			admissionModel.setEmail(p.getEmail());
 			admissionModel.setStatus(status.getLabel());
+			if(p.getUser().isGoogleAccount()) {
+				admissionModel.setAvatar(p.getUser().getAvatar());
+			}else if(p.getUser().getAvatar()!=null){
+				admissionModel.setAvatar(Ultil.converBaseImageNameToLink(p.getUser().getAvatar()) );
+			}
+			
 			admissionModelList.add(admissionModel);
 		}
 		if(!admissionModelList.isEmpty() && userIdInvalidForm.isEmpty()) {
