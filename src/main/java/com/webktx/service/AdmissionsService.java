@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.http.entity.StringEntity;
@@ -79,6 +80,7 @@ import net.sf.jasperreports.engine.export.JRPdfExporter;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleOutputStreamExporterOutput;
+import com.webktx.service.AdmissionsService.ValueFilesUpload;
 
 @Service
 @Transactional(rollbackFor = Exception.class)
@@ -638,19 +640,27 @@ public class AdmissionsService {
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
 		Person person = personRepositoryImpl.findByUserId(userDetail.getId());
+		Student student = studentRepositoryImpl.findByUserId(userDetail.getId());
 //			// Lay r ds file
 		MultiValueMap<String, MultipartFile> form = request.getMultiFileMap();
-		List<MultipartFile> files = form.get("file");
+//		List<MultipartFile> files = form.get("file");
+		List<MultipartFile> file1 = form.get(ValueFilesUpload.KEY_APP);
+		List<MultipartFile> file2 = form.get(ValueFilesUpload.KEY_TRANS);
+		List<MultipartFile> file3 = form.get(ValueFilesUpload.KEY_PERSON);
+		List<MultipartFile> file4 = form.get(ValueFilesUpload.KEY_PHOTO);
+		List<MultipartFile> file5 = form.get(ValueFilesUpload.KEY_HOUSE);
+		Map<String, Object> files = new LinkedHashMap<>();
 		// Dat ten folder (userId-fullName)
-		String nameConverted = removeDiacritic(person.getFullname());
-		String[] strList = nameConverted.split(" ");
+		StringBuilder nameConverted = new StringBuilder(removeDiacritic(person.getFullname()));
+		String[] strList = nameConverted.toString().split(" ");
+		nameConverted.setLength(0);
+		for (int i = 0; i < strList.length; i++) {
+			nameConverted.append(strList[i]);
+		}
 		StringBuilder title = new StringBuilder();
 		title.append(String.valueOf(userDetail.getId()));
 		title.append("-");
-		for (int i = 0; i < strList.length; i++) {
-			title.append(strList[i]);
-		}
-
+		title.append(nameConverted);
 		StringBuilder pathSaveFile = new StringBuilder(System.getProperty("user.dir"));
 		List<MultipartFile> listImageSave = new ArrayList<>();
 		List<ImageModel> imageModels = new ArrayList<>();
@@ -671,15 +681,81 @@ public class AdmissionsService {
 				System.out.println("Directory Created" + pathSaveFile);
 			}
 		}
-		for (MultipartFile mpf : files) {
-			String filename = StringUtils.cleanPath(mpf.getOriginalFilename());
+//		for (MultipartFile mpf : files) {
+//			String filename = StringUtils.cleanPath(mpf.getOriginalFilename());
+//			try {
+//				Path path = Paths.get(pathSaveFile.toString() + filename);
+//				Files.copy(mpf.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+//			} catch (IOException e) {
+//				e.printStackTrace();
+//			}
+//
+//		}
+		for (MultipartFile mpf : file1) {
+			String[] extentions = mpf.getOriginalFilename().split("\\.");
+			String ex = extentions[extentions.length-1];
+			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_APP);
+			filename.append("-");
+			filename.append(nameConverted);
+			filename.append("-");
+			filename.append(student.getStudentCodeDorm());
+			filename.append(".").append(ex);
+			files.put(filename.toString(), mpf);
+		}
+		for (MultipartFile mpf : file2) {
+			String[] extentions = mpf.getOriginalFilename().split("\\.");
+			String ex = extentions[extentions.length-1];
+			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_TRANS);
+			filename.append("-");
+			filename.append(nameConverted);
+			filename.append("-");
+			filename.append(student.getStudentCodeDorm());
+			filename.append(".").append(ex);
+			files.put(filename.toString(), mpf);
+		}
+		for (MultipartFile mpf : file3) {
+			String[] extentions = mpf.getOriginalFilename().split("\\.");
+			String ex = extentions[extentions.length-1];
+			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_PERSON);
+			filename.append("-");
+			filename.append(nameConverted);
+			filename.append("-");
+			filename.append(student.getStudentCodeDorm());
+			filename.append(".").append(ex);
+			files.put(filename.toString(), mpf);
+			
+		}
+		for (MultipartFile mpf : file4) {
+			String[] extentions = mpf.getOriginalFilename().split("\\.");
+			String ex = extentions[extentions.length-1];
+			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_PHOTO);
+			filename.append("-");
+			filename.append(nameConverted);
+			filename.append("-");
+			filename.append(student.getStudentCodeDorm());
+			filename.append(".").append(ex);
+			files.put(filename.toString(), mpf);
+			
+		}
+		for (MultipartFile mpf : file5) {
+			String[] extentions = mpf.getOriginalFilename().split("\\.");
+			String ex = extentions[extentions.length-1];
+			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_HOUSE);
+			filename.append("-");
+			filename.append(nameConverted);
+			filename.append("-");
+			filename.append(student.getStudentCodeDorm());
+			filename.append(".").append(ex);
+			files.put(filename.toString(), mpf);
+		}
+		for(Map.Entry<String, Object> entry : files.entrySet()) {
+			MultipartFile mpf = (MultipartFile) entry.getValue();
 			try {
-				Path path = Paths.get(pathSaveFile.toString() + filename);
+				Path path = Paths.get(pathSaveFile.toString() + entry.getKey());
 				Files.copy(mpf.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Upload Successfully", ""));
 	}
@@ -831,5 +907,19 @@ public class AdmissionsService {
 			}
 		}
 		return fileContentMap;
+	}
+	public static class ValueFilesUpload { 
+		public static final String KEY_APP = "application";
+		public static final String KEY_TRANS = "transcriptAndAchievements";
+		public static final String KEY_PERSON = "personalProfile";
+		public static final String KEY_PHOTO = "photo";
+		public static final String KEY_HOUSE = "houseImage";
+		
+		public static final String VALUE_APP = "DonXinVaoKTX";
+		public static final String VALUE_TRANS = "HocBaVaThanhTich";
+		public static final String VALUE_PERSON = "LyLichCaNhan";
+		public static final String VALUE_PHOTO = "AnhThe";
+		public static final String VALUE_HOUSE = "AnhNgoiNha";
+		
 	}
 }
