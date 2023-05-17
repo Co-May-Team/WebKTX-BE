@@ -71,4 +71,11 @@ public class AdmissionsController {
 		LOGGER.info("findAdmissionByUserId()");
 		return admissionService.findByUserId(userId);
 	}
+	
+	@GetMapping(value = "", produces = "application/json; charset=UTF-8")
+	public ResponseEntity<Object> findAll(){
+		LOGGER.info("Get all colleges");
+		return admissionService.findAll();
+	}
+	
 }

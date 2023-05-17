@@ -20,8 +20,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -60,10 +63,12 @@ import com.webktx.entity.Status;
 import com.webktx.entity.Student;
 import com.webktx.entity.User;
 import com.webktx.model.AdmissionModel;
+import com.webktx.model.CollegeModel;
 import com.webktx.model.ImageModel;
 import com.webktx.model.PersonModel;
 import com.webktx.model.RelativeModel;
 import com.webktx.model.StudentModel;
+import com.webktx.repository.impl.CollegeRepositoryImpl;
 import com.webktx.repository.impl.PersonRepositoryImpl;
 import com.webktx.repository.impl.RelativeRepositoryImpl;
 import com.webktx.repository.impl.StudentRepositoryImpl;
@@ -96,6 +101,9 @@ public class AdmissionsService {
 	RelativeRepositoryImpl relativeRepositoryImpl;
 	@Autowired
 	StudentRepositoryImpl studentRepositoryImpl;
+	
+	@Autowired
+	CollegeRepositoryImpl collegeRepositoryImpl;
 
 	public ResponseEntity<ResponseObject> submitForm(String json) {
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -922,4 +930,28 @@ public class AdmissionsService {
 		public static final String VALUE_HOUSE = "AnhNgoiNha";
 		
 	}
+	
+	public ResponseEntity<Object> findAll() {
+		List<CollegeModel> collegeListTMP = new ArrayList<CollegeModel>();
+		Set<CollegeModel> collegeModelSet = new LinkedHashSet<CollegeModel>();
+		try {
+			collegeListTMP = collegeRepositoryImpl.findModelAll();
+			Map<String, Object> results = new TreeMap<String, Object>();
+			for(CollegeModel categorytModel : collegeListTMP) {
+				collegeModelSet.add(categorytModel);
+			}
+			results.put("colleges", collegeModelSet);
+			if (results.size() > 0) {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseObject("OK", "Successfully", results));
+			} else {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Not found", "Not found", results));
+			}
+				
+		} catch (Exception e) {
+			LOGGER.error("ERROR:" + e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("ERROR", e.getMessage(), ""));
+		}
+	}
+	
 }
