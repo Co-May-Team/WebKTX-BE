@@ -123,4 +123,17 @@ public class StudentRepositoryImpl implements IStudentRepository{
 			}
 		return studentModel;
 	}
+	
+	@Override
+	public Integer updateStatusCode(Student student) {
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.update(student);
+			return 1;
+		} catch (Exception e) {
+			LOGGER.error("Error has occured at edit() ", e);
+			return 0;
+		}
+	}
+	
 }
