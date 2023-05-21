@@ -102,8 +102,7 @@ public class AdmissionsService {
 	@Autowired
 	StudentRepositoryImpl studentRepositoryImpl;
 	
-	@Autowired
-	CollegeRepositoryImpl collegeRepositoryImpl;
+	
 
 	public ResponseEntity<ResponseObject> submitForm(String json) {
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -931,27 +930,28 @@ public class AdmissionsService {
 		
 	}
 	
-	public ResponseEntity<Object> findAll() {
-		List<CollegeModel> collegeListTMP = new ArrayList<CollegeModel>();
-		Set<CollegeModel> collegeModelSet = new LinkedHashSet<CollegeModel>();
+	public ResponseEntity<Object> updateStatusCode(String json) {
+		JsonNode jsonNode;
+		JsonMapper jsonMapper = new JsonMapper();
+		String statusCode;
+		Integer userId;
 		try {
-			collegeListTMP = collegeRepositoryImpl.findModelAll();
-			Map<String, Object> results = new TreeMap<String, Object>();
-			for(CollegeModel categorytModel : collegeListTMP) {
-				collegeModelSet.add(categorytModel);
-			}
-			results.put("colleges", collegeModelSet);
-			if (results.size() > 0) {
+			jsonNode = jsonMapper.readTree(json);
+			userId = jsonNode.get("userId") != null ? jsonNode.get("userId").asInt() : null;
+			statusCode = jsonNode.get("statusCode") != null ? jsonNode.get("statusCode").asText() : "";
+			Student student = studentRepositoryImpl.findByUserId(userId);
+			Status status = new Status();
+			status.setCode(statusCode);
+			student.setStatus(status);
+			if (studentRepositoryImpl.updateStatusCode(student) < 0) {
 				return ResponseEntity.status(HttpStatus.OK)
-						.body(new ResponseObject("OK", "Successfully", results));
-			} else {
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Not found", "Not found", results));
+						.body(new ResponseObject("ERROR", "Have error when update status code student", ""));
 			}
-				
 		} catch (Exception e) {
-			LOGGER.error("ERROR:" + e.getMessage());
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("ERROR", e.getMessage(), ""));
+			LOGGER.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Error", e.getMessage(), ""));
 		}
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", ""));
 	}
 	
 }

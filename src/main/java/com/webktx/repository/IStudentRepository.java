@@ -16,5 +16,5 @@ public interface IStudentRepository {
 	Student findByUserId(Integer userId);
 	StudentModel findModelByUserId(Integer userId);
 	StudentModel toModel(Student student);
-
+	Integer updateStatusCode(Student student);
 }

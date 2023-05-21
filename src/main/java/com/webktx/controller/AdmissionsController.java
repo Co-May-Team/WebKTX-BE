@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -72,10 +73,11 @@ public class AdmissionsController {
 		return admissionService.findByUserId(userId);
 	}
 	
-	@GetMapping(value = "", produces = "application/json; charset=UTF-8")
-	public ResponseEntity<Object> findAll(){
-		LOGGER.info("Get all colleges");
-		return admissionService.findAll();
+	@PutMapping(value = "/update-status")
+	@ResponseBody
+	public ResponseEntity<Object> updateStatusCodeStudent(@RequestBody String json) {
+		LOGGER.info("update status code student");
+		return admissionService.updateStatusCode(json);
 	}
 	
 }
