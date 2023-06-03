@@ -105,7 +105,6 @@ public class RelativeRepositoryImpl implements IRelativeRepository{
 			relativeModel.setPlaceOfWork(relative.getPlaceOfWork());
 			relativeModel.setPhoneNumberOfCompany(relative.getPhoneNumberOfCompany());
 			relativeModel.setIncome(relative.getIncome());
-			relativeModel.setHealthStatus(relative.getHealthStatus());
 				// parse to object
 				try {
 					parser = jsonMapper.readTree(relative.getRelationship());

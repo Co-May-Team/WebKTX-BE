@@ -30,5 +30,4 @@ public class RelativeModel {
 	private String placeOfWork;
 	private String phoneNumberOfCompany;
 	private String income;
-	private String healthStatus;
 }

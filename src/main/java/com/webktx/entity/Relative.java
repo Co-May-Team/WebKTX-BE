@@ -46,7 +46,6 @@ public class Relative {
 	@Column(name="phone_number_of_company")
 	private String phoneNumberOfCompany;
 	private String income;
-	private String healthStatus;
 	
 	@OneToOne
 	@JoinColumn(name = "user_id")
