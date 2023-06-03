@@ -3,6 +3,9 @@ pipeline {
 	environment {
         report = '/var/lib/jenkins/workspace/dev-WebKTX-BE/Email/email-template.html'
     }
+	tools {
+       maven 'maven3.8.8'
+   }
     stages {
 	    stage ('Load functions') {      // Define the function files will be used
             steps {
