@@ -45,8 +45,8 @@
 			<property name="net.sf.jasperreports.json.field.expression" value="healthStatus"/>
 			<fieldDescription><![CDATA[healthStatus]]></fieldDescription>
 		</field>
-		<field name="placeOfWorkORStudy" class="java.lang.String">
-			<fieldDescription><![CDATA[placeOfWorkORStudy]]></fieldDescription>
+		<field name="placeOfWork" class="java.lang.String">
+			<fieldDescription><![CDATA[placeOfWork]]></fieldDescription>
 		</field>
 		<variable name="COUNT_RELATIVES" class="java.lang.Integer" calculation="Count">
 			<variableExpression><![CDATA[$F{relationship}!=null]]></variableExpression>
@@ -157,15 +157,6 @@
 	<field name="religion" class="java.lang.String">
 		<fieldDescription><![CDATA[personalInfo.religion.name]]></fieldDescription>
 	</field>
-	<field name="averageGrade10" class="java.lang.String">
-		<fieldDescription><![CDATA[studentInfo.averageGrade10]]></fieldDescription>
-	</field>
-	<field name="averageGrade11" class="java.lang.String">
-		<fieldDescription><![CDATA[studentInfo.averageGrade11]]></fieldDescription>
-	</field>
-	<field name="averageGrade12" class="java.lang.String">
-		<fieldDescription><![CDATA[studentInfo.averageGrade12]]></fieldDescription>
-	</field>
 	<field name="father-placeOfWork" class="java.lang.String">
 		<fieldDescription><![CDATA[familyInfo.relatives[0].placeOfWork]]></fieldDescription>
 	</field>
@@ -183,6 +174,9 @@
 	</field>
 	<field name="mother-phoneNumber" class="java.lang.String">
 		<fieldDescription><![CDATA[familyInfo.relatives[1].phoneNumber]]></fieldDescription>
+	</field>
+	<field name="highSchoolType" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.highSchoolType.value]]></fieldDescription>
 	</field>
 	<title>
 		<band height="131" splitType="Stretch">
@@ -255,9 +249,9 @@
 				</textField>
 			</frame>
 		</band>
-		<band height="545" splitType="Stretch">
+		<band height="436" splitType="Stretch">
 			<frame>
-				<reportElement x="0" y="0" width="489" height="231" uuid="3b401e6a-6ebe-4415-bebe-2f34487f29d8">
+				<reportElement x="0" y="0" width="489" height="197" uuid="3b401e6a-6ebe-4415-bebe-2f34487f29d8">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 				</reportElement>
 				<textField>
@@ -300,7 +294,7 @@
 					<textFieldExpression><![CDATA["3."]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="0" y="110" width="15" height="17" uuid="e68ccac2-d540-4b91-89d4-55c8b73e0a10">
+					<reportElement positionType="Float" x="0" y="112" width="15" height="17" uuid="e68ccac2-d540-4b91-89d4-55c8b73e0a10">
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
@@ -453,72 +447,26 @@
 					<textFieldExpression><![CDATA[$F{idIssuePlace}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="15" y="112" width="169" height="17" uuid="6870bd7c-de00-4644-862b-22021fedb946">
-						<property name="com.jaspersoft.studio.unit.width" value="px"/>
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<textElement>
-						<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA["Điểm trung bình học bạ cấp III:"]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement positionType="Float" x="184" y="112" width="44" height="17" uuid="4330d38a-93bf-464e-9610-110cbb3330db">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<textElement>
-						<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA["Lớp 10:"]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement positionType="Float" x="184" y="129" width="44" height="17" uuid="577471a1-065b-40fe-8214-65967f4f791a">
+					<reportElement positionType="Float" x="15" y="112" width="100" height="17" uuid="6870bd7c-de00-4644-862b-22021fedb946">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
 					<textElement>
 						<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Lớp 11:"]]></textFieldExpression>
+					<textFieldExpression><![CDATA["Loại học bạ cấp 3:"]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="184" y="146" width="44" height="17" uuid="4d3b0ec1-a6f2-4525-8cc0-9609c025bcd0">
+					<reportElement positionType="Float" x="115" y="112" width="44" height="17" uuid="4330d38a-93bf-464e-9610-110cbb3330db">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement>
 						<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
 					</textElement>
-					<textFieldExpression><![CDATA["Lớp 12:"]]></textFieldExpression>
+					<textFieldExpression><![CDATA[$F{highSchoolType}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="228" y="112" width="56" height="17" uuid="5d8a9c3d-a620-4e3d-8e15-4b6f31ac1e6f">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<textElement>
-						<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{averageGrade10}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement positionType="Float" x="228" y="129" width="56" height="17" uuid="f79877aa-9159-4ed1-9772-5e0637b5aba8">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<textElement>
-						<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{averageGrade11}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement positionType="Float" x="228" y="146" width="56" height="17" uuid="ca9de81c-7eb3-4024-80d1-2bf143dce708">
-						<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					</reportElement>
-					<textElement>
-						<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
-					</textElement>
-					<textFieldExpression><![CDATA[$F{averageGrade12}]]></textFieldExpression>
-				</textField>
-				<textField>
-					<reportElement positionType="Float" x="0" y="163" width="350" height="17" uuid="3f2e37e6-fd22-4ac9-9c98-def4e6663fe1">
+					<reportElement positionType="Float" x="0" y="129" width="350" height="17" uuid="3f2e37e6-fd22-4ac9-9c98-def4e6663fe1">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -529,7 +477,7 @@
 					<textFieldExpression><![CDATA["Điểm đánh giá năng lực đại học của ĐHQG, trường khác, tổng điểm:"]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="350" y="163" width="129" height="17" uuid="b71879be-291b-4c69-a00c-c639f709ca62">
+					<reportElement positionType="Float" x="350" y="130" width="129" height="17" uuid="b71879be-291b-4c69-a00c-c639f709ca62">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
@@ -539,7 +487,7 @@
 					<textFieldExpression><![CDATA[$F{dgnlScore}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="0" y="180" width="136" height="17" uuid="c1d33d83-82b1-4001-92b6-07426a3f99f8">
+					<reportElement positionType="Float" x="0" y="146" width="136" height="17" uuid="c1d33d83-82b1-4001-92b6-07426a3f99f8">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -550,7 +498,7 @@
 					<textFieldExpression><![CDATA["Điểm thi PTTH Quốc gia:"]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="136" y="180" width="54" height="17" uuid="c87d235d-9767-4085-bde2-055037937cb9">
+					<reportElement positionType="Float" x="136" y="146" width="54" height="17" uuid="c87d235d-9767-4085-bde2-055037937cb9">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
@@ -560,7 +508,7 @@
 					<textFieldExpression><![CDATA[$F{highSchoolGraduationExamScore}]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="0" y="214" width="63" height="17" uuid="27ca5076-d757-4f78-891a-447d4c41e436">
+					<reportElement positionType="Float" x="0" y="180" width="63" height="17" uuid="27ca5076-d757-4f78-891a-447d4c41e436">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
@@ -571,7 +519,7 @@
 					<textFieldExpression><![CDATA["Ngành học:"]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="63" y="214" width="426" height="17" uuid="891b7694-3d2a-4072-864d-a1426de3dcbb">
+					<reportElement positionType="Float" x="63" y="180" width="426" height="17" uuid="891b7694-3d2a-4072-864d-a1426de3dcbb">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement>
@@ -637,7 +585,7 @@
 					</textField>
 				</frame>
 				<frame>
-					<reportElement positionType="Float" x="0" y="197" width="489" height="17" isPrintWhenDetailOverflows="true" uuid="5ba78689-21f4-4464-97b0-197e6391c7c0">
+					<reportElement positionType="Float" x="0" y="163" width="489" height="17" isPrintWhenDetailOverflows="true" uuid="5ba78689-21f4-4464-97b0-197e6391c7c0">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.y" value="px"/>
 					</reportElement>
@@ -684,7 +632,7 @@
 				</textField>
 			</frame>
 			<frame>
-				<reportElement positionType="Float" x="0" y="240" width="489" height="214" uuid="44f86c92-e2d3-424a-a226-30727e67b6ba">
+				<reportElement positionType="Float" x="0" y="206" width="489" height="214" uuid="44f86c92-e2d3-424a-a226-30727e67b6ba">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -1082,7 +1030,7 @@
 				</textField>
 			</frame>
 			<break>
-				<reportElement x="0" y="540" width="93" height="1" uuid="9fb3364a-53d3-462f-82d8-a18d018dfed9"/>
+				<reportElement x="0" y="430" width="92" height="1" uuid="9fb3364a-53d3-462f-82d8-a18d018dfed9"/>
 			</break>
 		</band>
 		<band height="88">
@@ -1224,7 +1172,7 @@
 											<font fontName="VN-time-new-roman" size="12.5"/>
 											<paragraph leftIndent="5" rightIndent="5" spacingBefore="5" spacingAfter="5"/>
 										</textElement>
-										<textFieldExpression><![CDATA[$V{COUNT_RELATIVES} > 2 ? $F{placeOfWorkORStudy} : ""]]></textFieldExpression>
+										<textFieldExpression><![CDATA[$V{COUNT_RELATIVES} > 2 ? $F{placeOfWork} : ""]]></textFieldExpression>
 									</textField>
 									<textField textAdjust="StretchHeight" isBlankWhenNull="true">
 										<reportElement stretchType="ContainerHeight" x="160" y="0" width="60" height="30" isRemoveLineWhenBlank="true" uuid="fa310585-f1d8-4eef-96e7-b294a04f9362">
