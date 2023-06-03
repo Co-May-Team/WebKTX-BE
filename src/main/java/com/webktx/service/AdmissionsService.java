@@ -236,9 +236,6 @@ public class AdmissionsService {
 				String relativeIncome = ((relative.get("income") == null) || (relative.get("income").asText() == ""))
 						? ""
 						: relative.get("income").asText();
-				String relativeHealthStatus = ((relative.get("healthStatus") == null)
-						|| (relative.get("healthStatus").asText() == "")) ? "" : relative.get("healthStatus").asText();
-
 				
 				Relative relativeInsert = new Relative();
 				relativeInsert.setRelationship(relativeRelationship);
@@ -254,7 +251,6 @@ public class AdmissionsService {
 				relativeInsert.setPlaceOfWork(relativePlaceOfWork);
 				relativeInsert.setPhoneNumberOfCompany(relativePhoneNumberOfCompany);
 				relativeInsert.setIncome(relativeIncome);
-				relativeInsert.setHealthStatus(relativeHealthStatus);
 				relativeInsert.setUser(user);
 				relativeList.add(relativeInsert);
 
@@ -279,15 +275,6 @@ public class AdmissionsService {
 			String studentStudentCode = ((studentObject.get("studentCode") == null)
 					|| (studentObject.get("studentCode").asText() == "")) ? ""
 							: studentObject.get("studentCode").asText();
-			String studentAverageGrade10 = ((studentObject.get("averageGrade10") == null)
-					|| (studentObject.get("averageGrade10").asText() == "")) ? ""
-							: studentObject.get("averageGrade10").asText();
-			String studentAverageGrade11 = ((studentObject.get("averageGrade11") == null)
-					|| (studentObject.get("averageGrade11").asText() == "")) ? ""
-							: studentObject.get("averageGrade11").asText();
-			String studentAverageGrade12 = ((studentObject.get("averageGrade12") == null)
-					|| (studentObject.get("averageGrade12").asText() == "")) ? ""
-							: studentObject.get("averageGrade12").asText();
 			String studentHighSchoolGraduationExamScore = ((studentObject.get("highSchoolGraduationExamScore") == null)
 					|| (studentObject.get("highSchoolGraduationExamScore").asText() == "")) ? ""
 							: studentObject.get("highSchoolGraduationExamScore").asText();
@@ -302,15 +289,16 @@ public class AdmissionsService {
 			String studentDream = ((studentObject.get("dream") == null) || (studentObject.get("dream").asText() == ""))
 					? ""
 					: studentObject.get("dream").asText();
+			String highSchoolType = ((studentObject.get("highSchoolType") == null)
+					|| (studentObject.get("highSchoolType").toString() == "")) ? ""
+							: studentObject.get("highSchoolType").toString();
 			Student student = new Student();
 			student.setStudentType(studentStudentType);
 			student.setUniversityName(studentUniversityName);
 			student.setMajor(studentMajor);
 			student.setClassCode(studentClassCode);
 			student.setStudentCode(studentStudentCode);
-			student.setGpa10(studentAverageGrade10);
-			student.setGpa11(studentAverageGrade11);
-			student.setGpa12(studentAverageGrade12);
+			student.setHighSchoolType(highSchoolType);
 			student.setHighschoolGraduationExamScore(studentHighSchoolGraduationExamScore);
 			student.setDgnlScore(studentDgnlScore);
 			student.setAdmissionViaDirectMethod(studentAdmissionViaDirectMethod);
@@ -470,8 +458,6 @@ public class AdmissionsService {
 				String relativeIncome = ((relative.get("income") == null) || (relative.get("income").asText() == ""))
 						? ""
 						: relative.get("income").asText();
-				String relativeHealthStatus = ((relative.get("healthStatus") == null)
-						|| (relative.get("healthStatus").asText() == "")) ? "" : relative.get("healthStatus").asText();
 
 				Relative relativeInsert = new Relative();
 				relativeInsert.setRelationship(relativeRelationship);
@@ -487,7 +473,6 @@ public class AdmissionsService {
 				relativeInsert.setPlaceOfWork(relativePlaceOfWork);
 				relativeInsert.setPhoneNumberOfCompany(relativePhoneNumberOfCompany);
 				relativeInsert.setIncome(relativeIncome);
-				relativeInsert.setHealthStatus(relativeHealthStatus);
 				relativeInsert.setUser(user);
 				relativeList.add(relativeInsert);
 
@@ -513,15 +498,6 @@ public class AdmissionsService {
 			String studentStudentCode = ((studentObject.get("studentCode") == null)
 					|| (studentObject.get("studentCode").asText() == "")) ? ""
 							: studentObject.get("studentCode").asText();
-			String studentAverageGrade10 = ((studentObject.get("averageGrade10") == null)
-					|| (studentObject.get("averageGrade10").asText() == "")) ? ""
-							: studentObject.get("averageGrade10").asText();
-			String studentAverageGrade11 = ((studentObject.get("averageGrade11") == null)
-					|| (studentObject.get("averageGrade11").asText() == "")) ? ""
-							: studentObject.get("averageGrade11").asText();
-			String studentAverageGrade12 = ((studentObject.get("averageGrade12") == null)
-					|| (studentObject.get("averageGrade12").asText() == "")) ? ""
-							: studentObject.get("averageGrade12").asText();
 			String studentHighSchoolGraduationExamScore = ((studentObject.get("highSchoolGraduationExamScore") == null)
 					|| (studentObject.get("highSchoolGraduationExamScore").asText() == "")) ? ""
 							: studentObject.get("highSchoolGraduationExamScore").asText();
@@ -536,14 +512,15 @@ public class AdmissionsService {
 			String studentDream = ((studentObject.get("dream") == null) || (studentObject.get("dream").asText() == ""))
 					? ""
 					: studentObject.get("dream").asText();
+			String highSchoolType = ((studentObject.get("highSchoolType") == null)
+					|| (studentObject.get("highSchoolType").toString() == "")) ? ""
+							: studentObject.get("highSchoolType").toString();
 			student.setStudentType(studentStudentType);
 			student.setUniversityName(studentUniversityName);
 			student.setMajor(studentMajor);
 			student.setClassCode(studentClassCode);
 			student.setStudentCode(studentStudentCode);
-			student.setGpa10(studentAverageGrade10);
-			student.setGpa11(studentAverageGrade11);
-			student.setGpa12(studentAverageGrade12);
+			student.setHighSchoolType(highSchoolType);
 			student.setHighschoolGraduationExamScore(studentHighSchoolGraduationExamScore);
 			student.setDgnlScore(studentDgnlScore);
 			student.setAdmissionViaDirectMethod(studentAdmissionViaDirectMethod);

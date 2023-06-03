@@ -37,9 +37,8 @@ public class Student {
 	private String classCode;
 	@Column(name="student_code")
 	private String studentCode;
-	private String gpa10;
-	private String gpa11;
-	private String gpa12;
+	@Column(name="high_school_type")
+	private String highSchoolType;
 	@Column(name="highschool_graduation_exam_score")
 	private String highschoolGraduationExamScore;
 	@Column(name="dgnl_score")

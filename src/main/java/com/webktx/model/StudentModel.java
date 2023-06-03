@@ -35,9 +35,7 @@ public class StudentModel {
 	private String major;
 	private String classCode;
 	private String studentCode;
-	private String averageGrade10;
-	private String averageGrade11;
-	private String averageGrade12;
+	private Object highSchoolType;
 	private String highSchoolGraduationExamScore;
 	private String dgnlScore;
 	private String admissionViaDirectMethod;

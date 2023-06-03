@@ -97,9 +97,6 @@ public class StudentRepositoryImpl implements IStudentRepository{
 		studentModel.setMajor(student.getMajor());
 		studentModel.setClassCode(student.getClassCode());
 		studentModel.setStudentCode(student.getStudentCode());
-		studentModel.setAverageGrade10(student.getGpa10());
-		studentModel.setAverageGrade11(student.getGpa11());
-		studentModel.setAverageGrade12(student.getGpa12());
 		studentModel.setHighSchoolGraduationExamScore(student.getHighschoolGraduationExamScore());
 		studentModel.setDgnlScore(student.getDgnlScore());
 		studentModel.setAdmissionViaDirectMethod(student.getAdmissionViaDirectMethod());
@@ -112,6 +109,8 @@ public class StudentRepositoryImpl implements IStudentRepository{
 				studentModel.setStudentType(parser);
 				parser = jsonMapper.readTree(student.getUniversityName());
 				studentModel.setUniversityName(parser);
+				parser = jsonMapper.readTree(student.getHighSchoolType());
+				studentModel.setHighSchoolType(parser);
 			} catch (JsonMappingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
