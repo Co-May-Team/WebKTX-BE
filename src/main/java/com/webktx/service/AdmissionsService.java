@@ -629,10 +629,10 @@ public class AdmissionsService {
 		MultiValueMap<String, MultipartFile> form = request.getMultiFileMap();
 //		List<MultipartFile> files = form.get("file");
 		List<MultipartFile> file1 = form.get(ValueFilesUpload.KEY_APP);
-		List<MultipartFile> file2 = form.get(ValueFilesUpload.KEY_TRANS);
+//		List<MultipartFile> file2 = form.get(ValueFilesUpload.KEY_TRANS);
 		List<MultipartFile> file3 = form.get(ValueFilesUpload.KEY_PERSON);
 		List<MultipartFile> file4 = form.get(ValueFilesUpload.KEY_PHOTO);
-		List<MultipartFile> file5 = form.get(ValueFilesUpload.KEY_HOUSE);
+//		List<MultipartFile> file5 = form.get(ValueFilesUpload.KEY_HOUSE);
 		Map<String, Object> files = new LinkedHashMap<>();
 		// Dat ten folder (userId-fullName)
 		StringBuilder nameConverted = new StringBuilder(removeDiacritic(person.getFullname()));
@@ -686,17 +686,17 @@ public class AdmissionsService {
 			filename.append(".").append(ex);
 			files.put(filename.toString(), mpf);
 		}
-		for (MultipartFile mpf : file2) {
-			String[] extentions = mpf.getOriginalFilename().split("\\.");
-			String ex = extentions[extentions.length-1];
-			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_TRANS);
-			filename.append("-");
-			filename.append(nameConverted);
-			filename.append("-");
-			filename.append(student.getStudentCodeDorm());
-			filename.append(".").append(ex);
-			files.put(filename.toString(), mpf);
-		}
+//		for (MultipartFile mpf : file2) {
+//			String[] extentions = mpf.getOriginalFilename().split("\\.");
+//			String ex = extentions[extentions.length-1];
+//			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_TRANS);
+//			filename.append("-");
+//			filename.append(nameConverted);
+//			filename.append("-");
+//			filename.append(student.getStudentCodeDorm());
+//			filename.append(".").append(ex);
+//			files.put(filename.toString(), mpf);
+//		}
 		for (MultipartFile mpf : file3) {
 			String[] extentions = mpf.getOriginalFilename().split("\\.");
 			String ex = extentions[extentions.length-1];
@@ -721,17 +721,17 @@ public class AdmissionsService {
 			files.put(filename.toString(), mpf);
 			
 		}
-		for (MultipartFile mpf : file5) {
-			String[] extentions = mpf.getOriginalFilename().split("\\.");
-			String ex = extentions[extentions.length-1];
-			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_HOUSE);
-			filename.append("-");
-			filename.append(nameConverted);
-			filename.append("-");
-			filename.append(student.getStudentCodeDorm());
-			filename.append(".").append(ex);
-			files.put(filename.toString(), mpf);
-		}
+//		for (MultipartFile mpf : file5) {
+//			String[] extentions = mpf.getOriginalFilename().split("\\.");
+//			String ex = extentions[extentions.length-1];
+//			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_HOUSE);
+//			filename.append("-");
+//			filename.append(nameConverted);
+//			filename.append("-");
+//			filename.append(student.getStudentCodeDorm());
+//			filename.append(".").append(ex);
+//			files.put(filename.toString(), mpf);
+//		}
 		for(Map.Entry<String, Object> entry : files.entrySet()) {
 			MultipartFile mpf = (MultipartFile) entry.getValue();
 			try {
@@ -866,8 +866,8 @@ public class AdmissionsService {
 			result.put("fileUploaded", fileUuploadContentList);
 			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully",result));
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Not found",result));
-
+			LOGGER.debug(e.getMessage());
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", e.getMessage(),result));
 		}
 	}
 	public Map<String,byte[]> getFileContentMap(File srcDir, String startWith, Map<String,byte[]> fileContentMap){
