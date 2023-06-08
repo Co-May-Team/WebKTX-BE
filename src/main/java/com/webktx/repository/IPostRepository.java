@@ -39,6 +39,9 @@ public interface IPostRepository {
 	Integer addComment(Comment comment);
 	Integer deleteCommentById(Integer id);
 	Comment findCommentById(Integer id);
+	Integer countAllPagingHidden(String title, String content, String user_id, Integer category_id, Integer tag_id, boolean canEdit);
+	List<PostModel> findAllHidden(String title, String content, String user_id, Integer category_id, Integer tag_id,
+			String sort, String order, Integer offset, Integer limit, boolean canEdit);
 }
 
 

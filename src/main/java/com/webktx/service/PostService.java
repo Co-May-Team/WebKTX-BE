@@ -153,7 +153,69 @@ public class PostService {
 		}
 
 	}
+	public ResponseEntity<Object> findAllHidden(String json, String sort, String order, String page) {
+		boolean canEdit;
+		
+		String defineUser = "";
+		if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String ) {
+			defineUser = (String)SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal();
+		}
+		if(!defineUser.equals("anonymousUser")) {
+			UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext()
+					.getAuthentication().getPrincipal();
+			canEdit = customRolService.canUpdate("Post", userDetail);
+		}else {
+			canEdit = false;
+		}
+		JsonNode jsonObject = null;
+		JsonMapper jsonMapper = new JsonMapper();
 
+		order = order == null ? "DESC" : order;
+		sort = sort == null ? "publishedAt" : sort;
+		page = (page == null || page == "") ? "1" : page.trim();
+		Integer limit = Constant.LIMIT;
+		// Caculator offset
+		int offset = (Integer.parseInt(page) - 1) * limit;
+		Set<PostModel> postModelSet = new LinkedHashSet<PostModel>();
+		List<PostModel> postModelListTMP = new ArrayList<PostModel>();
+		try {
+			jsonObject = jsonMapper.readTree(json);
+
+			String title = ((jsonObject.get("title") == null) || (jsonObject.get("title").asText() == "")) ? ""
+					: jsonObject.get("title").asText();
+			String content = ((jsonObject.get("content") == null) || (jsonObject.get("content").asText() == "")) ? ""
+					: jsonObject.get("content").asText();
+			Integer category_id = jsonObject.get("category_id") == null ? 0 : jsonObject.get("category_id").asInt();
+			Integer tag_id = jsonObject.get("tag_id") == null ? 0 : jsonObject.get("tag_id").asInt();
+			String user_id = ((jsonObject.get("user_id") == null) || (jsonObject.get("user_id").asText() == "")) ? ""
+					: jsonObject.get("user_id").asText();
+			postModelListTMP = postRepositoryImpl.findAllHidden(title, content, user_id, category_id, tag_id, sort, order,
+					offset, limit,canEdit);
+			for (PostModel postModel : postModelListTMP) {
+				postModelSet.add(postModel);
+			}
+			Integer totalItemPost = postRepositoryImpl.countAllPagingHidden(title, content, user_id, category_id, tag_id,canEdit);
+			Pagination pagination = new Pagination();
+			pagination.setLimit(limit);
+			pagination.setPage(Integer.valueOf(page));
+			pagination.setTotalItem(totalItemPost);
+			Map<String, Object> results = new TreeMap<String, Object>();
+			results.put("pagination", pagination);
+			results.put("posts", postModelSet);
+
+			if (results.size() > 0) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", results));
+			} else {
+				pagination.setPage(1);
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("Not found", "Not found", results));
+			}
+		} catch (Exception e) {
+			LOGGER.error("ERROR:" + e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("ERROR", e.getMessage(), ""));
+		}
+
+	}
 	public ResponseEntity<Object> edit(String json) {
 		Post post = null;
 		Set<Integer> tagIds = new LinkedHashSet();
@@ -225,10 +287,10 @@ public class PostService {
 			Integer message = postRepositoryImpl.edit(post);
 			if (message != 0) {
 				return ResponseEntity.status(HttpStatus.OK)
-						.body(new ResponseObject("OK", "Successfully" + "", toModel(post)));
+						.body(new ResponseObject("OK", "Successfully" + "", postRepositoryImpl.toModel(post)));
 			} else {
 				return ResponseEntity.status(HttpStatus.OK)
-						.body(new ResponseObject("Error", message + "", toModel(post)));
+						.body(new ResponseObject("Error", message + "", postRepositoryImpl.toModel(post)));
 
 			}
 		} catch (Exception e) {
@@ -353,32 +415,6 @@ public class PostService {
 		}
 	}
 
-	public PostModel toModel(Post post) {
-		List<TagModel> tagModels = new ArrayList<>();
-		PostModel postModel = new PostModel();
-		postModel.setPostId(post.getPostId());
-		postModel.setTitle(post.getTitle());
-		postModel.setSummary(post.getSummary());
-		CategoryModel categoryModel = new CategoryModel();
-		categoryModel.setCategoryId(post.getCategory().getCategoryId());
-		categoryModel.setCategoryName(post.getCategory().getCategoryName());
-		postModel.setCategory(categoryModel);
-		postModel.setContent(post.getContent());
-		postModel.setPublishedAt(post.getPublishedAt().toLocalDateTime());
-		for (Tag tag : post.getTags()) {
-			TagModel tagModel = new TagModel();
-			tagModel.setTagId(tag.getTagId());
-			tagModel.setTagName(tag.getTagName());
-			tagModels.add(tagModel);
-		}
-		postModel.setTagModels(tagModels);
-		postModel.setCreatedAt(post.getCreatedAt());
-		postModel.setUpdatedAt(post.getUpdatedAt());
-		postModel.setThumbnail(Ultil.converImageNameToLink(post.getSmallPictureId()));
-		postModel.setIsPublished(post.getIsPublished());
-
-		return postModel;
-	}
 	public ResponseEntity<Object> findCommentByPostId(Integer postId) {
 		List<CommentModel> commnentModelList = new ArrayList<>();
 		List<CommentModel> commnentModelListTMP = new ArrayList<>();

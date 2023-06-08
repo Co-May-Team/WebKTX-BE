@@ -95,5 +95,15 @@ public class PostController {
 	public ResponseEntity<Object> editComment(@PathVariable Integer id) {
 		return postService.deleteCommentById(id);
 	}
+	@PostMapping(value= "/hidden",produces = "application/json")
+	public ResponseEntity<Object> findAllHidden(				
+			@RequestBody String json,
+			@RequestParam(value="page", required = false) String page,
+			@RequestParam(value="sort", required = false) String sort,
+			@RequestParam(value="order", required = false) String order
+			) {
+		LOGGER.info("Get all posts");
+		return postService.findAllHidden(json,sort,order,page);
+	}
 	
 }

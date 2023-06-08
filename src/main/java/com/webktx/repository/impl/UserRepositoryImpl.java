@@ -185,4 +185,28 @@ public class UserRepositoryImpl implements IUserRepository {
 			return 0;
 		}
 	}
+	public UserModel toModel(User user) {
+		UserModel userModel = new UserModel();
+		RoleDetailModel roleDetailModel = new RoleDetailModel();
+		roleDetailModel = roleRepositoryImpl.findRoleDetailsByRoleId(user.getRole().getRoleId());
+		userModel.setRole(roleDetailModel);
+		userModel.setEmail(user.getEmail());
+		userModel.setUsername(user.getUsername());
+		userModel.setPassword(user.getPassword());
+		userModel.setId(user.getUserId());
+		userModel.setFullName(user.getFullName());
+		userModel.setGoogleAccount(user.isGoogleAccount());
+		if(user.isGoogleAccount()) {
+			userModel.setAvatar(user.getAvatar());
+		}else if(user.getAvatar()!=null){
+			userModel.setAvatar(Ultil.converBaseImageNameToLink(user.getAvatar()) );
+		}
+		if(user.getRole().getRoleId()==1) {
+			userModel.setAdmin(true);
+		}else {
+			userModel.setAdmin(false);
+		}
+		userModel.setCitizenId(user.getCitizenId());
+		return userModel;
+	}
 }
