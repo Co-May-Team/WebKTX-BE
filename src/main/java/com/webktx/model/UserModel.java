@@ -26,4 +26,7 @@ public class UserModel {
 	private Map<String, Object> roleCustom;
 	private String avatar;
 	private boolean isGoogleAccount;
+	private String citizenId;
+	private boolean isAdmin;
+	
 }

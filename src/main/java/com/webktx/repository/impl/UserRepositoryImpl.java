@@ -51,11 +51,11 @@ public class UserRepositoryImpl implements IUserRepository {
 	public Boolean checkExistingUserByUsername(String username) {
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			String hql = "FROM users as u WHERE u.username = :username";
+			String hql = "SELECT username FROM users as u WHERE u.username = :username";
 			Query query = session.createQuery(hql);
 			query.setParameter("username", username.trim());
-			List<User> users = (List<User>) query.getResultList();
-			if(!users.isEmpty()) {
+			String result = (String) query.getSingleResult();
+			if(!result.isEmpty()) {
 				return true;
 			}
 		} catch (Exception e) {
@@ -68,8 +68,9 @@ public class UserRepositoryImpl implements IUserRepository {
 	public User loadUserByUsername(String username) {
 		try {
 			Session session = sessionFactory.getCurrentSession();
-			String hql = "FROM user as u WHERE u.userName = " + username.trim();
+			String hql = "FROM users as u WHERE u.username = :username";
 			Query query = session.createQuery(hql);
+			query.setParameter("username", username);
 			User user = (User) query.getSingleResult();
 			if(null != user) {
 				return user;
@@ -105,8 +106,14 @@ public class UserRepositoryImpl implements IUserRepository {
 				if(user.isGoogleAccount()) {
 					userModel.setAvatar(user.getAvatar());
 				}else if(user.getAvatar()!=null){
-					userModel.setAvatar(Ultil.converImageNameToLink(user.getAvatar()) );
+					userModel.setAvatar(Ultil.converBaseImageNameToLink(user.getAvatar()) );
 				}
+				if(user.getRole().getRoleId()==1) {
+					userModel.setAdmin(true);
+				}else {
+					userModel.setAdmin(false);
+				}
+				userModel.setCitizenId(user.getCitizenId());
 			}
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
@@ -150,5 +157,32 @@ public class UserRepositoryImpl implements IUserRepository {
 		}
 		return false;
 	}
+	@Override
+	public Boolean checkExistingEmail(String email) {
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.email = :email ");
+		Query query = session.createQuery(hql.toString());
+		query.setParameter("email",email );
+		try {
+			String result = (String) query.getSingleResult();
+			if (!result.isEmpty()) {
+				return true;
+			}
+		}
+		 catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return false;
+	}
 
+	@Override
+	public Integer edit(User user) {
+		Session session = sessionFactory.getCurrentSession();
+		try {
+			session.update(user);
+			return 1;
+		} catch (Exception e) {
+			return 0;
+		}
+	}
 }

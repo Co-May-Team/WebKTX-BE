@@ -30,6 +30,7 @@ import com.webktx.model.PostModel;
 import com.webktx.model.TagModel;
 import com.webktx.model.UserModel;
 import com.webktx.repository.IPostRepository;
+import com.webktx.service.CustomRoleService;
 import com.webktx.service.UserDetailsImpl;
 import com.webktx.ultil.Ultil;
 
@@ -42,6 +43,8 @@ public class PostRepositoryImpl implements IPostRepository {
 	@Autowired
 	private SessionFactory sessionFactory;
 
+	@Autowired
+	UserRepositoryImpl userRepositoryImpl;
 
 	@Override
 	public PostModel findById(Integer id) {
@@ -66,7 +69,9 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setTagModels(tagModels);
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
-				customPost.setUserName(post.getUser().getFullName());
+				UserModel userInfo = userRepositoryImpl.findByUsername(post.getUser().getFullName());
+				userInfo.setRole(null);
+				customPost.setUserInfo(userInfo);
 				CategoryModel categoryModel = new CategoryModel();
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
@@ -92,12 +97,16 @@ public class PostRepositoryImpl implements IPostRepository {
 	@Override
 	@Transactional
 	public List<PostModel> findAll(String title, String content, String user_id, Integer category_id, Integer tag_id,
-			String sort, String order, Integer offset, Integer limit) {
+			String sort, String order, Integer offset, Integer limit, boolean canEdit) {
 		List<PostModel> customPostList = new ArrayList<PostModel>();
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts p ");
 		hql.append(" INNER JOIN p.tags AS t");
-		hql.append(" WHERE p.isPublished = '1' AND ");
+		hql.append(" WHERE ");
+		if(!canEdit) {
+			hql.append(" p.isPublished = '1' AND ");
+		}
+		
 		if(!title.trim().equals("") && !content.trim().equals("")) {
 			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') OR p.content LIKE CONCAT('%',:content,'%'))");
 		}else {
@@ -152,8 +161,9 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setTagModels(tagModels);
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
-				customPost.setUserName(post.getUser().getFullName());
-				CategoryModel categoryModel = new CategoryModel();
+				UserModel userInfo = userRepositoryImpl.findByUsername(post.getUser().getFullName());
+				userInfo.setRole(null);
+				customPost.setUserInfo(userInfo);				CategoryModel categoryModel = new CategoryModel();
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setCategory(categoryModel);
@@ -174,11 +184,14 @@ public class PostRepositoryImpl implements IPostRepository {
 	}
 
 	@Override
-	public Integer countAllPaging(String title, String content, String user_id, Integer category_id, Integer tag_id) {
+	public Integer countAllPaging(String title, String content, String user_id, Integer category_id, Integer tag_id, boolean canEdit) {
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts AS p ");
 		hql.append(" INNER JOIN p.tags AS t");
-		hql.append(" WHERE p.isPublished = '1' AND ");
+		hql.append(" WHERE ");
+		if(!canEdit) {
+			hql.append(" p.isPublished = '1' AND ");
+		}
 		if(!title.trim().equals("") && !content.trim().equals("")) {
 			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') OR p.content LIKE CONCAT('%',:content,'%'))");
 		}else {
@@ -351,8 +364,9 @@ public class PostRepositoryImpl implements IPostRepository {
 				customPost.setTagModels(tagModels);
 				customPost.setTitle(post.getTitle());
 				customPost.setContent(post.getContent());
-				customPost.setUserName(post.getUser().getFullName());
-				CategoryModel categoryModel = new CategoryModel();
+				UserModel userInfo = userRepositoryImpl.findByUsername(post.getUser().getFullName());
+				userInfo.setRole(null);
+				customPost.setUserInfo(userInfo);				CategoryModel categoryModel = new CategoryModel();
 				categoryModel.setCategoryId(post.getCategory().getCategoryId());
 				categoryModel.setCategoryName(post.getCategory().getCategoryName());
 				customPost.setCategory(categoryModel);

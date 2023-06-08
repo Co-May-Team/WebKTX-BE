@@ -29,4 +29,11 @@ public class Ultil {
 		link.append(Constant.SERVER_IP).append("/api/get-base-image/").append(imgName);
 		return link.toString();
 	}
+	public byte[] getFileContent(String name, String path) throws IOException {
+		byte[] file = null;
+		StringBuilder baseURL = new StringBuilder(System.getProperty("user.dir")).append(path);
+		final InputStream in = new BufferedInputStream(new FileInputStream(baseURL + name.trim()));
+		file = IOUtils.toByteArray(in);
+		return file;
+	}
 }

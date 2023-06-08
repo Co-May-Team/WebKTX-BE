@@ -6,10 +6,13 @@ public class Constant {
 	public static final String SPACE = " ";
 	public static final String AVATAR = "default-avatar.jpg"; 
 	public static final String URL_IMAGE_SERVER = "/image/webktx/";
+	public static final String URL_ADMISSON_FILE_UPLOAD = "/TuyenSinh/";
 	public static final String URL_IMAGE_SERVER_POST = "/image/webktx/posts/";
 //	public static final String SERVER_IP = "http://222.255.238.159:8080";
 	public static final String SERVER_IP = "https://ktxcomay.com.vn/api";
 	public static final Integer IMAGE_WIDTH = 1280;
 	public static final Integer IMAGE_HEIGHT = 720;
+	public static final String USR_DIR = System.getProperty("user.dir");
+	
 	
 }

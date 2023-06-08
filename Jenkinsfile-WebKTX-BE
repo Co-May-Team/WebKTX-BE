@@ -1,8 +1,11 @@
 pipeline {
 	agent any
 	environment {
-        report = '/var/lib/jenkins/workspace/WebKTX-BE/Email/email-template.html'
+        report = '/var/lib/jenkins/workspace/dev-WebKTX-BE/Email/email-template.html'
     }
+	tools {
+       maven 'maven3.8.8'
+   }
     stages {
 	    stage ('Load functions') {      // Define the function files will be used
             steps {
@@ -13,17 +16,18 @@ pipeline {
         }
         stage('Build') { 
             steps {
+				sh 'mvn install:install-file -Dfile=./jars/VN-time-new-roman.jar -DgroupId=com.webktx.font -DartifactId=VN-time-new-roman -Dversion=1.0 -Dpackaging=jar'
 				sh 'mvn clean install'
             }
         } 
 		stage('Deploy') { 
             steps {
-				sh 'sudo systemctl enable webKTX-BE.service'
-				sh 'sudo systemctl stop webKTX-BE'
-				sh 'sudo systemctl start webKTX-BE'
-				sh 'sudo systemctl status webKTX-BE'
-				sh 'rm -rf changelog*'
-				sh "cp /var/lib/jenkins/jobs/WebKTX-BE/builds/${env.BUILD_NUMBER}/changelog* /var/lib/jenkins/workspace/WebKTX-BE/"
+				sh 'sudo systemctl enable dev-webKTX-BE.service'
+				sh 'sudo systemctl stop dev-webKTX-BE'
+				sh 'sudo systemctl start dev-webKTX-BE'
+				sh 'sudo systemctl status dev-webKTX-BE'
+				sh 'sudo rm -rf changelog*'
+				sh "sudo cp /var/lib/jenkins/jobs/dev-WebKTX-BE/builds/${env.BUILD_NUMBER}/changelog* /var/lib/jenkins/workspace/dev-WebKTX-BE/"
             }
         }		
 	}
