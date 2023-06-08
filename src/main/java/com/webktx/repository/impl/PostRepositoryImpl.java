@@ -103,10 +103,7 @@ public class PostRepositoryImpl implements IPostRepository {
 		StringBuilder hql = new StringBuilder("FROM posts p ");
 		hql.append(" INNER JOIN p.tags AS t");
 		hql.append(" WHERE ");
-		if(!canEdit) {
-			hql.append(" p.isPublished = '1' AND ");
-		}
-		
+		hql.append(" p.isPublished = '1' AND ");
 		if(!title.trim().equals("") && !content.trim().equals("")) {
 			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') OR p.content LIKE CONCAT('%',:content,'%'))");
 		}else {
@@ -150,30 +147,7 @@ public class PostRepositoryImpl implements IPostRepository {
 			}
 			for (Post post : postSet) {
 				PostModel customPost = new PostModel();
-				customPost.setPostId(post.getPostId());
-				List<TagModel> tagModels = new ArrayList<>();
-				for (Tag tag : post.getTags()) {
-					TagModel tagModel = new TagModel();
-					tagModel.setTagId(tag.getTagId());
-					tagModel.setTagName(tag.getTagName());
-					tagModels.add(tagModel);
-				}
-				customPost.setTagModels(tagModels);
-				customPost.setTitle(post.getTitle());
-				customPost.setContent(post.getContent());
-				UserModel userInfo = userRepositoryImpl.findByUsername(post.getUser().getFullName());
-				userInfo.setRole(null);
-				customPost.setUserInfo(userInfo);				CategoryModel categoryModel = new CategoryModel();
-				categoryModel.setCategoryId(post.getCategory().getCategoryId());
-				categoryModel.setCategoryName(post.getCategory().getCategoryName());
-				customPost.setCategory(categoryModel);
-				customPost.setThumbnail(Ultil.converImageNameToLink(post.getSmallPictureId()));
-				customPost.setSummary(post.getSummary());
-				customPost.setCreatedAt(post.getCreatedAt());
-				customPost.setUpdatedAt(post.getUpdatedAt());
-				customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
-				customPost.setIsPublished(post.getIsPublished());
-				customPost.setViewed(post.getViewed());
+				customPost = toModel(post);
 				customPostList.add(customPost);
 				
 			}
@@ -189,9 +163,7 @@ public class PostRepositoryImpl implements IPostRepository {
 		StringBuilder hql = new StringBuilder("FROM posts AS p ");
 		hql.append(" INNER JOIN p.tags AS t");
 		hql.append(" WHERE ");
-		if(!canEdit) {
-			hql.append(" p.isPublished = '1' AND ");
-		}
+		hql.append(" p.isPublished = '1' AND ");
 		if(!title.trim().equals("") && !content.trim().equals("")) {
 			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') OR p.content LIKE CONCAT('%',:content,'%'))");
 		}else {
@@ -233,6 +205,117 @@ public class PostRepositoryImpl implements IPostRepository {
 
 		return postSet.size();
 
+	}
+	@Override
+	public List<PostModel> findAllHidden(String title, String content, String user_id, Integer category_id, Integer tag_id,
+			String sort, String order, Integer offset, Integer limit, boolean canEdit) {
+		List<PostModel> customPostList = new ArrayList<PostModel>();
+		Set<Post> postSet = new LinkedHashSet<Post>();
+		StringBuilder hql = new StringBuilder("FROM posts p ");
+		hql.append(" INNER JOIN p.tags AS t");
+		hql.append(" WHERE ");
+		hql.append(" p.isPublished = '0' AND ");
+		if(!title.trim().equals("") && !content.trim().equals("")) {
+			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') OR p.content LIKE CONCAT('%',:content,'%'))");
+		}else {
+			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') AND p.content LIKE CONCAT('%',:content,'%'))");
+		}
+		if(null != user_id && !user_id.equals("")) {
+			hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
+		}
+		
+		if(category_id!= 0) {
+			hql.append(" AND p.category.categoryId =:category_id ");
+		}
+		if(tag_id != 0) {
+			hql.append(" AND t.tagId = :tag_id ");
+		}
+		hql.append(" order by p." + sort + " " + order);
+		
+		try {
+			Session session = sessionFactory.getCurrentSession();
+			Query query = session.createQuery(hql.toString());
+			LOGGER.info(hql.toString());
+			query.setParameter("title", title);
+			query.setParameter("content", content);
+			if(null != user_id && !user_id.equals("")) {
+				query.setParameter("user_id", user_id);
+			}
+			
+			if(category_id!= 0) {
+				query.setParameter("category_id",category_id);
+			}
+			if(tag_id != 0) {
+				query.setParameter("tag_id", tag_id);
+			}
+			LOGGER.info(offset.toString());
+			query.setFirstResult(offset);
+			query.setMaxResults(limit);
+			for (Iterator<?> it = query.getResultList().iterator(); it.hasNext();) {
+				Object[] obj = (Object[]) it.next();
+				Post post = (Post) obj[0];
+				postSet.add(post);
+			}
+			for (Post post : postSet) {
+				PostModel customPost = new PostModel();
+				customPost = toModel(post);
+				customPostList.add(customPost);
+				
+			}
+		} catch (Exception e) {
+			LOGGER.error("Error has occured in findAll " + e, e);
+		}
+		return customPostList;
+	}
+	
+	@Override
+	public Integer countAllPagingHidden(String title, String content, String user_id, Integer category_id, Integer tag_id, boolean canEdit) {
+		Set<Post> postSet = new LinkedHashSet<Post>();
+		StringBuilder hql = new StringBuilder("FROM posts AS p ");
+		hql.append(" INNER JOIN p.tags AS t");
+		hql.append(" WHERE ");
+		hql.append(" p.isPublished = '0' AND ");
+		if(!title.trim().equals("") && !content.trim().equals("")) {
+			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') OR p.content LIKE CONCAT('%',:content,'%'))");
+		}else {
+			hql.append(" ( p.title LIKE CONCAT('%',:title,'%') AND p.content LIKE CONCAT('%',:content,'%'))");
+		}
+		if(null != user_id && !user_id.equals("")) {
+			hql.append(" AND p.user.userId LIKE CONCAT('%',:user_id,'%')");
+		}
+		if(category_id!= 0) {
+			hql.append(" AND p.category.categoryId =:category_id ");
+		}
+		if(tag_id != 0) {
+			hql.append(" AND t.tagId = :tag_id ");
+		}
+		Session session = this.sessionFactory.getCurrentSession();
+		try {
+			Query query = session.createQuery(hql.toString());
+			query.setParameter("title", title);
+			query.setParameter("content", content);
+			if(null != user_id && !user_id.equals("")) {
+				query.setParameter("user_id", user_id);
+			}
+			if(category_id!= 0) {
+				query.setParameter("category_id",category_id);
+			}
+			if(tag_id != 0) {
+				query.setParameter("tag_id", tag_id);
+			}
+			LOGGER.info(hql.toString());
+			for (Iterator<?> it = query.getResultList().iterator(); it.hasNext();) {
+				Object ob[] = (Object[]) it.next();
+				postSet.add((Post) ob[0]);
+			}
+			
+		} catch (Exception e) {
+			LOGGER.error("Error has occured in count total Posts " + e, e);
+			
+		}
+		
+		return postSet.size();
+		
 	}
 
 //	//insert a post
@@ -514,5 +597,34 @@ public class PostRepositoryImpl implements IPostRepository {
 		commentModel.setUser(userModel);
 		commentModel.setParentId(comment.getParentId());
 		return commentModel;
+	}
+	public PostModel toModel(Post post) {
+		PostModel customPost = new PostModel();
+		customPost.setPostId(post.getPostId());
+		List<TagModel> tagModels = new ArrayList<>();
+		for (Tag tag : post.getTags()) {
+			TagModel tagModel = new TagModel();
+			tagModel.setTagId(tag.getTagId());
+			tagModel.setTagName(tag.getTagName());
+			tagModels.add(tagModel);
+		}
+		customPost.setTagModels(tagModels);
+		customPost.setTitle(post.getTitle());
+		customPost.setContent(post.getContent());
+		UserModel userInfo = userRepositoryImpl.findByUsername(post.getUser().getFullName());
+		userInfo.setRole(null);
+		customPost.setUserInfo(userInfo);				
+		CategoryModel categoryModel = new CategoryModel();
+		categoryModel.setCategoryId(post.getCategory().getCategoryId());
+		categoryModel.setCategoryName(post.getCategory().getCategoryName());
+		customPost.setCategory(categoryModel);
+		customPost.setThumbnail(Ultil.converImageNameToLink(post.getSmallPictureId()));
+		customPost.setSummary(post.getSummary());
+		customPost.setCreatedAt(post.getCreatedAt());
+		customPost.setUpdatedAt(post.getUpdatedAt());
+		customPost.setPublishedAt(post.getPublishedAt().toLocalDateTime());
+		customPost.setIsPublished(post.getIsPublished());
+		customPost.setViewed(post.getViewed());
+		return customPost;
 	}
 }
