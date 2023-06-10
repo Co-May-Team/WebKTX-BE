@@ -51,6 +51,9 @@
 		<variable name="COUNT_RELATIVES" class="java.lang.Integer" calculation="Count">
 			<variableExpression><![CDATA[$F{relationship}!=null]]></variableExpression>
 		</variable>
+		<variable name="income-Integer" class="java.lang.Integer">
+			<variableExpression><![CDATA[!$F{income}.equals("") ? Integer.valueOf($F{income}) : 0]]></variableExpression>
+		</variable>
 	</subDataset>
 	<queryString>
 		<![CDATA[]]>
@@ -178,6 +181,12 @@
 	<field name="highSchoolType" class="java.lang.String">
 		<fieldDescription><![CDATA[studentInfo.highSchoolType.value]]></fieldDescription>
 	</field>
+	<variable name="father-income-Integer" class="java.lang.Integer">
+		<variableExpression><![CDATA[!$F{father-income}.equals("") ?   Integer.valueOf($F{father-income}) : 0]]></variableExpression>
+	</variable>
+	<variable name="mother-income-Integer" class="java.lang.Integer">
+		<variableExpression><![CDATA[!$F{mother-income}.equals("") ? Integer.valueOf($F{mother-income}) : 0]]></variableExpression>
+	</variable>
 	<title>
 		<band height="131" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -723,14 +732,14 @@
 						</textElement>
 						<textFieldExpression><![CDATA["Thu nhập:"]]></textFieldExpression>
 					</textField>
-					<textField>
+					<textField pattern="#,##0">
 						<reportElement positionType="Float" x="75" y="68" width="158" height="17" uuid="f8f60ecd-56c6-40f1-aca4-be11751cf1b1">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						</reportElement>
 						<textElement>
 							<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
 						</textElement>
-						<textFieldExpression><![CDATA[($F{father-income}.equals("") || $F{father-income}.equals("0")) ? "Không có" : $F{father-income}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$V{father-income-Integer}]]></textFieldExpression>
 					</textField>
 					<textField>
 						<reportElement positionType="Float" x="240" y="68" width="86" height="17" uuid="fc2f566a-75fb-43a9-8992-04ec82b350b4">
@@ -989,14 +998,14 @@
 							</textElement>
 							<textFieldExpression><![CDATA["Thu nhập:"]]></textFieldExpression>
 						</textField>
-						<textField>
+						<textField pattern="#,##0">
 							<reportElement positionType="Float" x="55" y="0" width="158" height="17" uuid="ce0a8aad-be70-46f6-8437-3b9149391515">
 								<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							</reportElement>
 							<textElement>
 								<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
 							</textElement>
-							<textFieldExpression><![CDATA[($F{mother-income}.equals("") || $F{mother-income}.equals("0")) ? "Không có" : $F{mother-income}]]></textFieldExpression>
+							<textFieldExpression><![CDATA[$V{mother-income-Integer}]]></textFieldExpression>
 						</textField>
 					</frame>
 				</frame>
@@ -1019,7 +1028,7 @@
 					</textElement>
 					<textFieldExpression><![CDATA["(VND/ tháng)"]]></textFieldExpression>
 				</textField>
-				<textField>
+				<textField pattern="#,##0">
 					<reportElement positionType="Float" x="246" y="197" width="147" height="17" uuid="c5bd0a29-9932-4907-8225-9a8193ba5548">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
@@ -1117,7 +1126,7 @@
 										</textElement>
 										<textFieldExpression><![CDATA[$V{COUNT_RELATIVES} > 2 ? $F{currentJob} : ""]]></textFieldExpression>
 									</textField>
-									<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+									<textField textAdjust="StretchHeight" pattern="#,##0" isBlankWhenNull="true">
 										<reportElement stretchType="ContainerHeight" x="416" y="0" width="63" height="30" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="8c787e5e-281a-4b24-9939-a02dfc20654f">
 											<property name="com.jaspersoft.studio.unit.spacingBefore" value="px"/>
 											<property name="com.jaspersoft.studio.unit.spacingAfter" value="px"/>
