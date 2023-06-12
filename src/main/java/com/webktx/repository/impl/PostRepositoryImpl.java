@@ -420,7 +420,7 @@ public class PostRepositoryImpl implements IPostRepository {
 		Set<Post> postSet = new LinkedHashSet<Post>();
 		StringBuilder hql = new StringBuilder("FROM posts p ");
 		hql.append(" INNER JOIN p.tags AS t");
-		hql.append(" WHERE p.postId != :postId");
+		hql.append(" WHERE p.isPublished = '1' and p.postId != :postId");
 		hql.append(" order by p.updatedAt DESC");
 
 		try {
