@@ -21,6 +21,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @JsonInclude(Include.NON_EMPTY)
 public class AdmissionModel {
+	private String studentCodeDorm;
 	private Integer userId;
 	private String fullname;
 	private String dob;
