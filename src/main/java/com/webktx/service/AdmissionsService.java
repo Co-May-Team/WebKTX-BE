@@ -52,6 +52,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.webktx.constant.Constant;
 import com.webktx.entity.Person;
 import com.webktx.entity.Relative;
@@ -126,7 +128,7 @@ public class AdmissionsService {
 		User user = new User();
 		user.setUserId(userDetail.getId());
 		Status status = new Status();
-		status.setCode("CD");
+		status.setCode("CT");
 		LocalDateTime localDateTime = null;
 		String dormStudentCode = "";
 		try {
@@ -177,6 +179,15 @@ public class AdmissionsService {
 			String idIssuePlace = ((personalObject.get("idIssuePlace") == null)
 					|| (personalObject.get("idIssuePlace").asText() == "")) ? ""
 							: personalObject.get("idIssuePlace").asText();
+			if (personRepositoryImpl.checkExistingCitizenId(idNumber,userDetail.getId())) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số định danh đã tồn tại", ""));
+			}
+			if (personRepositoryImpl.checkExistingEmail(email,userDetail.getId())) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Email đã tồn tại", ""));
+			}
+			if (personRepositoryImpl.checkExistingPhoneNumber(phoneNumber,userDetail.getId())) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số điện thoại đã tồn tại", ""));
+			}
 			Person person = new Person();
 			person.setFullname(fullname);
 			person.setDob(dateOfBirth);
@@ -402,6 +413,15 @@ public class AdmissionsService {
 			String idIssuePlace = ((personalObject.get("idIssuePlace") == null)
 					|| (personalObject.get("idIssuePlace").asText() == "")) ? ""
 							: personalObject.get("idIssuePlace").asText();
+			if (personRepositoryImpl.checkExistingCitizenId(idNumber,userDetail.getId())) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số định danh đã tồn tại", ""));
+			}
+			if (personRepositoryImpl.checkExistingEmail(email,userDetail.getId())) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Email đã tồn tại", ""));
+			}
+			if (personRepositoryImpl.checkExistingPhoneNumber(phoneNumber,userDetail.getId())) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số điện thoại đã tồn tại", ""));
+			}
 			person.setFullname(fullname);
 			person.setDob(dateOfBirth);
 			person.setGender(gender);
@@ -553,6 +573,10 @@ public class AdmissionsService {
 	}
 
 	public byte[] generateReportFromJson(String json){
+		Gson gson = new Gson();
+		JsonObject jObject = gson.fromJson(json, JsonObject.class); // parse
+		jObject.addProperty("version", "v3"); // modify
+		json = jObject.toString();
 		StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
 		JSONObject jsonObject = new JSONObject(entity);
 
@@ -803,6 +827,7 @@ public class AdmissionsService {
 			}
 			Status status = student.getStatus();
 			AdmissionModel admissionModel = new AdmissionModel();
+			admissionModel.setStudentCodeDorm(student.getStudentCodeDorm());
 			admissionModel.setUserId(p.getUser().getUserId());
 			admissionModel.setFullname(p.getFullname());
 			admissionModel.setDob(p.getDob());
@@ -834,6 +859,12 @@ public class AdmissionsService {
 		try {
 			PersonModel personModel = personRepositoryImpl.findModelByUserId(userId);
 			StudentModel studentModel = studentRepositoryImpl.findModelByUserId(userId);
+			if(personModel==null) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Chưa có hồ sơ" ,result));
+			}
+			if(studentModel==null) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Thông tin tuyển sinh không hoàn chỉnh",result));
+			}
 			List<RelativeModel> relativeModelList = new ArrayList<>();
 			relativeModelList = relativeRepositoryImpl.findModelByUserId(userId);
 			Map<String, Object> familyInfoMap = new LinkedHashMap<String, Object>();
