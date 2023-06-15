@@ -163,5 +163,61 @@ public class PersonRepositoryImpl implements IPersonRepository{
 		}
 		return persons;
 	}
+	@Override
+	public Boolean checkExistingCitizenId(String citizenId, int userId) {
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder hql = new StringBuilder("SELECT fullname from persons as p where p.citizenId = :citizenId and p.user.userId != :userId");
+		Query query = session.createQuery(hql.toString());
+		query.setParameter("citizenId",citizenId );
+		query.setParameter("userId",userId );
+		try {
+			String result = (String) query.getSingleResult();
+			if (!result.equals("")) {
+				return true;
+			}
+		}
+		 catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return false;
+	}
+	@Override
+	public Boolean checkExistingEmail(String email, int userId) {
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder hql = new StringBuilder("SELECT fullname from persons as p where p.email = :email and p.user.userId != :userId");
+		Query query = session.createQuery(hql.toString());
+		query.setParameter("email",email );
+		query.setParameter("userId",userId );
+
+		try {
+			String result = (String) query.getSingleResult();
+			if (!result.isEmpty()) {
+				return true;
+			}
+		}
+		 catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return false;
+	}
+	@Override
+	public Boolean checkExistingPhoneNumber(String phoneNumber, int userId) {
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder hql = new StringBuilder("SELECT fullname from persons as p where p.phoneNumber = :phoneNumber  and p.user.userId != :userId");
+		Query query = session.createQuery(hql.toString());
+		query.setParameter("phoneNumber",phoneNumber );
+		query.setParameter("userId",userId );
+
+		try {
+			String result = (String) query.getSingleResult();
+			if (!result.equals("")) {
+				return true;
+			}
+		}
+		 catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return false;
+	}
 }
 

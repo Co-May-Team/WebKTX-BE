@@ -19,4 +19,7 @@ public interface IPersonRepository {
 	List<Person> findAllByYear(int year);
 	PersonModel toModel(Person person);
 	PersonModel findModelByUserId(Integer userId);
+	Boolean checkExistingCitizenId(String citizenId, int userId);
+	Boolean checkExistingEmail(String email, int userId);
+	Boolean checkExistingPhoneNumber(String phoneNumber, int userId);
 }
