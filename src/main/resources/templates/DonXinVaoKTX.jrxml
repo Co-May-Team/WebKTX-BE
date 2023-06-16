@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.20.1.final using JasperReports Library version 6.20.1-7584acb244139816654f64e2fd57a00d3e31921e  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DonXinVaoKTX" pageWidth="595" pageHeight="842" columnWidth="489" leftMargin="64" rightMargin="42" topMargin="0" bottomMargin="43" uuid="04a9ddfe-6139-474b-b469-fad39c08c011">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="INFO-ERROR"/>
-	<property name="com.jaspersoft.studio.unit.topMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.bottomMargin" value="pixel"/>
-	<property name="com.jaspersoft.studio.unit.leftMargin" value="pixel"/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="DonXinVaoKTX" pageWidth="595" pageHeight="842" columnWidth="489" leftMargin="64" rightMargin="42" topMargin="50" bottomMargin="43" uuid="04a9ddfe-6139-474b-b469-fad39c08c011">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="info"/>
+	<property name="com.jaspersoft.studio.unit." value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageHeight" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.pageWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.rightMargin" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnWidth" value="pixel"/>
+	<property name="com.jaspersoft.studio.unit.columnSpacing" value="pixel"/>
 	<subDataset name="relatives" uuid="caf3d011-6cb7-466d-9715-0ca94d731723">
 		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="info"/>
 		<queryString language="json">
@@ -185,21 +188,10 @@
 		<variableExpression><![CDATA[!$F{mother-income}.equals("") ? Integer.valueOf($F{mother-income}) : 0]]></variableExpression>
 	</variable>
 	<title>
-		<band height="50" splitType="Stretch">
+		<band height="131" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<textField>
-				<reportElement x="-19" y="20" width="100" height="15" uuid="776a3706-d13b-4335-a9c9-6bd2b6158564">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-				</reportElement>
-				<textFieldExpression><![CDATA["Mã hồ sơ: " + ]]></textFieldExpression>
-			</textField>
-		</band>
-	</title>
-	<pageHeader>
-		<band height="131">
-			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<textField>
-				<reportElement x="52" y="5" width="365" height="60" uuid="11be432e-533d-46ef-8fe3-e3bcac1c4d6f">
+				<reportElement x="47" y="0" width="365" height="60" uuid="c5266eb8-b282-4b57-81df-c22720ae63ff">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -210,7 +202,7 @@
 "Độc lập – Tự do – Hạnh phúc" + "<br>" + "____"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="-21" y="25" width="73" height="90" isPrintWhenDetailOverflows="true" uuid="bbb253db-8803-4e92-bd52-ca76f6b5cd1e"/>
+				<reportElement x="-26" y="20" width="73" height="90" isPrintWhenDetailOverflows="true" uuid="44ec10da-185b-4d74-aa54-735ce3713fb1"/>
 				<box>
 					<topPen lineWidth="1.0"/>
 					<leftPen lineWidth="1.0"/>
@@ -223,7 +215,7 @@
 				<textFieldExpression><![CDATA["Ảnh" +  "<br>" + "3 x 4 (cm)"]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="52" y="65" width="365" height="50" uuid="6535f104-390a-4369-9373-20ebb3e61aaf">
+				<reportElement x="47" y="60" width="365" height="50" uuid="053fe00b-6da3-47e0-b25b-13ffcb4085b3">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.width" value="px"/>
 				</reportElement>
@@ -234,7 +226,7 @@
 "NĂM HỌC 2022 - 2023" + "<br>"]]></textFieldExpression>
 			</textField>
 		</band>
-	</pageHeader>
+	</title>
 	<detail>
 		<band height="40" splitType="Stretch">
 			<frame>
