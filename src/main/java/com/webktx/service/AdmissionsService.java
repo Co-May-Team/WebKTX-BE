@@ -580,10 +580,10 @@ public class AdmissionsService {
 	}
 
 	public byte[] generateReportFromJson(String json){
-		Gson gson = new Gson();
-		JsonObject jObject = gson.fromJson(json, JsonObject.class); // parse
-		jObject.addProperty("version", "v3"); // modify
-		json = jObject.toString();
+//		Gson gson = new Gson();
+//		JsonObject jObject = gson.fromJson(json, JsonObject.class); // parse
+//		jObject.addProperty("version", "v3"); // modify
+//		json = jObject.toString();
 		StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
 		JSONObject jsonObject = new JSONObject(entity);
 
