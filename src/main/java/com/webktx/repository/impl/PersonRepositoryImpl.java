@@ -87,7 +87,9 @@ public class PersonRepositoryImpl implements IPersonRepository{
 		PersonModel personModel = null;
 		Person person = null;
 		person = findByUserId(userId);
-		personModel = toModel(person);
+		if(person!=null) {
+			personModel = toModel(person);
+		}
 		return personModel;
 	}
 	@Override
