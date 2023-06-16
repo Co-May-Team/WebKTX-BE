@@ -83,7 +83,9 @@ public class StudentRepositoryImpl implements IStudentRepository{
 			Student student = null; 
 			StudentModel studentModel = null;
 			student = findByUserId(userId);
-			studentModel = toModel(student);
+			if(student!=null) {
+				studentModel = toModel(student);
+			}
 			return studentModel;
 		} catch (Exception e) {
 			LOGGER.error(e.getMessage());
