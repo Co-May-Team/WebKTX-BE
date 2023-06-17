@@ -20,8 +20,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
 import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
@@ -62,10 +65,12 @@ import com.webktx.entity.Status;
 import com.webktx.entity.Student;
 import com.webktx.entity.User;
 import com.webktx.model.AdmissionModel;
+import com.webktx.model.CollegeModel;
 import com.webktx.model.ImageModel;
 import com.webktx.model.PersonModel;
 import com.webktx.model.RelativeModel;
 import com.webktx.model.StudentModel;
+import com.webktx.repository.impl.CollegeRepositoryImpl;
 import com.webktx.repository.impl.PersonRepositoryImpl;
 import com.webktx.repository.impl.RelativeRepositoryImpl;
 import com.webktx.repository.impl.StudentRepositoryImpl;
@@ -98,6 +103,8 @@ public class AdmissionsService {
 	RelativeRepositoryImpl relativeRepositoryImpl;
 	@Autowired
 	StudentRepositoryImpl studentRepositoryImpl;
+	
+	
 
 	public ResponseEntity<ResponseObject> submitForm(String json) {
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
@@ -573,10 +580,10 @@ public class AdmissionsService {
 	}
 
 	public byte[] generateReportFromJson(String json){
-		Gson gson = new Gson();
-		JsonObject jObject = gson.fromJson(json, JsonObject.class); // parse
-		jObject.addProperty("version", "v3"); // modify
-		json = jObject.toString();
+//		Gson gson = new Gson();
+//		JsonObject jObject = gson.fromJson(json, JsonObject.class); // parse
+//		jObject.addProperty("version", "v3"); // modify
+//		json = jObject.toString();
 		StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
 		JSONObject jsonObject = new JSONObject(entity);
 
@@ -937,4 +944,29 @@ public class AdmissionsService {
 		public static final String VALUE_HOUSE = "AnhNgoiNha";
 		
 	}
+	
+	public ResponseEntity<Object> updateStatusCode(String json) {
+		JsonNode jsonNode;
+		JsonMapper jsonMapper = new JsonMapper();
+		String statusCode;
+		Integer userId;
+		try {
+			jsonNode = jsonMapper.readTree(json);
+			userId = jsonNode.get("userId") != null ? jsonNode.get("userId").asInt() : null;
+			statusCode = jsonNode.get("statusCode") != null ? jsonNode.get("statusCode").asText() : "";
+			Student student = studentRepositoryImpl.findByUserId(userId);
+			Status status = new Status();
+			status.setCode(statusCode);
+			student.setStatus(status);
+			if (studentRepositoryImpl.updateStatusCode(student) < 0) {
+				return ResponseEntity.status(HttpStatus.OK)
+						.body(new ResponseObject("ERROR", "Have error when update status code student", ""));
+			}
+		} catch (Exception e) {
+			LOGGER.error(e.getMessage());
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Error", e.getMessage(), ""));
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", ""));
+	}
+	
 }
