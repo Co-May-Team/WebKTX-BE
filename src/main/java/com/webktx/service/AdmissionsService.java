@@ -699,17 +699,20 @@ public class AdmissionsService {
 //			}
 //
 //		}
-		for (MultipartFile mpf : file1) {
-			String[] extentions = mpf.getOriginalFilename().split("\\.");
-			String ex = extentions[extentions.length-1];
-			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_APP);
-			filename.append("-");
-			filename.append(nameConverted);
-			filename.append("-");
-			filename.append(student.getStudentCodeDorm());
-			filename.append(".").append(ex);
-			files.put(filename.toString(), mpf);
+		if(file1!=null) {
+			for (MultipartFile mpf : file1) {
+				String[] extentions = mpf.getOriginalFilename().split("\\.");
+				String ex = extentions[extentions.length-1];
+				StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_APP);
+				filename.append("-");
+				filename.append(nameConverted);
+				filename.append("-");
+				filename.append(student.getStudentCodeDorm());
+				filename.append(".").append(ex);
+				files.put(filename.toString(), mpf);
+			}
 		}
+
 //		for (MultipartFile mpf : file2) {
 //			String[] extentions = mpf.getOriginalFilename().split("\\.");
 //			String ex = extentions[extentions.length-1];
@@ -721,29 +724,33 @@ public class AdmissionsService {
 //			filename.append(".").append(ex);
 //			files.put(filename.toString(), mpf);
 //		}
-		for (MultipartFile mpf : file3) {
-			String[] extentions = mpf.getOriginalFilename().split("\\.");
-			String ex = extentions[extentions.length-1];
-			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_PERSON);
-			filename.append("-");
-			filename.append(nameConverted);
-			filename.append("-");
-			filename.append(student.getStudentCodeDorm());
-			filename.append(".").append(ex);
-			files.put(filename.toString(), mpf);
-			
+		if(file3!=null) {
+			for (MultipartFile mpf : file3) {
+				String[] extentions = mpf.getOriginalFilename().split("\\.");
+				String ex = extentions[extentions.length-1];
+				StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_PERSON);
+				filename.append("-");
+				filename.append(nameConverted);
+				filename.append("-");
+				filename.append(student.getStudentCodeDorm());
+				filename.append(".").append(ex);
+				files.put(filename.toString(), mpf);
+				
+			}
 		}
-		for (MultipartFile mpf : file4) {
-			String[] extentions = mpf.getOriginalFilename().split("\\.");
-			String ex = extentions[extentions.length-1];
-			StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_PHOTO);
-			filename.append("-");
-			filename.append(nameConverted);
-			filename.append("-");
-			filename.append(student.getStudentCodeDorm());
-			filename.append(".").append(ex);
-			files.put(filename.toString(), mpf);
-			
+		if(file4!=null) {
+			for (MultipartFile mpf : file4) {
+				String[] extentions = mpf.getOriginalFilename().split("\\.");
+				String ex = extentions[extentions.length-1];
+				StringBuilder filename = new StringBuilder(ValueFilesUpload.VALUE_PHOTO);
+				filename.append("-");
+				filename.append(nameConverted);
+				filename.append("-");
+				filename.append(student.getStudentCodeDorm());
+				filename.append(".").append(ex);
+				files.put(filename.toString(), mpf);
+				
+			}
 		}
 //		for (MultipartFile mpf : file5) {
 //			String[] extentions = mpf.getOriginalFilename().split("\\.");
