@@ -93,10 +93,10 @@ public class UserService {
 			phoneNumber = userInfoNode.get("phoneNumber") != null ? userInfoNode.get("phoneNumber").asText() : "";
 			dob = userInfoNode.get("dob") != null ? userInfoNode.get("dob").asText() : "";
 			if (userRepository.checkExistingUserByCitizenId(citizenId,userDetail.getId())) {
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số định danh đã tồn tại", new Object()));
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số định danh đã tồn tại", ""));
 			}
 			if (userRepository.checkExistingPhoneNumbe(phoneNumber,userDetail.getId())) {
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số điện thoại đã tồn tại", new Object()));
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số điện thoại đã tồn tại", ""));
 			}
 			user.setCitizenId(citizenId);
 			user.setPhoneNumber(phoneNumber);
@@ -105,11 +105,11 @@ public class UserService {
 			if(editStatus>0) {
 				return this.findByUsername(userDetail.getUsername());
 			}else { 
-				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Cập nhật thông tin thất bại", new Object() ));
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Cập nhật thông tin thất bại", "" ));
 
 			}
 		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", e.getMessage(), new Object() ));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", e.getMessage(), "" ));
 		}
 	}
 	public ResponseEntity<Object> findByUsername(String username) {

@@ -143,13 +143,13 @@ public class UserRepositoryImpl implements IUserRepository {
 	@Override
 	public Boolean checkExistingUserByCitizenId(String citizenId,Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
-		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.citizenId = :citizenId u.userId != userId");
+		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.citizenId = :citizenId and u.userId != :userId");
 		Query query = session.createQuery(hql.toString());
 		query.setParameter("citizenId",citizenId );
 		query.setParameter("userId",userId );
 		try {
-			String result = (String) query.getSingleResult();
-			if (!result.equals("")) {
+			List<String> result = (List<String> ) query.getResultList();
+			if (result!=null) {
 				return true;
 			}
 		}
@@ -161,13 +161,13 @@ public class UserRepositoryImpl implements IUserRepository {
 	@Override
 	public Boolean checkExistingEmail(String email,Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
-		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.email = :email u.userId != userId");
+		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.email = :email and u.userId != :userId");
 		Query query = session.createQuery(hql.toString());
 		query.setParameter("email",email );
 		query.setParameter("userId",userId );
 		try {
-			String result = (String) query.getSingleResult();
-			if (!result.isEmpty()) {
+			List<String> result = (List<String> ) query.getResultList();
+			if (result!=null) {
 				return true;
 			}
 		}
@@ -179,13 +179,13 @@ public class UserRepositoryImpl implements IUserRepository {
 	@Override
 	public Boolean checkExistingPhoneNumbe(String phoneNumber,Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
-		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.phoneNumber = :phoneNumber and u.userId != userId");
+		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.phoneNumber = :phoneNumber and u.userId != :userId");
 		Query query = session.createQuery(hql.toString());
 		query.setParameter("phoneNumber",phoneNumber );
 		query.setParameter("userId",userId );
 		try {
-			String result = (String) query.getSingleResult();
-			if (!result.isEmpty()) {
+			List<String> result = (List<String> ) query.getResultList();
+			if (result!=null) {
 				return true;
 			}
 		}

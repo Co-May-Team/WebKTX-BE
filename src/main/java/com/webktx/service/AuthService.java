@@ -139,13 +139,13 @@ public class AuthService {
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
 				.getPrincipal();
 		if (userRepository.checkExistingUserByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Tên đăng nhập đã tồn tại", new Object()));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Tên đăng nhập đã tồn tại", ""));
 		}
 		if (userRepository.checkExistingUserByCitizenId(signUpRequest.getCitizenId(),userDetail.getId())) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số định danh đã tồn tại", new Object()));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số định danh đã tồn tại", ""));
 		}
 		if (userRepository.checkExistingEmail(signUpRequest.getEmail(),userDetail.getId())) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Email đã tồn tại", new Object()));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Email đã tồn tại", ""));
 		}
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	    LocalDateTime localDateTime = LocalDateTime.now();
