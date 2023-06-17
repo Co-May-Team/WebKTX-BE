@@ -136,14 +136,16 @@ public class AuthService {
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Đăng nhập hoàn tất", result));
 	}
 	public ResponseEntity<?> signup(SignupRequest signUpRequest) {
+		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()
+				.getPrincipal();
 		if (userRepository.checkExistingUserByUsername(signUpRequest.getUsername())) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Tên đăng nhập đã tồn tại", ""));
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Tên đăng nhập đã tồn tại", new Object()));
 		}
-		if (userRepository.checkExistingUserByCitizenId(signUpRequest.getCitizenId())) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số căn cước công dân đã tồn tại", ""));
+		if (userRepository.checkExistingUserByCitizenId(signUpRequest.getCitizenId(),userDetail.getId())) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số định danh đã tồn tại", new Object()));
 		}
-		if (userRepository.checkExistingEmail(signUpRequest.getEmail())) {
-			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Email đã tồn tại", ""));
+		if (userRepository.checkExistingEmail(signUpRequest.getEmail(),userDetail.getId())) {
+			return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Email đã tồn tại", new Object()));
 		}
 		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	    LocalDateTime localDateTime = LocalDateTime.now();

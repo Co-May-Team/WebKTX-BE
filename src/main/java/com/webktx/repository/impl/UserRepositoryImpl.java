@@ -141,11 +141,12 @@ public class UserRepositoryImpl implements IUserRepository {
 		return user;
 	}
 	@Override
-	public Boolean checkExistingUserByCitizenId(String citizenId) {
+	public Boolean checkExistingUserByCitizenId(String citizenId,Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
-		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.citizenId = :citizenId ");
+		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.citizenId = :citizenId u.userId != userId");
 		Query query = session.createQuery(hql.toString());
 		query.setParameter("citizenId",citizenId );
+		query.setParameter("userId",userId );
 		try {
 			String result = (String) query.getSingleResult();
 			if (!result.equals("")) {
@@ -158,11 +159,12 @@ public class UserRepositoryImpl implements IUserRepository {
 		return false;
 	}
 	@Override
-	public Boolean checkExistingEmail(String email) {
+	public Boolean checkExistingEmail(String email,Integer userId) {
 		Session session = sessionFactory.getCurrentSession();
-		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.email = :email ");
+		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.email = :email u.userId != userId");
 		Query query = session.createQuery(hql.toString());
 		query.setParameter("email",email );
+		query.setParameter("userId",userId );
 		try {
 			String result = (String) query.getSingleResult();
 			if (!result.isEmpty()) {
@@ -174,7 +176,24 @@ public class UserRepositoryImpl implements IUserRepository {
 		}
 		return false;
 	}
-
+	@Override
+	public Boolean checkExistingPhoneNumbe(String phoneNumber,Integer userId) {
+		Session session = sessionFactory.getCurrentSession();
+		StringBuilder hql = new StringBuilder("SELECT username from users as u where u.phoneNumber = :phoneNumber and u.userId != userId");
+		Query query = session.createQuery(hql.toString());
+		query.setParameter("phoneNumber",phoneNumber );
+		query.setParameter("userId",userId );
+		try {
+			String result = (String) query.getSingleResult();
+			if (!result.isEmpty()) {
+				return true;
+			}
+		}
+		 catch (Exception e) {
+			LOGGER.error(e.getMessage());
+		}
+		return false;
+	}
 	@Override
 	public Integer edit(User user) {
 		Session session = sessionFactory.getCurrentSession();

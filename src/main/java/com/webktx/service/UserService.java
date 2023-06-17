@@ -18,6 +18,7 @@ import com.google.gson.JsonObject;
 import com.webktx.entity.ResponseObject;
 import com.webktx.entity.User;
 import com.webktx.model.UserModel;
+import com.webktx.repository.IUserRepository;
 import com.webktx.repository.impl.UserRepositoryImpl;
 
 @Service
@@ -29,6 +30,8 @@ public class UserService {
 	@Autowired
 	PasswordEncoder encoder;
 
+	@Autowired
+	IUserRepository userRepository;
 	private static final Logger LOGGER = LoggerFactory.getLogger(UserService.class);
 
 	public ResponseEntity<Object> add(String json) {
@@ -89,6 +92,12 @@ public class UserService {
 			citizenId = userInfoNode.get("citizenId") != null ? userInfoNode.get("citizenId").asText() : "";
 			phoneNumber = userInfoNode.get("phoneNumber") != null ? userInfoNode.get("phoneNumber").asText() : "";
 			dob = userInfoNode.get("dob") != null ? userInfoNode.get("dob").asText() : "";
+			if (userRepository.checkExistingUserByCitizenId(citizenId,userDetail.getId())) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số định danh đã tồn tại", new Object()));
+			}
+			if (userRepository.checkExistingPhoneNumbe(phoneNumber,userDetail.getId())) {
+				return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("ERROR", "Số điện thoại đã tồn tại", new Object()));
+			}
 			user.setCitizenId(citizenId);
 			user.setPhoneNumber(phoneNumber);
 			user.setDob(dob);
