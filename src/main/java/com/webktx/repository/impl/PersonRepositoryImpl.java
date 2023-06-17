@@ -142,8 +142,8 @@ public class PersonRepositoryImpl implements IPersonRepository{
 			Query query = session.createQuery(hql.toString());
 			LOGGER.info(hql.toString());
 			query.setParameter("userId", userId);
-			String fullname = (String) query.getSingleResult();
-			if (!fullname.isEmpty()) {
+			List<String> result = (List<String> ) query.getResultList();
+			if (result!=null) {
 				return true;
 			}
 		} catch (Exception e) {
