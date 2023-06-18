@@ -151,15 +151,6 @@
 	<field name="personalInfo-detailAddress" class="java.lang.String">
 		<fieldDescription><![CDATA[personalInfo.detailAddress]]></fieldDescription>
 	</field>
-	<field name="personalInfo-wardAddress" class="java.lang.String">
-		<fieldDescription><![CDATA[personalInfo.wardAddress.name]]></fieldDescription>
-	</field>
-	<field name="personalInfo-districtAddress" class="java.lang.String">
-		<fieldDescription><![CDATA[personalInfo.districtAddress.name]]></fieldDescription>
-	</field>
-	<field name="personalInfo-provinceAddress" class="java.lang.String">
-		<fieldDescription><![CDATA[personalInfo.provinceAddress.name]]></fieldDescription>
-	</field>
 	<field name="ethnic" class="java.lang.String">
 		<fieldDescription><![CDATA[personalInfo.ethnic.name]]></fieldDescription>
 	</field>
@@ -213,6 +204,15 @@
 	</field>
 	<field name="dcream" class="java.lang.String">
 		<fieldDescription><![CDATA[studentInfo.dream]]></fieldDescription>
+	</field>
+	<field name="personalInfo-WardPathWithType" class="java.lang.String">
+		<fieldDescription><![CDATA[personalInfo.wardAddress.path_with_type]]></fieldDescription>
+	</field>
+	<field name="mother-WardPathWithType" class="java.lang.String">
+		<fieldDescription><![CDATA[familyInfo.relatives[1].wardAddress.path_with_type]]></fieldDescription>
+	</field>
+	<field name="father-WardPathWithType" class="java.lang.String">
+		<fieldDescription><![CDATA[familyInfo.relatives[0].wardAddress.path_with_type]]></fieldDescription>
 	</field>
 	<variable name="father-income-Integer" class="java.lang.Integer">
 		<variableExpression><![CDATA[!$F{father-income}.equals("") ?   Integer.valueOf($F{father-income}) : 0]]></variableExpression>
@@ -623,7 +623,7 @@
 						<textElement>
 							<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$F{personalInfo-detailAddress}  + ", " + $F{personalInfo-wardAddress} + ", " + $F{personalInfo-districtAddress} + ", " + $F{personalInfo-provinceAddress}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$F{personalInfo-detailAddress}  + ", " + $F{personalInfo-WardPathWithType}]]></textFieldExpression>
 					</textField>
 				</frame>
 				<frame>
