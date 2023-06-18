@@ -87,7 +87,7 @@ public class AdmissionsController {
 
 	@GetMapping(value = "/export", produces = { "application/json; charset=UTF-8" })
 	@ResponseBody
-	public ResponseEntity<byte[]> exportExcel() throws IOException {
+	public byte[] exportExcel() throws IOException {
 		return admissionService.exportExcel();
 	}
 
