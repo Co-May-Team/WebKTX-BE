@@ -13,6 +13,7 @@ public class Constant {
 	public static final Integer IMAGE_WIDTH = 1280;
 	public static final Integer IMAGE_HEIGHT = 720;
 	public static final String USR_DIR = System.getProperty("user.dir");
+	public static final String COMMA = ", ";
 	
 	
 }

@@ -29,7 +29,14 @@ import java.util.Map.Entry;
 import java.util.regex.Pattern;
 
 import org.apache.http.entity.StringEntity;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.CellStyle;
+import org.apache.poi.ss.usermodel.Font;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.util.IOUtils;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -54,6 +61,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -968,5 +976,96 @@ public class AdmissionsService {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", ""));
 	}
+	public ResponseEntity<byte[]> exportExcel() throws IOException {
+		Workbook workbook = new XSSFWorkbook();
+
+		Sheet sheet = workbook.createSheet("TS2023");
+
+        Row headerRow = sheet.createRow(0);
+        String[] headers = {
+                "Mã sinh viên",
+                "Họ và tên",
+                "Ngày sinh",
+                "Giới tính",
+                "Số điện thoại",
+                "Email",
+                "Địa chỉ thường trú",
+                "Trường",
+                "Ghi chú",
+        };
+
+        CellStyle headerCellStyle = workbook.createCellStyle();
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerCellStyle.setFont(headerFont);
+
+        for (int i = 0; i < headers.length; i++) {
+            Cell cell = headerRow.createCell(i);
+            cell.setCellValue(headers[i]);
+            cell.setCellStyle(headerCellStyle);
+        }
+        
+        List<Person> persons = personRepositoryImpl.findAllByYear(2023);
+		List<AdmissionModel> admissionModelList = new ArrayList<>();
+		List<Integer> userIdInvalidForm = new ArrayList<>();
+        int rowNum = 1;
+		for(Person p : persons) {
+			Student student = studentRepositoryImpl.findByUserId(p.getUser().getUserId());
+			if(student==null) {
+				userIdInvalidForm.add(p.getUser().getUserId());
+				continue;
+			}
+			Status status = student.getStatus();
+
+            Row row = sheet.createRow(rowNum++);
+            row.createCell(0).setCellValue(student.getStudentCodeDorm());
+            row.createCell(1).setCellValue(p.getFullname());
+            row.createCell(2).setCellValue(p.getDob());
+            row.createCell(3).setCellValue(getValueJson(p.getGender(), "value"));
+            row.createCell(4).setCellValue(p.getPhoneNumber());
+            row.createCell(5).setCellValue(p.getEmail());
+            StringBuilder addressDetail = new StringBuilder(p.getDetailAddress());
+            addressDetail.append(Constant.COMMA);
+            addressDetail.append(getValueJson(p.getWardAddress(), "name"));
+            addressDetail.append(Constant.COMMA);
+            addressDetail.append(getValueJson(p.getDistrictAddress(),"name"));
+            addressDetail.append(Constant.COMMA);
+            addressDetail.append(getValueJson(p.getProvinceAddress(),"name"));
+            row.createCell(6).setCellValue(addressDetail.toString());
+            row.createCell(7).setCellValue(getValueJson(student.getUniversityName(),"label"));
+		}
+
+        for (int i = 0; i < headers.length; i++) {
+            sheet.autoSizeColumn(i);
+        }
+
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		workbook.write(outputStream);
+		workbook.close();
+
+		byte[] excelBytes = outputStream.toByteArray();
+
+		HttpHeaders headersAPI = new HttpHeaders();
+		headersAPI.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headersAPI.setContentDispositionFormData("attachment", "dsts2023.xlsx");
+
+		return ResponseEntity.ok().headers(headersAPI).body(excelBytes);
+	}
 	
+	private String getValueJson(String json, String key) {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode jsonNode = null;
+		try {
+			jsonNode = objectMapper.readTree(json);
+		} catch (JsonMappingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (JsonProcessingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+        String value = jsonNode.get(key).asText();
+        return value;
+	}
 }
