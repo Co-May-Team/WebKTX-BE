@@ -976,7 +976,7 @@ public class AdmissionsService {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", ""));
 	}
-	public ResponseEntity<byte[]> exportExcel() throws IOException {
+	public byte[] exportExcel() throws IOException {
 		Workbook workbook = new XSSFWorkbook();
 
 		Sheet sheet = workbook.createSheet("TS2023");
@@ -1049,7 +1049,7 @@ public class AdmissionsService {
 		headersAPI.setContentType(MediaType.APPLICATION_OCTET_STREAM);
 		headersAPI.setContentDispositionFormData("attachment", "dsts2023.xlsx");
 
-		return ResponseEntity.ok().headers(headersAPI).body(excelBytes);
+		return excelBytes;
 	}
 	
 	private String getValueJson(String json, String key) {
