@@ -66,4 +66,6 @@ public class Student {
 	
 	@Column(name="dorm_student_code")
 	private String studentCodeDorm;
+	@Column(name="student_program")
+	private String studentProgram;
 }
