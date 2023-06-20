@@ -318,6 +318,9 @@ public class AdmissionsService {
 			String highSchoolType = ((studentObject.get("highSchoolType") == null)
 					|| (studentObject.get("highSchoolType").toString() == "")) ? ""
 							: studentObject.get("highSchoolType").toString();
+			String studentProgram = ((studentObject.get("studentProgram") == null)
+					|| (studentObject.get("studentProgram").toString() == "")) ? ""
+							: studentObject.get("studentProgram").toString();
 			Student student = new Student();
 			student.setStudentType(studentStudentType);
 			student.setUniversityName(studentUniversityName);
@@ -334,6 +337,7 @@ public class AdmissionsService {
 			student.setUser(user);
 			student.setStatus(status);
 			student.setStudentCodeDorm(dormStudentCode);
+			student.setStudentProgram(studentProgram);
 			// ---Student-info-end---
 
 			/* Insert data */
@@ -550,6 +554,9 @@ public class AdmissionsService {
 			String highSchoolType = ((studentObject.get("highSchoolType") == null)
 					|| (studentObject.get("highSchoolType").toString() == "")) ? ""
 							: studentObject.get("highSchoolType").toString();
+			String studentProgram = ((studentObject.get("studentProgram") == null)
+					|| (studentObject.get("studentProgram").toString() == "")) ? ""
+							: studentObject.get("studentProgram").toString();
 			student.setStudentType(studentStudentType);
 			student.setUniversityName(studentUniversityName);
 			student.setMajor(studentMajor);
@@ -562,6 +569,7 @@ public class AdmissionsService {
 			student.setAchievements(studentAchievements);
 			student.setDream(studentDream);
 			student.setFamilyBackground(familyBackground);
+			student.setStudentProgram(studentProgram);
 			// ---Student-info-end---
 
 			/* Insert data */

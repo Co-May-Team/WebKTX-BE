@@ -42,4 +42,5 @@ public class StudentModel {
 	private String achievements;
 	private String dream;
 	private String familyBackground;
+	private Object studentProgram;
 }
