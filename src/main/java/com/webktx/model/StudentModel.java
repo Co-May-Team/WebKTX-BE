@@ -43,4 +43,5 @@ public class StudentModel {
 	private String dream;
 	private String familyBackground;
 	private Object studentProgram;
+	private String dormStudentCode;
 }
