@@ -336,7 +336,7 @@ public class AdmissionsService {
 			student.setFamilyBackground(familyBackground);
 			student.setUser(user);
 			student.setStatus(status);
-			student.setStudentCodeDorm(dormStudentCode);
+			student.setDormStudentCode(dormStudentCode);
 			student.setStudentProgram(studentProgram);
 			// ---Student-info-end---
 
@@ -359,7 +359,7 @@ public class AdmissionsService {
 			LOGGER.error("Error has occured in submit admission form", e);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Error", e.getMessage(), ""));
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", ""));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", dormStudentCode));
 	}
 
 	public ResponseEntity<ResponseObject> edit(String json) {
@@ -592,7 +592,7 @@ public class AdmissionsService {
 			LOGGER.error("Error has occured in submit admission form", e);
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseObject("Error", e.getMessage(), ""));
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", ""));
+		return ResponseEntity.status(HttpStatus.OK).body(new ResponseObject("OK", "Successfully", student.getDormStudentCode()));
 	}
 
 	public byte[] generateReportFromJson(String json){
@@ -723,7 +723,7 @@ public class AdmissionsService {
 				filename.append("-");
 				filename.append(nameConverted);
 				filename.append("-");
-				filename.append(student.getStudentCodeDorm());
+				filename.append(student.getDormStudentCode());
 				filename.append(".").append(ex);
 				files.put(filename.toString(), mpf);
 			}
@@ -748,7 +748,7 @@ public class AdmissionsService {
 				filename.append("-");
 				filename.append(nameConverted);
 				filename.append("-");
-				filename.append(student.getStudentCodeDorm());
+				filename.append(student.getDormStudentCode());
 				filename.append(".").append(ex);
 				files.put(filename.toString(), mpf);
 				
@@ -762,7 +762,7 @@ public class AdmissionsService {
 				filename.append("-");
 				filename.append(nameConverted);
 				filename.append("-");
-				filename.append(student.getStudentCodeDorm());
+				filename.append(student.getDormStudentCode());
 				filename.append(".").append(ex);
 				files.put(filename.toString(), mpf);
 				
@@ -857,7 +857,7 @@ public class AdmissionsService {
 			}
 			Status status = student.getStatus();
 			AdmissionModel admissionModel = new AdmissionModel();
-			admissionModel.setStudentCodeDorm(student.getStudentCodeDorm());
+			admissionModel.setStudentCodeDorm(student.getDormStudentCode());
 			admissionModel.setUserId(p.getUser().getUserId());
 			admissionModel.setFullname(p.getFullname());
 			admissionModel.setDob(p.getDob());
@@ -1026,7 +1026,7 @@ public class AdmissionsService {
 			Status status = student.getStatus();
 
             Row row = sheet.createRow(rowNum++);
-            row.createCell(0).setCellValue(student.getStudentCodeDorm());
+            row.createCell(0).setCellValue(student.getDormStudentCode());
             row.createCell(1).setCellValue(p.getFullname());
             row.createCell(2).setCellValue(p.getDob());
             row.createCell(3).setCellValue(getValueJson(p.getGender(), "value"));

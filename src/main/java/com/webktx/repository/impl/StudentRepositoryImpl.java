@@ -105,6 +105,7 @@ public class StudentRepositoryImpl implements IStudentRepository{
 		studentModel.setAchievements(student.getAchievements());
 		studentModel.setDream(student.getDream());
 		studentModel.setFamilyBackground(student.getFamilyBackground());
+		studentModel.setDormStudentCode(student.getDormStudentCode());
 			// parse to object
 			try {
 				parser = jsonMapper.readTree(student.getStudentType());
