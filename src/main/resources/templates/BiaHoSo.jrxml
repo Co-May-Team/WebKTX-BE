@@ -1,0 +1,446 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.20.1.final using JasperReports Library version 6.20.1-7584acb244139816654f64e2fd57a00d3e31921e  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="BiaHoSo" pageWidth="595" pageHeight="842" columnWidth="545" leftMargin="25" rightMargin="25" topMargin="15" bottomMargin="15" uuid="9394f52b-2adf-4bb9-8213-4c8fe01ff86c">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="BiaHoSo"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="comayPhone" class="java.lang.String">
+		<fieldDescription><![CDATA["0913 887 055"]]></fieldDescription>
+	</field>
+	<field name="fullName" class="java.lang.String">
+		<fieldDescription><![CDATA[personalInfo.fullName]]></fieldDescription>
+	</field>
+	<field name="dateOfBirth" class="java.lang.String">
+		<fieldDescription><![CDATA[personalInfo.dateOfBirth]]></fieldDescription>
+	</field>
+	<field name="gender" class="java.lang.String">
+		<fieldDescription><![CDATA[personalInfo.gender.value]]></fieldDescription>
+	</field>
+	<field name="personalInfo-detailAddress" class="java.lang.String">
+		<fieldDescription><![CDATA[personalInfo.detailAddress]]></fieldDescription>
+	</field>
+	<field name="personalInfo-WardPathWithType" class="java.lang.String">
+		<fieldDescription><![CDATA[personalInfo.wardAddress.path_with_type]]></fieldDescription>
+	</field>
+	<field name="person-phoneNumber" class="java.lang.String">
+		<fieldDescription><![CDATA[personalInfo.phoneNumber]]></fieldDescription>
+	</field>
+	<field name="person-email" class="java.lang.String">
+		<fieldDescription><![CDATA[personalInfo.email]]></fieldDescription>
+	</field>
+	<field name="dormStudentCode" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.dormStudentCode]]></fieldDescription>
+	</field>
+	<summary>
+		<band height="100">
+			<frame>
+				<reportElement x="0" y="0" width="545" height="100" isRemoveLineWhenBlank="true" uuid="a04af387-29e7-4f0c-b8c3-d63317631c32">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					<property name="ShowOutOfBoundContent" value="true"/>
+				</reportElement>
+				<box topPadding="0"/>
+				<rectangle>
+					<reportElement mode="Transparent" x="0" y="0" width="545" height="812" uuid="3d0aa20b-63dc-4ab8-9a78-b92bc1576697">
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<graphicElement>
+						<pen lineWidth="2.0"/>
+					</graphicElement>
+				</rectangle>
+				<frame>
+					<reportElement x="0" y="6" width="544" height="80" isRemoveLineWhenBlank="true" uuid="d7e51e1d-e0a8-4317-8605-b93c28d1d07c">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					</reportElement>
+					<box leftPadding="0"/>
+					<textField>
+						<reportElement x="0" y="0" width="539" height="20" uuid="c9ccc827-561e-462f-b8d3-87d34f3b62b4">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="14"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Ký túc xá Cỏ May"]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="0" y="20" width="539" height="20" uuid="db19960c-f6b3-4de3-b024-1fb8d1c5fed1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="11"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Đường số 4, khu phố 6, phường Linh Trung, thành phố Thủ Đức,thành phố Hồ Chí Minh"]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="0" y="40" width="539" height="20" uuid="e6c53045-6806-40ab-8c0a-514d3e92dac0">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="11"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["(Khuôn viên Đại học Nông Lâm)"]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement x="0" y="60" width="539" height="20" isRemoveLineWhenBlank="true" uuid="821a6289-22dd-437a-9cd3-1ed857289a14">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="11"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["ĐT: " + "0913 887 055"]]></textFieldExpression>
+					</textField>
+				</frame>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement positionType="Float" isPrintRepeatedValues="false" x="0" y="86" width="545" height="48" isRemoveLineWhenBlank="true" uuid="0b0a6878-0172-4abc-8797-1bf05e0d5134">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+						<font fontName="VN-time-new-roman" size="30"/>
+					</textElement>
+					<textFieldExpression><![CDATA["TÚI ĐỰNG HỒ SƠ DỰ TUYỂN" + "<br>" + "KÝ TÚC XÁ CỎ MAY"]]></textFieldExpression>
+				</textField>
+				<frame>
+					<reportElement positionType="Float" x="0" y="160" width="545" height="30" uuid="dc9464fd-3dd4-4155-950a-5ae832ee68c3">
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="0"/>
+					<textField>
+						<reportElement x="0" y="0" width="545" height="20" uuid="785caabb-8f58-4af5-9f58-a8813411bb2f">
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+							<property name="com.jaspersoft.studio.unit.x" value="px"/>
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+						</reportElement>
+						<textElement markup="none">
+							<font fontName="VN-time-new-roman" size="14"/>
+							<paragraph leftIndent="5"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Mã hồ sơ: " + $F{dormStudentCode}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement positionType="Float" x="0" y="20" width="320" height="20" uuid="46eea287-eeff-4090-ba34-a083aa2f902d">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.width" value="pixel"/>
+							<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="14"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Họ và tên: "+ $F{fullName}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement positionType="Float" x="320" y="20" width="224" height="20" uuid="fdd4e065-a845-4448-920e-9e6516dfb7f8">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="14"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Nam(Nữ): " + $F{gender}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement positionType="Float" x="0" y="40" width="545" height="20" uuid="ee4fd069-42b1-45c5-aebd-c2f81aa39509">
+							<property name="com.jaspersoft.studio.unit.y" value="pixel"/>
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="14"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Ngày sinh: " + (($F{dateOfBirth} != null) && (!$F{dateOfBirth}.equalsIgnoreCase("")) ? $F{dateOfBirth}.substring(8,10) + "/"+  $F{dateOfBirth}.substring( 5, 7) + "/"+ $F{dateOfBirth}.substring( 0, 4): "")]]></textFieldExpression>
+					</textField>
+					<textField textAdjust="StretchHeight">
+						<reportElement positionType="Float" x="0" y="60" width="545" height="20" uuid="2433e80c-0d9d-4577-bfb9-76438f29f5ed">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="14"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Hồ khẩu thường trú: " + $F{personalInfo-detailAddress}  + ", " + $F{personalInfo-WardPathWithType}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement positionType="Float" x="0" y="80" width="545" height="20" uuid="be0e6319-a4ae-4c2a-8dbb-d4d34713af6a">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="14"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Điện thoại: " + $F{person-phoneNumber}]]></textFieldExpression>
+					</textField>
+					<textField>
+						<reportElement positionType="Float" x="0" y="100" width="545" height="20" uuid="d7bad48b-e4b9-44de-b092-4b663fd475af">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="14"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Email: " + $F{person-email}]]></textFieldExpression>
+					</textField>
+				</frame>
+				<frame>
+					<reportElement positionType="Float" x="0" y="210" width="545" height="50" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="48505502-e367-4f3e-8f67-5953f19bd5a5">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.FreeLayout"/>
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="ShowOutOfBoundContent" value="true"/>
+						<property name="com.jaspersoft.studio.unit.y" value="px"/>
+					</reportElement>
+					<box leftPadding="10"/>
+					<textField>
+						<reportElement x="0" y="0" width="515" height="20" uuid="b1c50731-cc35-4c03-95b9-eb408a3f8b4e">
+							<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+						</reportElement>
+						<textElement textAlignment="Center" verticalAlignment="Middle">
+							<font fontName="VN-time-new-roman" size="14" isBold="true"/>
+							<paragraph leftIndent="7"/>
+						</textElement>
+						<textFieldExpression><![CDATA["HỒ SƠ GỒM CÓ:"]]></textFieldExpression>
+					</textField>
+					<frame>
+						<reportElement x="7" y="20" width="528" height="20" uuid="8e8ec788-b9e7-42e8-8ff8-bf358ed048e5">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</reportElement>
+						<rectangle>
+							<reportElement mode="Opaque" x="0" y="6" width="9" height="9" uuid="b0ba41c5-c91c-46b4-a854-36d6c5d99662">
+								<property name="com.jaspersoft.studio.unit.y" value="px"/>
+								<property name="com.jaspersoft.studio.unit.x" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="2.0"/>
+							</graphicElement>
+						</rectangle>
+						<textField textAdjust="StretchHeight">
+							<reportElement x="13" y="0" width="515" height="20" uuid="4d0cdb09-b647-4eeb-9f53-e101e575c425">
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<textElement verticalAlignment="Middle" markup="none">
+								<font fontName="VN-time-new-roman" size="14" isBold="false"/>
+								<paragraph leftIndent="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA["Đơn xin xét chọn vào ký túc xá Cỏ May(có đóng dấu của địa phương)"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement positionType="Float" x="7" y="40" width="528" height="20" uuid="8328616a-1284-4a6c-b7a8-07bcea574464"/>
+						<rectangle>
+							<reportElement mode="Opaque" x="0" y="6" width="9" height="9" uuid="28df7d61-44b7-43c0-bf25-f432fa5cd0fc">
+								<property name="com.jaspersoft.studio.unit.y" value="px"/>
+								<property name="com.jaspersoft.studio.unit.x" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="2.0"/>
+							</graphicElement>
+						</rectangle>
+						<textField textAdjust="StretchHeight">
+							<reportElement x="13" y="0" width="515" height="20" uuid="fd6f8a7c-483f-4981-9f59-56024a66935f">
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<textElement verticalAlignment="Middle" markup="none">
+								<font fontName="VN-time-new-roman" size="14" isBold="false"/>
+								<paragraph leftIndent="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA["Lý lịch cá nhân(có đóng dấu của địa phương)"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement positionType="Float" x="7" y="60" width="528" height="20" uuid="ce288ae4-d7b1-4487-9618-66ef9208dfc4"/>
+						<rectangle>
+							<reportElement mode="Opaque" x="0" y="6" width="9" height="9" uuid="fd42df20-93b5-4000-9cad-6d825bb23378">
+								<property name="com.jaspersoft.studio.unit.y" value="px"/>
+								<property name="com.jaspersoft.studio.unit.x" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="2.0"/>
+							</graphicElement>
+						</rectangle>
+						<textField textAdjust="StretchHeight">
+							<reportElement x="13" y="0" width="515" height="20" uuid="bc3de119-1254-403d-a350-14a2671abc94">
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<textElement verticalAlignment="Middle" markup="none">
+								<font fontName="VN-time-new-roman" size="14" isBold="false"/>
+								<paragraph leftIndent="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA["Sổ hộ nghèo, giấy xác nhận hộ cân nghèo, giấy xác nhận hoàn cảnh gia đình thật sự khó khăn có xác nhận địa phương"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement positionType="Float" x="7" y="80" width="528" height="20" uuid="135b8017-4087-4209-a192-ff52a2aa4454"/>
+						<rectangle>
+							<reportElement mode="Opaque" x="0" y="6" width="9" height="9" uuid="5e778caa-8ce7-4756-925f-e8a423d52cf3">
+								<property name="com.jaspersoft.studio.unit.y" value="px"/>
+								<property name="com.jaspersoft.studio.unit.x" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="2.0"/>
+							</graphicElement>
+						</rectangle>
+						<textField textAdjust="StretchHeight">
+							<reportElement x="13" y="0" width="515" height="20" uuid="04ccf25a-5b60-4a82-b2eb-642ecddb9350">
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<textElement verticalAlignment="Middle" markup="none">
+								<font fontName="VN-time-new-roman" size="14" isBold="false"/>
+								<paragraph leftIndent="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA["Học bạ THPT (Cấp III), 1 bản photocopy không cần chứng thực"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement positionType="Float" x="7" y="100" width="528" height="20" uuid="23257b1e-d7fa-423b-a342-94347a445133"/>
+						<rectangle>
+							<reportElement mode="Opaque" x="0" y="6" width="9" height="9" uuid="fb59c209-4837-4ceb-8b20-5bf25b30bddb">
+								<property name="com.jaspersoft.studio.unit.y" value="px"/>
+								<property name="com.jaspersoft.studio.unit.x" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="2.0"/>
+							</graphicElement>
+						</rectangle>
+						<textField textAdjust="StretchHeight">
+							<reportElement x="13" y="0" width="515" height="20" uuid="5c8fbbc1-9f1d-4303-b764-5f4a7c83387b">
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<textElement verticalAlignment="Middle" markup="none">
+								<font fontName="VN-time-new-roman" size="14" isBold="false"/>
+								<paragraph leftIndent="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA["Giấy báo nhập học của trường đại học năm học 2023 -2024, 1 bản photocopy không cần chứng thực"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement positionType="Float" x="7" y="120" width="528" height="20" uuid="827a9e26-0260-41cc-aa2b-520142946e02"/>
+						<rectangle>
+							<reportElement mode="Opaque" x="0" y="6" width="9" height="9" uuid="21dbf113-ce16-45e1-b5c9-75b5d7f5f58a">
+								<property name="com.jaspersoft.studio.unit.y" value="px"/>
+								<property name="com.jaspersoft.studio.unit.x" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="2.0"/>
+							</graphicElement>
+						</rectangle>
+						<textField textAdjust="StretchHeight">
+							<reportElement x="13" y="0" width="515" height="20" uuid="4caed10b-ad3f-42ad-9a03-8d0806b87536">
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<textElement verticalAlignment="Middle" markup="none">
+								<font fontName="VN-time-new-roman" size="14" isBold="false"/>
+								<paragraph leftIndent="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA["CMND hoặc CCCD, 3 bản photocopy có chứng thực."]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement positionType="Float" x="7" y="140" width="528" height="20" uuid="1a20894c-0ce8-48af-ae06-859a956f307f"/>
+						<rectangle>
+							<reportElement mode="Opaque" x="0" y="6" width="9" height="9" uuid="ff6eecdb-f351-49b4-bce9-f0a7dd16efaf">
+								<property name="com.jaspersoft.studio.unit.y" value="px"/>
+								<property name="com.jaspersoft.studio.unit.x" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="2.0"/>
+							</graphicElement>
+						</rectangle>
+						<textField textAdjust="StretchHeight">
+							<reportElement x="13" y="0" width="515" height="20" uuid="5eb2ac20-8cfa-4e8c-aecf-b1bf78b9ab0b">
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<textElement verticalAlignment="Middle" markup="none">
+								<font fontName="VN-time-new-roman" size="14" isBold="false"/>
+								<paragraph leftIndent="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA["Hình thẻ 4x6, 3 tấm ảnh có ghi rõ thông tin phía sau ảnh: Họ tên, nơi sinh, ngày sinh"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement positionType="Float" x="7" y="160" width="528" height="20" uuid="fd9b612d-2c62-42bd-b874-3342adb95ded"/>
+						<rectangle>
+							<reportElement mode="Opaque" x="0" y="6" width="9" height="9" uuid="bedadfd1-c1f3-4349-9df3-b419d744a3a0">
+								<property name="com.jaspersoft.studio.unit.y" value="px"/>
+								<property name="com.jaspersoft.studio.unit.x" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="2.0"/>
+							</graphicElement>
+						</rectangle>
+						<textField textAdjust="StretchHeight">
+							<reportElement x="13" y="0" width="515" height="20" uuid="0eb213b6-a4e1-4ab1-91d7-b003be1b3ecf">
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<textElement verticalAlignment="Middle" markup="none">
+								<font fontName="VN-time-new-roman" size="14" isBold="false"/>
+								<paragraph leftIndent="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA["Giấy báo điểm kỳ thi đánh giá năng lực của trường hoặc của ĐHQG, 1 bản photocopy không cần chứng thực (nếu có)"]]></textFieldExpression>
+						</textField>
+					</frame>
+					<frame>
+						<reportElement positionType="Float" x="7" y="180" width="528" height="20" uuid="6c75a197-45c5-406e-a51f-e5a16d85ff2c"/>
+						<rectangle>
+							<reportElement mode="Opaque" x="0" y="6" width="9" height="9" uuid="db7650aa-e3c1-4607-be9c-cf5917416282">
+								<property name="com.jaspersoft.studio.unit.y" value="px"/>
+								<property name="com.jaspersoft.studio.unit.x" value="px"/>
+								<property name="com.jaspersoft.studio.unit.height" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<graphicElement>
+								<pen lineWidth="2.0"/>
+							</graphicElement>
+						</rectangle>
+						<textField textAdjust="StretchHeight">
+							<reportElement x="13" y="0" width="515" height="20" uuid="4f1f7094-7b8e-4d65-9ba8-e039d128a039">
+								<property name="com.jaspersoft.studio.unit.leftIndent" value="px"/>
+								<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							</reportElement>
+							<textElement verticalAlignment="Middle" markup="none">
+								<font fontName="VN-time-new-roman" size="14" isBold="false"/>
+								<paragraph leftIndent="7"/>
+							</textElement>
+							<textFieldExpression><![CDATA["Thành tích học tập (bằng khen/giấy khen/giải thưởng), lấy giá trị thành tích cao nhất, 1 bản photocopy không cần chứng thực (nếu có)"]]></textFieldExpression>
+						</textField>
+					</frame>
+				</frame>
+			</frame>
+		</band>
+	</summary>
+</jasperReport>
