@@ -143,7 +143,7 @@ public class PersonRepositoryImpl implements IPersonRepository{
 			LOGGER.info(hql.toString());
 			query.setParameter("userId", userId);
 			List<String> result = (List<String> ) query.getResultList();
-			if (result!=null) {
+			if (result.size()>0) {
 				return true;
 			}
 		} catch (Exception e) {

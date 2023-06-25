@@ -112,6 +112,9 @@
 	<field name="father-provinceAddress" class="java.lang.String">
 		<fieldDescription><![CDATA[familyInfo.relatives[0].provinceAddress.name]]></fieldDescription>
 	</field>
+	<field name="father-status" class="java.lang.String">
+		<fieldDescription><![CDATA[familyInfo.relatives[0].status.value]]></fieldDescription>
+	</field>
 	<field name="father-income" class="java.lang.String">
 		<fieldDescription><![CDATA[familyInfo.relatives[0].income]]></fieldDescription>
 	</field>
@@ -139,20 +142,14 @@
 	<field name="mother-income" class="java.lang.String">
 		<fieldDescription><![CDATA[familyInfo.relatives[1].income]]></fieldDescription>
 	</field>
+	<field name="mother-status" class="java.lang.String">
+		<fieldDescription><![CDATA[familyInfo.relatives[1].status.value]]></fieldDescription>
+	</field>
 	<field name="familyBackground" class="java.lang.String">
 		<fieldDescription><![CDATA[familyInfo.familyBackground]]></fieldDescription>
 	</field>
 	<field name="personalInfo-detailAddress" class="java.lang.String">
 		<fieldDescription><![CDATA[personalInfo.detailAddress]]></fieldDescription>
-	</field>
-	<field name="personalInfo-wardAddress" class="java.lang.String">
-		<fieldDescription><![CDATA[personalInfo.wardAddress.name]]></fieldDescription>
-	</field>
-	<field name="personalInfo-districtAddress" class="java.lang.String">
-		<fieldDescription><![CDATA[personalInfo.districtAddress.name]]></fieldDescription>
-	</field>
-	<field name="personalInfo-provinceAddress" class="java.lang.String">
-		<fieldDescription><![CDATA[personalInfo.provinceAddress.name]]></fieldDescription>
 	</field>
 	<field name="ethnic" class="java.lang.String">
 		<fieldDescription><![CDATA[personalInfo.ethnic.name]]></fieldDescription>
@@ -180,6 +177,42 @@
 	</field>
 	<field name="highSchoolType" class="java.lang.String">
 		<fieldDescription><![CDATA[studentInfo.highSchoolType.value]]></fieldDescription>
+	</field>
+	<field name="studentType5" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.studentType[5].value]]></fieldDescription>
+	</field>
+	<field name="studentType4" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.studentType[4].value]]></fieldDescription>
+	</field>
+	<field name="studentType1" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.studentType[1].value]]></fieldDescription>
+	</field>
+	<field name="studentType7" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.studentType[7].value]]></fieldDescription>
+	</field>
+	<field name="studentType6" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.studentType[6].value]]></fieldDescription>
+	</field>
+	<field name="studentType3" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.studentType[3].value]]></fieldDescription>
+	</field>
+	<field name="studentType2" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.studentType[2].value]]></fieldDescription>
+	</field>
+	<field name="studentType0" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.studentType[0].value]]></fieldDescription>
+	</field>
+	<field name="dcream" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.dream]]></fieldDescription>
+	</field>
+	<field name="personalInfo-WardPathWithType" class="java.lang.String">
+		<fieldDescription><![CDATA[personalInfo.wardAddress.path_with_type]]></fieldDescription>
+	</field>
+	<field name="mother-WardPathWithType" class="java.lang.String">
+		<fieldDescription><![CDATA[familyInfo.relatives[1].wardAddress.path_with_type]]></fieldDescription>
+	</field>
+	<field name="father-WardPathWithType" class="java.lang.String">
+		<fieldDescription><![CDATA[familyInfo.relatives[0].wardAddress.path_with_type]]></fieldDescription>
 	</field>
 	<variable name="father-income-Integer" class="java.lang.Integer">
 		<variableExpression><![CDATA[!$F{father-income}.equals("") ?   Integer.valueOf($F{father-income}) : 0]]></variableExpression>
@@ -258,7 +291,7 @@
 				</textField>
 			</frame>
 		</band>
-		<band height="436" splitType="Stretch">
+		<band height="485" splitType="Stretch">
 			<frame>
 				<reportElement x="0" y="0" width="489" height="197" uuid="3b401e6a-6ebe-4415-bebe-2f34487f29d8">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -590,7 +623,7 @@
 						<textElement>
 							<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
 						</textElement>
-						<textFieldExpression><![CDATA[$F{personalInfo-detailAddress}  + ", " + $F{personalInfo-wardAddress} + ", " + $F{personalInfo-districtAddress} + ", " + $F{personalInfo-provinceAddress}]]></textFieldExpression>
+						<textFieldExpression><![CDATA[$F{personalInfo-detailAddress}  + ", " + $F{personalInfo-WardPathWithType}]]></textFieldExpression>
 					</textField>
 				</frame>
 				<frame>
@@ -641,7 +674,7 @@
 				</textField>
 			</frame>
 			<frame>
-				<reportElement positionType="Float" x="0" y="206" width="489" height="214" uuid="44f86c92-e2d3-424a-a226-30727e67b6ba">
+				<reportElement positionType="Float" x="0" y="206" width="489" height="274" uuid="44f86c92-e2d3-424a-a226-30727e67b6ba">
 					<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -655,7 +688,7 @@
 					<textFieldExpression><![CDATA["II. HOÀN CẢNH GIA ĐÌNH:"]]></textFieldExpression>
 				</textField>
 				<frame>
-					<reportElement x="0" y="25" width="489" height="85" uuid="59fc7d12-1f11-4524-a03a-dd758de53815">
+					<reportElement positionType="Float" x="0" y="37" width="489" height="102" uuid="59fc7d12-1f11-4524-a03a-dd758de53815">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textField>
@@ -666,7 +699,7 @@
 						<textFieldExpression><![CDATA["1."]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="83" y="0" width="157" height="17" uuid="1766e140-219b-475f-8cd1-a9401c44e56c">
+						<reportElement x="83" y="17" width="157" height="17" uuid="1766e140-219b-475f-8cd1-a9401c44e56c">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						</reportElement>
 						<textElement>
@@ -675,7 +708,7 @@
 						<textFieldExpression><![CDATA[$F{father-fullName}.equals("") ? "Không có" : $F{father-fullName}]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="20" y="0" width="63" height="17" uuid="e3561a36-b650-4092-b5bb-addb2b5e6dda">
+						<reportElement x="20" y="17" width="63" height="17" uuid="e3561a36-b650-4092-b5bb-addb2b5e6dda">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</reportElement>
@@ -685,7 +718,7 @@
 						<textFieldExpression><![CDATA["Họ tên cha:"]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="240" y="0" width="56" height="17" uuid="d30dfe18-aaec-4ed0-8650-fe1cc2da55da">
+						<reportElement x="240" y="17" width="56" height="17" uuid="d30dfe18-aaec-4ed0-8650-fe1cc2da55da">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</reportElement>
@@ -695,7 +728,7 @@
 						<textFieldExpression><![CDATA["Năm sinh:"]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="296" y="0" width="129" height="17" uuid="c1fa54de-917b-44bf-b941-01f621e37f8b">
+						<reportElement x="296" y="17" width="129" height="17" uuid="c1fa54de-917b-44bf-b941-01f621e37f8b">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						</reportElement>
 						<textElement>
@@ -704,7 +737,7 @@
 						<textFieldExpression><![CDATA[$F{father-yearOfBirth}.equals("") ? "Không có" : $F{father-yearOfBirth}]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="20" y="17" width="73" height="17" uuid="b5a4186f-9820-4e8b-a2de-05a1a6ce45e9">
+						<reportElement x="20" y="34" width="73" height="17" uuid="b5a4186f-9820-4e8b-a2de-05a1a6ce45e9">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</reportElement>
@@ -714,7 +747,7 @@
 						<textFieldExpression><![CDATA["Nghề nghiệp:"]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="93" y="17" width="386" height="17" uuid="17e33853-33b5-424f-86c5-faf4aa6dc4f8">
+						<reportElement x="93" y="34" width="386" height="17" uuid="17e33853-33b5-424f-86c5-faf4aa6dc4f8">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						</reportElement>
 						<textElement>
@@ -723,7 +756,7 @@
 						<textFieldExpression><![CDATA[$F{father-currentJob}.equals("") ? "Không có" : $F{father-currentJob}]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement positionType="Float" x="20" y="68" width="55" height="17" uuid="46f4372b-abb7-4755-a2e8-115806cdd14c">
+						<reportElement positionType="Float" x="20" y="85" width="55" height="17" uuid="46f4372b-abb7-4755-a2e8-115806cdd14c">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
 						</reportElement>
@@ -733,7 +766,7 @@
 						<textFieldExpression><![CDATA["Thu nhập:"]]></textFieldExpression>
 					</textField>
 					<textField pattern="#,##0">
-						<reportElement positionType="Float" x="75" y="68" width="158" height="17" uuid="f8f60ecd-56c6-40f1-aca4-be11751cf1b1">
+						<reportElement positionType="Float" x="75" y="85" width="158" height="17" uuid="f8f60ecd-56c6-40f1-aca4-be11751cf1b1">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						</reportElement>
 						<textElement>
@@ -742,7 +775,7 @@
 						<textFieldExpression><![CDATA[$V{father-income-Integer}]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement positionType="Float" x="240" y="68" width="86" height="17" uuid="fc2f566a-75fb-43a9-8992-04ec82b350b4">
+						<reportElement positionType="Float" x="240" y="85" width="86" height="17" uuid="fc2f566a-75fb-43a9-8992-04ec82b350b4">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						</reportElement>
 						<textElement>
@@ -751,7 +784,7 @@
 						<textFieldExpression><![CDATA["(VND/ tháng)"]]></textFieldExpression>
 					</textField>
 					<frame>
-						<reportElement positionType="Float" x="20" y="51" width="469" height="17" isPrintWhenDetailOverflows="true" uuid="85e876e7-28fb-43ef-ae26-3b2a2a65be5f">
+						<reportElement positionType="Float" x="20" y="68" width="469" height="17" isPrintWhenDetailOverflows="true" uuid="85e876e7-28fb-43ef-ae26-3b2a2a65be5f">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						</reportElement>
@@ -792,7 +825,9 @@
 						</textField>
 					</frame>
 					<frame>
-						<reportElement x="20" y="34" width="469" height="17" uuid="b3ff31e4-db05-4944-9fd4-bd7496f76361"/>
+						<reportElement x="20" y="51" width="469" height="17" uuid="b3ff31e4-db05-4944-9fd4-bd7496f76361">
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						</reportElement>
 						<textField textAdjust="StretchHeight">
 							<reportElement positionType="Float" x="405" y="0" width="64" height="17" uuid="d43c5620-cc64-43cf-9620-dd973fbac71f"/>
 							<textElement>
@@ -828,9 +863,16 @@
 							<textFieldExpression><![CDATA["Nơi làm việc:"]]></textFieldExpression>
 						</textField>
 					</frame>
+					<textField>
+						<reportElement x="20" y="0" width="468" height="17" uuid="4af5c31b-ed6d-4f8e-92af-50e4694b38bf"/>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="12.5"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Thông tin cha: " + "(" + $F{father-status} +")"]]></textFieldExpression>
+					</textField>
 				</frame>
 				<frame>
-					<reportElement positionType="Float" x="0" y="112" width="489" height="85" uuid="b4720053-8a93-443d-bcb3-056a36b141e4">
+					<reportElement positionType="Float" x="0" y="139" width="489" height="102" uuid="b4720053-8a93-443d-bcb3-056a36b141e4">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textField>
@@ -841,8 +883,9 @@
 						<textFieldExpression><![CDATA["2."]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="83" y="0" width="157" height="17" uuid="deebfe5d-3921-4c22-a81d-483ff9c4ea39">
+						<reportElement x="83" y="17" width="157" height="17" uuid="deebfe5d-3921-4c22-a81d-483ff9c4ea39">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						</reportElement>
 						<textElement>
 							<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
@@ -850,9 +893,10 @@
 						<textFieldExpression><![CDATA[$F{mother-fullName}.equals("") ? "Không có" : $F{mother-fullName}]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="20" y="0" width="63" height="17" uuid="e66a4d59-8a01-47b9-b30c-37918f0de75b">
+						<reportElement x="20" y="17" width="63" height="17" uuid="e66a4d59-8a01-47b9-b30c-37918f0de75b">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						</reportElement>
 						<textElement>
 							<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
@@ -860,9 +904,10 @@
 						<textFieldExpression><![CDATA["Họ tên mẹ:"]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="240" y="0" width="55" height="17" uuid="77d0a6fd-a09a-4e40-b415-53df7b1e7b63">
+						<reportElement x="240" y="17" width="55" height="17" uuid="77d0a6fd-a09a-4e40-b415-53df7b1e7b63">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						</reportElement>
 						<textElement>
 							<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
@@ -870,8 +915,9 @@
 						<textFieldExpression><![CDATA["Năm sinh:"]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="295" y="0" width="129" height="17" uuid="04df843b-058c-4d7b-b586-c2b0d8b31936">
+						<reportElement x="295" y="17" width="129" height="17" uuid="04df843b-058c-4d7b-b586-c2b0d8b31936">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						</reportElement>
 						<textElement>
 							<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
@@ -879,9 +925,10 @@
 						<textFieldExpression><![CDATA[$F{mother-yearOfBirth}.equals("") ? "Không có" : $F{mother-yearOfBirth}]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="20" y="17" width="73" height="17" uuid="ddbfad2c-c941-4ab8-b0ae-4e2e79d42c61">
+						<reportElement x="20" y="34" width="73" height="17" uuid="ddbfad2c-c941-4ab8-b0ae-4e2e79d42c61">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
 							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						</reportElement>
 						<textElement>
 							<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
@@ -889,8 +936,9 @@
 						<textFieldExpression><![CDATA["Nghề nghiệp:"]]></textFieldExpression>
 					</textField>
 					<textField>
-						<reportElement x="93" y="17" width="386" height="17" uuid="cbae3406-55ba-4a94-9c79-0f53c1411c17">
+						<reportElement x="93" y="34" width="386" height="17" uuid="cbae3406-55ba-4a94-9c79-0f53c1411c17">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						</reportElement>
 						<textElement>
 							<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
@@ -898,8 +946,9 @@
 						<textFieldExpression><![CDATA[$F{mother-currentJob}.equals("") ? "Không có" : $F{mother-currentJob}]]></textFieldExpression>
 					</textField>
 					<frame>
-						<reportElement positionType="Float" x="20" y="51" width="469" height="17" isPrintWhenDetailOverflows="true" uuid="50b34bad-9290-4e5f-bbe1-2ff276d607b9">
+						<reportElement positionType="Float" x="20" y="68" width="469" height="17" isPrintWhenDetailOverflows="true" uuid="50b34bad-9290-4e5f-bbe1-2ff276d607b9">
 							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
 						</reportElement>
 						<textField>
 							<reportElement x="0" y="0" width="100" height="17" uuid="25406321-cd70-4b1f-9b8e-89e203f14803">
@@ -939,7 +988,9 @@
 						</textField>
 					</frame>
 					<frame>
-						<reportElement x="20" y="34" width="469" height="17" isPrintWhenDetailOverflows="true" uuid="920616b4-4545-4a07-a968-405290b70796"/>
+						<reportElement x="20" y="51" width="469" height="17" isPrintWhenDetailOverflows="true" uuid="920616b4-4545-4a07-a968-405290b70796">
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						</reportElement>
 						<textField>
 							<reportElement x="0" y="0" width="73" height="17" uuid="55e7a4e0-ae24-41e5-8e9c-0d0bf3285ed6">
 								<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -978,7 +1029,10 @@
 						</textField>
 					</frame>
 					<frame>
-						<reportElement positionType="Float" x="20" y="68" width="469" height="17" uuid="51752c0a-ee56-4ab5-a23a-fec411b588cf"/>
+						<reportElement positionType="Float" x="20" y="85" width="469" height="17" uuid="51752c0a-ee56-4ab5-a23a-fec411b588cf">
+							<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+							<property name="com.jaspersoft.studio.unit.y" value="px"/>
+						</reportElement>
 						<textField>
 							<reportElement positionType="Float" x="220" y="0" width="86" height="17" uuid="508fe333-c511-498a-b57d-2a79aad54dbb">
 								<property name="com.jaspersoft.studio.unit.height" value="px"/>
@@ -1008,9 +1062,16 @@
 							<textFieldExpression><![CDATA[$V{mother-income-Integer}]]></textFieldExpression>
 						</textField>
 					</frame>
+					<textField>
+						<reportElement x="20" y="0" width="468" height="17" uuid="f826cd4d-4baf-4457-b1a1-18400ecea691"/>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="12.5"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Thông tin mẹ: " + "(" +$F{mother-status} +")"]]></textFieldExpression>
+					</textField>
 				</frame>
 				<textField>
-					<reportElement positionType="Float" x="20" y="197" width="226" height="17" uuid="bcd7863e-f8a8-42b9-bcf7-cd9863bde382">
+					<reportElement positionType="Float" x="20" y="257" width="226" height="17" uuid="bcd7863e-f8a8-42b9-bcf7-cd9863bde382">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 						<property name="com.jaspersoft.studio.unit.width" value="px"/>
 					</reportElement>
@@ -1020,7 +1081,7 @@
 					<textFieldExpression><![CDATA["Tổng thu nhập hàng tháng của gia đình bạn:"]]></textFieldExpression>
 				</textField>
 				<textField>
-					<reportElement positionType="Float" x="393" y="197" width="86" height="17" uuid="53d832b8-7733-4565-a693-c8bb07e05d70">
+					<reportElement positionType="Float" x="393" y="257" width="86" height="17" uuid="53d832b8-7733-4565-a693-c8bb07e05d70">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement>
@@ -1029,7 +1090,7 @@
 					<textFieldExpression><![CDATA["(VND/ tháng)"]]></textFieldExpression>
 				</textField>
 				<textField pattern="#,##0">
-					<reportElement positionType="Float" x="246" y="197" width="147" height="17" uuid="c5bd0a29-9932-4907-8225-9a8193ba5548">
+					<reportElement positionType="Float" x="246" y="257" width="147" height="17" uuid="c5bd0a29-9932-4907-8225-9a8193ba5548">
 						<property name="com.jaspersoft.studio.unit.height" value="px"/>
 					</reportElement>
 					<textElement>
@@ -1037,9 +1098,36 @@
 					</textElement>
 					<textFieldExpression><![CDATA[Integer.valueOf($F{father-income}) + Integer.valueOf($F{mother-income})]]></textFieldExpression>
 				</textField>
+				<frame>
+					<reportElement positionType="Float" x="0" y="17" width="488" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="3a41e1e6-e1ea-46aa-a824-d6ec095cde6a"/>
+					<textField textAdjust="StretchHeight">
+						<reportElement positionType="Float" x="0" y="0" width="93" height="20" uuid="5a943b8a-7885-493f-aaf1-0458f45cdc2d">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="12.5"/>
+						</textElement>
+						<textFieldExpression><![CDATA["Thuộc đối tượng:"]]></textFieldExpression>
+					</textField>
+					<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+						<reportElement positionType="Float" x="93" y="0" width="395" height="20" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="81b63e1b-af36-48d6-904c-bb7af1a5af08">
+							<property name="com.jaspersoft.studio.unit.width" value="px"/>
+						</reportElement>
+						<textElement>
+							<font fontName="VN-time-new-roman" size="12.5"/>
+						</textElement>
+						<textFieldExpression><![CDATA[$F{studentType0} + ($F{studentType1}!=null ? ", " + $F{studentType1} : "") + 
+($F{studentType2}!=null ? ", " + $F{studentType2} : "") +
+($F{studentType3}!=null ? ", " + $F{studentType3} : "") +
+($F{studentType4}!=null ? ", " + $F{studentType4} : "") +
+($F{studentType5}!=null ? ", " + $F{studentType5} : "") +
+($F{studentType6}!=null ? ", " + $F{studentType6} : "") +
+($F{studentType7}!=null ? ", " + $F{studentType7} : "")]]></textFieldExpression>
+					</textField>
+				</frame>
 			</frame>
 			<break>
-				<reportElement x="0" y="430" width="92" height="1" uuid="9fb3364a-53d3-462f-82d8-a18d018dfed9"/>
+				<reportElement x="0" y="480" width="89" height="1" uuid="9fb3364a-53d3-462f-82d8-a18d018dfed9"/>
 			</break>
 		</band>
 		<band height="88">
@@ -1287,7 +1375,7 @@
 				</frame>
 			</frame>
 		</band>
-		<band height="231" splitType="Prevent">
+		<band height="331" splitType="Prevent">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
 			<frame>
 				<reportElement x="0" y="3" width="489" height="100" uuid="0820876f-ffbb-4285-b3e0-17709e0b6a63"/>
@@ -1318,7 +1406,7 @@
 				</textField>
 			</frame>
 			<frame>
-				<reportElement positionType="Float" isPrintRepeatedValues="false" x="0" y="110" width="489" height="120" isPrintWhenDetailOverflows="true" uuid="a7d0f20c-3fa5-4d79-bb6f-8b7e7c5e73ba">
+				<reportElement positionType="Float" isPrintRepeatedValues="false" x="0" y="210" width="489" height="120" isPrintWhenDetailOverflows="true" uuid="a7d0f20c-3fa5-4d79-bb6f-8b7e7c5e73ba">
 					<property name="com.jaspersoft.studio.unit.x" value="px"/>
 					<property name="com.jaspersoft.studio.unit.y" value="px"/>
 				</reportElement>
@@ -1351,6 +1439,37 @@
 						<font fontName="VN-time-new-roman" size="12.5"/>
 					</textElement>
 					<textFieldExpression><![CDATA["(Ký và ghi rõ họ tên)"]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement positionType="Float" x="0" y="103" width="489" height="100" isPrintWhenDetailOverflows="true" uuid="4e3219e1-76e3-4c02-9982-d1abae89afc1">
+					<property name="com.jaspersoft.studio.unit.x" value="px"/>
+					<property name="com.jaspersoft.studio.unit.y" value="px"/>
+				</reportElement>
+				<textField>
+					<reportElement x="0" y="0" width="20" height="17" uuid="17de81bf-8648-4090-a896-c3cacdbe1eff">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-time-new-roman" size="12.5" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["5."]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="20" y="0" width="469" height="17" isPrintWhenDetailOverflows="true" uuid="fca9cc3c-19ad-4996-9e61-d9962daafa30">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement>
+						<font fontName="VN-time-new-roman" size="12.5" isBold="false"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Định hướng và ước mơ trong tương lai"]]></textFieldExpression>
+				</textField>
+				<textField textAdjust="StretchHeight">
+					<reportElement positionType="Float" x="20" y="25" width="469" height="70" isRemoveLineWhenBlank="true" isPrintWhenDetailOverflows="true" uuid="86f94c9e-ce9d-4181-801b-c0ac76a36ff7"/>
+					<textElement textAlignment="Justified">
+						<font fontName="VN-time-new-roman" size="12.5"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{dcream}]]></textFieldExpression>
 				</textField>
 			</frame>
 		</band>

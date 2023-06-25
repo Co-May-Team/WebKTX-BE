@@ -65,5 +65,7 @@ public class Student {
 	private String familyBackground;
 	
 	@Column(name="dorm_student_code")
-	private String studentCodeDorm;
+	private String dormStudentCode;
+	@Column(name="student_program")
+	private String studentProgram;
 }

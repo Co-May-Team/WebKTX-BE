@@ -105,6 +105,7 @@ public class StudentRepositoryImpl implements IStudentRepository{
 		studentModel.setAchievements(student.getAchievements());
 		studentModel.setDream(student.getDream());
 		studentModel.setFamilyBackground(student.getFamilyBackground());
+		studentModel.setDormStudentCode(student.getDormStudentCode());
 			// parse to object
 			try {
 				parser = jsonMapper.readTree(student.getStudentType());
@@ -113,6 +114,8 @@ public class StudentRepositoryImpl implements IStudentRepository{
 				studentModel.setUniversityName(parser);
 				parser = jsonMapper.readTree(student.getHighSchoolType());
 				studentModel.setHighSchoolType(parser);
+				parser = jsonMapper.readTree(student.getStudentProgram());
+				studentModel.setStudentProgram(parser);
 			} catch (JsonMappingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

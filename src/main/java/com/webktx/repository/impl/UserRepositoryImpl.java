@@ -149,7 +149,7 @@ public class UserRepositoryImpl implements IUserRepository {
 		query.setParameter("userId",userId );
 		try {
 			List<String> result = (List<String> ) query.getResultList();
-			if (result!=null) {
+			if (result.size()>0) {
 				return true;
 			}
 		}
@@ -167,7 +167,7 @@ public class UserRepositoryImpl implements IUserRepository {
 		query.setParameter("userId",userId );
 		try {
 			List<String> result = (List<String> ) query.getResultList();
-			if (result!=null) {
+			if (result.size()>0) {
 				return true;
 			}
 		}
@@ -185,7 +185,7 @@ public class UserRepositoryImpl implements IUserRepository {
 		query.setParameter("userId",userId );
 		try {
 			List<String> result = (List<String> ) query.getResultList();
-			if (result!=null) {
+			if (result.size()>0) {
 				return true;
 			}
 		}
