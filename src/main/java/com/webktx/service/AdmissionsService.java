@@ -659,6 +659,70 @@ public class AdmissionsService {
 		}
 		
 	}
+	public byte[] generateProfileCover(String json){
+//		Gson gson = new Gson();
+//		JsonObject jObject = gson.fromJson(json, JsonObject.class); // parse
+//		jObject.addProperty("version", "v3"); // modify
+//		json = jObject.toString();
+		StringEntity entity = new StringEntity(json, StandardCharsets.UTF_8);
+		JSONObject jsonObject = new JSONObject(entity);
+
+		// Load .jrxml file from resources
+		try {
+			Resource jrxmlFileResource = resourceLoader.getResource("classpath:/templates/BiaHoSo.jrxml");
+			
+			InputStream jrxmlInput = jrxmlFileResource.getInputStream();
+			JasperDesign jasperDesign = JRXmlLoader.load(jrxmlInput);
+
+			// Compile .jrxml to .jasper
+			JasperReport jasperReport = JasperCompileManager.compileReport(jasperDesign);
+
+			Map<String, Object> data = new HashMap<>();
+			Iterator<String> keys = jsonObject.keys();
+			while (keys.hasNext()) {
+				String key = keys.next();
+				Object value = jsonObject.get(key);
+				if (value instanceof JSONArray) {
+					// nếu giá trị là một mảng JSON, chuyển đổi thành danh sách
+					value = ((JSONArray) value).toList();
+				} else if (value instanceof JSONObject) {
+					// nếu giá trị là một đối tượng JSON, chuyển đổi thành Map
+					value = ((JSONObject) value).toMap();
+				}
+				data.put(key, value);
+			}
+
+			// Create JsonDataSource from json string
+			JRDataSource dataSource = new JsonDataSource(new ByteArrayInputStream(json.getBytes()));
+
+			// Set parameters
+			Map<String, Object> parameters = new HashMap<>();
+			parameters.put("data", data);
+
+			// Fill JasperPrint with data
+			JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+			ByteArrayOutputStream pdfOutputStream = new ByteArrayOutputStream();
+			JRPdfExporter exporter = new JRPdfExporter();
+//			JRDocxExporter exporter = new JRDocxExporter();
+			exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
+
+			exporter.setExporterOutput(new SimpleOutputStreamExporterOutput(pdfOutputStream));
+			exporter.exportReport();
+
+			// Set headers for the response
+//			HttpHeaders headers = new HttpHeaders();
+//			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//			headers.setContentDisposition(
+//					ContentDisposition.builder("attachment").filename("DonXetTuyenVaoKtx.pdf").build());
+
+			// Return the response with the DOCX file bytes and headers
+			return pdfOutputStream.toByteArray();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+		
+	}
 
 	public ResponseEntity<ResponseObject> uploadFiles(MultipartHttpServletRequest request) {
 		UserDetailsImpl userDetail = (UserDetailsImpl) SecurityContextHolder.getContext().getAuthentication()

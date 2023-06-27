@@ -65,6 +65,12 @@ public class AdmissionsController {
 		LOGGER.info("generateReportFromJson()");
 		return admissionService.generateReportFromJson(json);
 	}
+	@PostMapping(value = "/gen-file/profile-cover", produces = { "application/json; charset=UTF-8" })
+	@ResponseBody
+	public byte[] generateProfileCover(@RequestBody String json) {
+		LOGGER.info("generateProfileCover()");
+		return admissionService.generateProfileCover(json);
+	}
 
 	@GetMapping(value = "/find-all-by-year")
 	public ResponseEntity<ResponseObject> findAllByYear(@RequestParam(value = "year", required = true) int year) {

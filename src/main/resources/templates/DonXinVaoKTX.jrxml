@@ -214,6 +214,9 @@
 	<field name="father-WardPathWithType" class="java.lang.String">
 		<fieldDescription><![CDATA[familyInfo.relatives[0].wardAddress.path_with_type]]></fieldDescription>
 	</field>
+	<field name="dormStudentCode" class="java.lang.String">
+		<fieldDescription><![CDATA[studentInfo.dormStudentCode]]></fieldDescription>
+	</field>
 	<variable name="father-income-Integer" class="java.lang.Integer">
 		<variableExpression><![CDATA[!$F{father-income}.equals("") ?   Integer.valueOf($F{father-income}) : 0]]></variableExpression>
 	</variable>
@@ -223,41 +226,51 @@
 	<title>
 		<band height="131" splitType="Stretch">
 			<property name="com.jaspersoft.studio.unit.height" value="px"/>
-			<textField>
-				<reportElement x="47" y="0" width="365" height="60" uuid="c5266eb8-b282-4b57-81df-c22720ae63ff">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" markup="html">
-					<font fontName="VN-time-new-roman" size="13" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM" + "<br>" +
+			<frame>
+				<reportElement x="-26" y="0" width="438" height="110" uuid="f2bb5702-eff6-4e02-b393-88b3d9734323"/>
+				<textField>
+					<reportElement x="73" y="0" width="365" height="60" uuid="c5266eb8-b282-4b57-81df-c22720ae63ff">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" markup="html">
+						<font fontName="VN-time-new-roman" size="13" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["CỘNG HÒA XÃ HỘI CHỦ NGHĨA VIỆT NAM" + "<br>" +
 "Độc lập – Tự do – Hạnh phúc" + "<br>" + "____"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="-26" y="20" width="73" height="90" isPrintWhenDetailOverflows="true" uuid="44ec10da-185b-4d74-aa54-735ce3713fb1"/>
-				<box>
-					<topPen lineWidth="1.0"/>
-					<leftPen lineWidth="1.0"/>
-					<bottomPen lineWidth="1.0"/>
-					<rightPen lineWidth="1.0"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
-					<font fontName="VN-time-new-roman" size="12"/>
-				</textElement>
-				<textFieldExpression><![CDATA["Ảnh" +  "<br>" + "3 x 4 (cm)"]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="47" y="60" width="365" height="50" uuid="053fe00b-6da3-47e0-b25b-13ffcb4085b3">
-					<property name="com.jaspersoft.studio.unit.height" value="px"/>
-					<property name="com.jaspersoft.studio.unit.width" value="px"/>
-				</reportElement>
-				<textElement textAlignment="Center" markup="html">
-					<font fontName="VN-time-new-roman" size="16" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA["ĐƠN XIN VÀO Ở KÝ TÚC XÁ CỎ MAY" + "<br>" +
+				</textField>
+				<textField>
+					<reportElement x="0" y="20" width="73" height="90" isPrintWhenDetailOverflows="true" uuid="44ec10da-185b-4d74-aa54-735ce3713fb1"/>
+					<box>
+						<topPen lineWidth="1.0"/>
+						<leftPen lineWidth="1.0"/>
+						<bottomPen lineWidth="1.0"/>
+						<rightPen lineWidth="1.0"/>
+					</box>
+					<textElement textAlignment="Center" verticalAlignment="Middle" markup="html">
+						<font fontName="VN-time-new-roman" size="12"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Ảnh" +  "<br>" + "3 x 4 (cm)"]]></textFieldExpression>
+				</textField>
+				<textField>
+					<reportElement x="73" y="60" width="365" height="50" uuid="053fe00b-6da3-47e0-b25b-13ffcb4085b3">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Center" markup="html">
+						<font fontName="VN-time-new-roman" size="16" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA["ĐƠN XIN VÀO Ở KÝ TÚC XÁ CỎ MAY" + "<br>" +
 "NĂM HỌC 2022 - 2023" + "<br>"]]></textFieldExpression>
-			</textField>
+				</textField>
+				<textField>
+					<reportElement x="-14" y="-30" width="230" height="30" uuid="7f2ac841-819e-4823-a0a9-766404228fd0"/>
+					<textElement markup="html">
+						<font fontName="VN-time-new-roman" size="11"/>
+					</textElement>
+					<textFieldExpression><![CDATA["Mã hồ sơ: " + "<b>"  + $F{dormStudentCode} + "</b>" ]]></textFieldExpression>
+				</textField>
+			</frame>
 		</band>
 	</title>
 	<detail>
