@@ -91,10 +91,4 @@ public class AdmissionsController {
 		return admissionService.updateStatusCode(json);
 	}
 
-	@GetMapping(value = "/export", produces = { "application/json; charset=UTF-8" })
-	@ResponseBody
-	public byte[] exportExcel() throws IOException {
-		return admissionService.exportExcel();
-	}
-
 }
